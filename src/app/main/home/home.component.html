@@ -1,0 +1,8 @@
+<div class="home">
+    <div *ngIf="authService.isAuthenticated() else notLoggedIn" class="home-container">
+        <app-workday></app-workday>
+    </div>
+    <ng-template #notLoggedIn>
+        <mat-label>Not logged in!</mat-label>
+    </ng-template>
+</div>

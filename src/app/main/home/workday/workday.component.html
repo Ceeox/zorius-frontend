@@ -1,0 +1,58 @@
+<div class="workday">
+    <mat-toolbar color="primary">
+        <mat-label>Arbeitstag</mat-label>
+    </mat-toolbar>
+    <div class="workday-container">
+        <mat-card>
+            <mat-card-content>
+                <div class="workday-header">
+                    <div class="control-button" [ngSwitch]="currentWorkdayState">
+                        <button mat-fab color="primary" (click)="controlButtonClicked()">
+                            <mat-icon *ngSwitchCase="'start'">play_arrow</mat-icon>
+                            <mat-icon *ngSwitchCase="'pause'">pause</mat-icon>
+                            <mat-icon *ngSwitchCase="'resume'">cached</mat-icon>
+                        </button>
+                    </div>
+                    <div class="workday-text">
+                        <h1>{{controlText}}</h1>
+                    </div>
+                    <div class="workday-duration">
+                        Arbeitsdauer: {{time}} (hh:mm:ss)
+                    </div>
+                </div>
+            </mat-card-content>
+            <mat-card-footer>
+                <div class="time-records-table">
+                    <div *ngIf="isLoadingResults || isRateLimitReached">
+                        <mat-progress-bar *ngIf="isLoadingResults" mode="indeterminate"></mat-progress-bar>
+                        <div *ngIf="isRateLimitReached">
+                            Rate limit has been reached. It will be reset in one minute.
+                        </div>
+                    </div>
+                    <div class="tr-table-container mat-elevation-z3">
+                        <table mat-table [dataSource]="timeRecordsSource">
+                            <ng-container matColumnDef="position">
+                                <th mat-header-cell *matHeaderCellDef> Nr. </th>
+                                <td mat-cell *matCellDef="let tr"> {{tr.id}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="started">
+                                <th mat-header-cell *matHeaderCellDef> Gestartet </th>
+                                <td mat-cell *matCellDef="let tr"> {{formatToHHmm(tr.started)}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="ended">
+                                <th mat-header-cell *matHeaderCellDef> Beendet </th>
+                                <td mat-cell *matCellDef="let tr"> {{formatToHHmm(tr.ended)}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="duration">
+                                <th mat-header-cell *matHeaderCellDef> Dauer (hh:mm)</th>
+                                <td mat-cell *matCellDef="let tr"> {{getTRDuration(tr)}} </td>
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+                    </div>
+                </div>
+            </mat-card-footer>
+        </mat-card>
+    </div>
+</div>

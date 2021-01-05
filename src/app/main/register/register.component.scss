@@ -1,0 +1,10 @@
+@import "src/styles";
+
+.login-container {
+    width: 50%;
+    height: 50%;
+    border: 0.2rem solid mat-color($zorius-primary, 100);
+    background-color: mat-color($zorius-bg, 100);
+    border-radius: 1rem;
+    display: flex;
+}
