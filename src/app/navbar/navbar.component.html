@@ -6,7 +6,7 @@
                 <mat-label>Zorius</mat-label>
             </a>
         </div>
-        <div class="navigation-container" *ngIf="authService.isAuthenticated()== true">
+        <div class="navigation-container" *ngIf="authService.isAuthenticated() == true">
             <a routerLink="/workaccount" mat-button>Zeiterfassung</a>
             <a routerLink="/workreports" mat-button>Berichte</a>
             <button mat-button [matMenuTriggerFor]="menu">Warenwirtschaft</button>
@@ -21,13 +21,13 @@
             <div *ngIf="isLogedIn() == true then profile else registerLogin"></div>
             <ng-template #profile>
                 <div class="avatar">
-                    <div *ngIf='profilePicUrl() !== null else defaultPic'>
-                        <a class="profilePic" mat-button [matMenuTriggerFor]="userProfile">
-                            <img [src]="profilePicUrl()" />
+                    <div *ngIf='(avatarUrl | async) !== null else defaultPic'>
+                        <a class="profilePic" mat-icon-button [matMenuTriggerFor]="userProfile">
+                            <img [src]="(avatarUrl | async)" />
                         </a>
                     </div>
                     <ng-template #defaultPic>
-                        <a mat-button [matMenuTriggerFor]="userProfile">
+                        <a class="profilePic" mat-icon-button [matMenuTriggerFor]="userProfile">
                             <mat-icon>person</mat-icon>
                         </a>
                     </ng-template>

@@ -8,12 +8,11 @@ import { InternOrdersComponent } from './main/merchandise/intern-orders/intern-o
 import { ExternOrdersComponent } from './main/merchandise/extern-orders/extern-orders.component';
 import { StockComponent } from './main/merchandise/stock/stock.component';
 import { LoginComponent } from './main/login/login.component';
-import { AuthService } from './auth.service';
-import { AuthGuardService } from './auth-guard.service';
+import { AuthGuardService } from 'src/services/auth-guard.service';
 //import { RegisterComponent } from './main/register/register.component';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   //{ path: 'register', component: RegisterComponent }

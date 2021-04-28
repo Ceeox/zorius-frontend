@@ -1,10 +1,43 @@
 import { Injectable } from '@angular/core';
 import { Query, Mutation, gql } from 'apollo-angular';
-import { InternOrderTableData } from './intern-orders.component';
 
 
 export interface Response {
-  tableData: InternOrderTableData[];
+  listInternMerchandise: InternMerchandiseConnection;
+}
+
+export interface InternMerchandiseConnection {
+  edges: InternMerchandiseEdge[];
+  pageInfo: PageInfo;
+}
+
+export interface InternMerchandiseEdge {
+  cursor: number;
+  node: InternMerchandise;
+}
+
+export interface PageInfo {
+  startCursor: number;
+  endCursor: number;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
+}
+
+export interface InternMerchandise {
+  id: String;
+  merchandiseId: number;
+  merchandiseName: String;
+  cost: number;
+  orderer: String;
+  status: InternMerchandiseStatus;
+  count: number;
+}
+
+export enum InternMerchandiseStatus {
+  Ordered,
+  Delivered,
+  Stored,
+  Used,
 }
 
 @Injectable({
@@ -12,25 +45,28 @@ export interface Response {
 })
 export class InternOrderTableDataGQL extends Query<Response> {
   document = gql`
-    query tableData {
-      id
-      arivedOn
-      projectLeader
-      url
-      createdDate
-      updatedDate
-      orderer
-      projectLeader
-      count
-      merchandiseId
-      merchandiseName
-      purchasedOn
-      serialNumber
-      invoiceNumber
-      shop
-      useCase
-    }
-  `;
+    query listInternMerchandise($first: Int, $last: Int, $after: String, $before: String) {
+      listInternMerchandise(first: $first, last: $last, after: $after, before: $before) {
+        edges {
+          node {
+            id
+            orderer
+            count
+            cost
+            merchandiseId
+            merchandiseName
+            status
+          }
+          cursor
+        }
+        pageInfo {
+          startCursor
+          endCursor
+          hasPreviousPage
+          hasNextPage
+        }
+      }
+    }`;
 }
 
 @Injectable({

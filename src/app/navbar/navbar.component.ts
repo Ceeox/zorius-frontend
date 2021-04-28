@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService, User } from '../auth.service';
+import { map } from 'rxjs/operators';
+import { AuthService } from 'src/services/auth.service';
+import { User, UserService } from 'src/services/user.service';
+import { Observable } from 'rxjs';
+import { subscribe } from 'graphql';
 
 @Component({
   selector: 'app-navbar',
@@ -7,9 +11,14 @@ import { AuthService, User } from '../auth.service';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit {
+  avatarUrl: Observable<string>;
+  userName: Observable<string>;
 
-
-  constructor(public authService: AuthService) { }
+  constructor(
+    public authService: AuthService,
+    private userService: UserService
+  ) {
+  }
 
   ngOnInit(): void {
   }
@@ -18,8 +27,18 @@ export class NavbarComponent implements OnInit {
     return this.authService.isAuthenticated();
   }
 
-  profilePicUrl(): string {
-    let user = this.authService.getUser();
-    return user == null ? null : user.avatarUrl;
+  private getAvatarUrl(): Observable<string> {
+    return this.userService.getUser().pipe(
+      map((user) => {
+        console.log("user avatarUrl: " + user.avatarUrl);
+        return user.avatarUrl;
+      })
+    );
+  }
+
+  private getUserName(): Observable<string> {
+    return this.userService.getUser().pipe(
+      map((user) => { return user.firstname + " " + user.lastname; })
+    );
   }
 }

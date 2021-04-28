@@ -3,41 +3,10 @@ import { Router } from '@angular/router';
 import { Apollo, Query, gql } from 'apollo-angular';
 import { doesNotReject } from 'assert';
 import ObjectID from 'bson-objectid';
-import { resolve } from 'dns';
 import { CookieService } from 'ngx-cookie-service';
+import { UserService } from './user.service';
 
-export interface User {
-  id: ObjectID;
-  email: string;
-  username: string;
-  firstname?: string;
-  lastname?: string;
-  lastUpdated: Date;
-  createdAt: Date;
-  avatarUrl?: string;
-}
-export interface UserResponse {
-  getUser: User;
-}
 
-@Injectable({
-  providedIn: 'root',
-})
-export class GetUserGQL extends Query<UserResponse> {
-  document = gql`
-  query getUser($userId: ObjectId) {
-    getUser(userId: $userId) {
-      id
-      email
-      username
-      firstname
-      lastname
-      lastUpdated
-      createdAt
-      avatarUrl
-    }
-  }`;
-}
 
 export interface Login {
   token: string;
@@ -67,42 +36,44 @@ export class LoginGQL extends Query<LoginResponse> {
   providedIn: 'root'
 })
 export class AuthService {
-  static getToken() {
-    throw new Error('Method not implemented.');
-  }
   token: string;
   loggedIn: boolean = false;
   tokenExpiresAt?: Date;
 
-  user?: User = null;
+
 
   constructor(
     private apollo: Apollo,
     private loginGQL: LoginGQL,
-    private getUserGQL: GetUserGQL,
     private router: Router,
     private cookieService: CookieService
   ) {
     let token = this.cookieService.get("token");
-    let userId = this.cookieService.get("userId");
     if (!this.validToken(token)) {
       this.router.navigate(['/login']);
+      return;
     }
     this.token = token;
     this.loggedIn = true;
-    this.loadUser(new ObjectID(userId));
-    console.log(this.user);
   }
 
-  validToken(token: string): boolean {
+  getUserId(): ObjectID | null {
+    let id = this.cookieService.get("userId");
+    if (id == null || id == "") {
+      return null;
+    }
+    return new ObjectID(id);
+  }
+
+  private validToken(token: string): boolean {
     return token !== null && token.length > 0;
   }
 
-  public isAuthenticated(): boolean {
+  isAuthenticated(): boolean {
     return this.loggedIn;
   }
 
-  public login(email: string, password: string) {
+  login(email: string, password: string) {
     let userId = null;
     this.loginGQL.watch({
       email: email,
@@ -120,8 +91,6 @@ export class AuthService {
       this.cookieService.set("userId", userId, data.login.expiresAt);
       localStorage.setItem("token", this.token);
 
-      this.loadUser(userId);
-
       this.router.navigate(['/home']);
     },
       err => {
@@ -136,20 +105,6 @@ export class AuthService {
     this.apollo.client.resetStore();
     //localStorage.removeItem("token");
     this.router.navigate(['/']);
-  }
-
-  public getUser(): User {
-    return this.user;
-  }
-
-  loadUser(userId: ObjectID) {
-    this.getUserGQL.watch({
-      userId: userId,
-    }, {
-      fetchPolicy: 'network-only'
-    }).valueChanges.subscribe(({ data }) => {
-      this.user = data.getUser;
-    });
   }
 
   getToken(): string {

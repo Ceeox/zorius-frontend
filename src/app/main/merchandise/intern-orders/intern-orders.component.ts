@@ -4,19 +4,22 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { InternOrderTableDataGQL, NewInternOrderGQL } from './graphql.module';
+import { InternMerchandise, InternMerchandiseEdge, InternOrderTableDataGQL, NewInternOrderGQL } from './graphql.module';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { last, map } from 'rxjs/operators';
+import { UserService } from 'src/services/user.service';
+import { CloseScrollStrategy } from '@angular/cdk/overlay';
+import ObjectID from 'bson-objectid';
 
 export interface NewInternOrder {
-  merchandiseName: String;
-  count: number;
-  url?: String;
-  purchasedOn: Date;
-  articleNumber?: String,
-  postage?: number;
-  useCase: String;
-  cost: number;
+    merchandiseName: String;
+    count: number;
+    url?: String;
+    purchasedOn: Date;
+    articleNumber?: String,
+    postage?: number;
+    useCase: String;
+    cost: number;
 }
 
 // export interface InternMerchandise {
@@ -37,128 +40,126 @@ export interface NewInternOrder {
 //   url?: String;
 // }
 
-export interface InternOrderTableData {
-  merchandiseName: String;
-  merchandiseId: number;
-  cost: number;
-  ordererId: String;
-  status: InternMerchandiseStatus;
-  purchasedOn: Date;
-}
-
-export enum InternMerchandiseStatus {
-  Ordered,
-  Delivered,
-  Stored,
-  Used,
-}
 
 @Component({
-  selector: 'app-intern-orders',
-  templateUrl: './intern-orders.component.html',
-  styleUrls: ['./intern-orders.component.scss'],
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0' })),
-      state('expanded', style({ height: '*' })),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-    ]),
-  ],
+    selector: 'app-intern-orders',
+    templateUrl: './intern-orders.component.html',
+    styleUrls: ['./intern-orders.component.scss'],
+    animations: [
+        trigger('detailExpand', [
+            state('collapsed', style({ height: '0px', minHeight: '0' })),
+            state('expanded', style({ height: '*' })),
+            transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+        ]),
+    ],
 })
 export class InternOrdersComponent implements OnInit {
 
 
-  dataSource: MatTableDataSource<InternOrderTableData>;
-  columnsToDisplay = ['count', 'merchandiseName', 'cost', 'ordererId', 'merchandiseId', 'status'];
-  expandedElement: InternOrderTableData | null;
+    internMerchandiseSource = new MatTableDataSource<InternMerchandiseEdge>();
+    internMerch: Observable<InternMerchandiseEdge[]>
+    displayedColumns = ['no.', 'id', 'merchandiseId', 'merchandiseName', 'count', 'cost', 'orderer', 'status', 'actions'];
+    pageSizeOptions = [5, 10, 25, 50];
+    data;
 
-  tableData: InternOrderTableData[];
+    isLoadingResults = true;
+    isRateLimitReached = false;
 
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
+    @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+    @ViewChild(MatSort, { static: true }) sort: MatSort;
 
-  constructor(public dialog: MatDialog,
-    private tableDataGQL: InternOrderTableDataGQL,
-    private newInternOrderGQL: NewInternOrderGQL) {
-  }
-
-  ngOnInit() {
-    this.loadTableData();
-  }
-
-  loadTableData() {
-    this.getTableData().subscribe(data => {
-      this.tableData = data;
-      this.dataSource = new MatTableDataSource(this.tableData);
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
-    });
-  }
-
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+    constructor(public dialog: MatDialog,
+        private tableDataGQL: InternOrderTableDataGQL,
+        private newInternOrderGQL: NewInternOrderGQL,
+        private userService: UserService) {
     }
-  }
 
-  getTableData(): Observable<InternOrderTableData[]> {
-    return this.tableDataGQL.watch({
-      first: 10
-    }, {
-      fetchPolicy: 'network-only'
-    }).valueChanges
-      .pipe(
-        map(result => result.data.tableData)
-      );
-  }
+    edit(merch: InternMerchandise) {
+        console.log(merch.id);
+    }
 
-  submitNewInternOrder(newOder: NewInternOrder) {
-    this.newInternOrderGQL
-      .mutate({
-        newInternOrder: newOder,
-      })
-      .subscribe();
-    this.loadTableData();
-  }
+    ngOnInit() {
+        this.loadTableData();
+    }
 
-  openIncomingGoods(): void {
-    console.log("TODO: Implement incoming goods");
-  }
+    loadTableData() {
 
-  openNewInternOrder(): void {
-    const newOrder = undefined;
-    const dialogRef = this.dialog.open(NewInternOrderDialog, {
-      width: '40vw',
-      hasBackdrop: true,
-      disableClose: true,
-      data: { newInternOrder: newOrder }
-    });
+        this.internMerch = this.listInternMerchandise(10, null, null, null);
+    }
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === undefined)
-        return;
-      result.ordererId = "83215719-3835-4726-b356-47c33e4c74a2";
-      result.purchasedOn = Date.now().toString();
-      this.submitNewInternOrder(result);
-    });
-  }
+    applyFilter(event: Event) {
+        const filterValue = (event.target as HTMLInputElement).value;
+        this.internMerchandiseSource.filter = filterValue.trim().toLowerCase();
+
+        if (this.internMerchandiseSource.paginator) {
+            this.internMerchandiseSource.paginator.firstPage();
+        }
+    }
+
+    listInternMerchandise(first: number, last?: number, before?: string, after?: string): Observable<InternMerchandiseEdge[]> {
+        this.isLoadingResults = true;
+
+        return this.tableDataGQL.watch({
+            first: first,
+            last: last,
+            before: before,
+            after: after
+        }).valueChanges.pipe(
+            map(result => {
+                this.isLoadingResults = false;
+                return result.data.listInternMerchandise.edges;
+            })
+        );
+    }
+
+    submitNewInternOrder(newOder: NewInternOrder) {
+        this.newInternOrderGQL
+            .mutate({
+                newInternOrder: newOder,
+            })
+            .subscribe();
+        this.loadTableData();
+    }
+
+    openIncomingGoods(): void {
+        console.log("TODO: Implement incoming goods");
+    }
+
+    openNewInternOrder(): void {
+        const newOrder = undefined;
+        const dialogRef = this.dialog.open(NewInternOrderDialog, {
+            width: '40vw',
+            hasBackdrop: true,
+            disableClose: true,
+            data: { newInternOrder: newOrder }
+        });
+        var user;
+        this.userService.getUser().subscribe((user) => {
+            user = user;
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result === undefined)
+                return;
+            result.ordererId = user.id;
+            result.purchasedOn = Date.now().toString();
+            this.submitNewInternOrder(result);
+        });
+    }
 
 }
 
 @Component({
-  selector: 'new-intern-order-dialog',
-  templateUrl: 'new-intern-order-dialog.html',
-  styleUrls: ['./new-intern-order-dialog.scss'],
+    selector: 'new-intern-order-dialog',
+    templateUrl: 'new-intern-order-dialog.html',
+    styleUrls: ['./new-intern-order-dialog.scss'],
 })
 export class NewInternOrderDialog {
-  constructor(
-    public dialogRef: MatDialogRef<NewInternOrderDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: NewInternOrder) { }
+    constructor(
+        public dialogRef: MatDialogRef<NewInternOrderDialog>,
+        @Inject(MAT_DIALOG_DATA) public data: NewInternOrder) { }
 
-  onCancelClick(): void {
-    this.dialogRef.close();
-  }
+    onCancelClick(): void {
+        this.dialogRef.close();
+    }
 }

@@ -10,8 +10,12 @@
         .profile-container {
             margin-left: auto;
             .profilePic {
+                height: 2.5rem;
+                width: 2.5rem;
                 img {
-                    height: 2.5rem;
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
                     clip-path: circle();
                 }
             }
