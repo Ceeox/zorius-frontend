@@ -1,15 +1,16 @@
-import { Component, OnInit, Inject, ViewChild, Injectable } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, Injectable, AfterViewInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { InternMerchandise, InternMerchandiseEdge, InternOrderTableDataGQL, NewInternOrderGQL } from './graphql.module';
-import { Observable } from 'rxjs';
-import { last, map } from 'rxjs/operators';
+import { merge, Observable } from 'rxjs';
+import { catchError, first, last, map, startWith, switchMap } from 'rxjs/operators';
 import { UserService } from 'src/services/user.service';
 import { CloseScrollStrategy } from '@angular/cdk/overlay';
 import ObjectID from 'bson-objectid';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 export interface NewInternOrder {
     merchandiseName: String;
@@ -21,25 +22,6 @@ export interface NewInternOrder {
     useCase: String;
     cost: number;
 }
-
-// export interface InternMerchandise {
-//   merchandise_id: number;
-//   merchandise_name: String;
-//   count: number;
-//   orderer: String,
-//   purchased_on: Date;
-//   article_number?: String,
-//   postage: number;
-//   cost: number;
-//   status: InternMerchandiseStatus;
-//   serial_number: String;
-//   invoice_number: number;
-
-//   useCase?: String;
-//   arived_on?: Date;
-//   url?: String;
-// }
-
 
 @Component({
     selector: 'app-intern-orders',
@@ -53,52 +35,68 @@ export interface NewInternOrder {
         ]),
     ],
 })
-export class InternOrdersComponent implements OnInit {
-
+export class InternOrdersComponent implements OnInit, AfterViewInit {
 
     internMerchandiseSource = new MatTableDataSource<InternMerchandiseEdge>();
     internMerch: Observable<InternMerchandiseEdge[]>
     displayedColumns = ['no.', 'id', 'merchandiseId', 'merchandiseName', 'count', 'cost', 'orderer', 'status', 'actions'];
-    pageSizeOptions = [5, 10, 25, 50];
+
+    pageSizeOptions = [10, 25, 50, 100];
+    pageSize: number = 10;
+    pageLength: number;
+    pageEvent: PageEvent = new PageEvent();
+
     data;
 
     isLoadingResults = true;
-    isRateLimitReached = false;
 
-    @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: true }) sort: MatSort;
+    @ViewChild(MatPaginator) paginator: MatPaginator;
 
     constructor(public dialog: MatDialog,
         private tableDataGQL: InternOrderTableDataGQL,
         private newInternOrderGQL: NewInternOrderGQL,
-        private userService: UserService) {
+        private userService: UserService,
+        private snackBar: MatSnackBar) {
     }
 
-    edit(merch: InternMerchandise) {
-        console.log(merch.id);
+    ngAfterViewInit(): void {
+        this.internMerchandiseSource.paginator = this.paginator;
     }
 
     ngOnInit() {
         this.loadTableData();
     }
 
-    loadTableData() {
-
-        this.internMerch = this.listInternMerchandise(10, null, null, null);
+    handlePageEvent(event: PageEvent) {
+        this.pageEvent = event;
+        this.loadTableData();
     }
 
-    applyFilter(event: Event) {
-        const filterValue = (event.target as HTMLInputElement).value;
-        this.internMerchandiseSource.filter = filterValue.trim().toLowerCase();
+    resetPaging(): void {
+        this.paginator.pageIndex = 0;
+    }
 
-        if (this.internMerchandiseSource.paginator) {
-            this.internMerchandiseSource.paginator.firstPage();
+    loadTableData(): void {
+        let first = this.pageSize;
+        if (this.pageEvent.pageSize) {
+            first = this.pageEvent.pageSize;
         }
+        let after = null;
+        if (this.pageEvent.pageIndex) {
+            after = (this.pageEvent.pageSize * this.pageEvent.pageIndex).toString();
+        }
+
+        console.log("previousPageIndex: " + this.pageEvent.previousPageIndex +
+            "\npageIndex: " + this.pageEvent.pageIndex);
+
+        console.log("first: " + first + " after: " + after);
+
+        this.internMerch = this.listInternMerchandise(first, null, null, after);
     }
 
-    listInternMerchandise(first: number, last?: number, before?: string, after?: string): Observable<InternMerchandiseEdge[]> {
+    private listInternMerchandise(first?: number, last?: number, before?: string, after?: string): Observable<InternMerchandiseEdge[]> {
         this.isLoadingResults = true;
-
         return this.tableDataGQL.watch({
             first: first,
             last: last,
@@ -106,8 +104,14 @@ export class InternOrdersComponent implements OnInit {
             after: after
         }).valueChanges.pipe(
             map(result => {
+                this.pageLength = 100;
                 this.isLoadingResults = false;
                 return result.data.listInternMerchandise.edges;
+            }),
+            catchError(({ err }) => {
+                this.isLoadingResults = false;
+                this.snackBar.open("Error: " + err)._dismissAfter(5000);
+                return [];
             })
         );
     }
@@ -119,10 +123,6 @@ export class InternOrdersComponent implements OnInit {
             })
             .subscribe();
         this.loadTableData();
-    }
-
-    openIncomingGoods(): void {
-        console.log("TODO: Implement incoming goods");
     }
 
     openNewInternOrder(): void {
