@@ -1,26 +1,22 @@
-import { Component, OnInit, Inject, ViewChild, Injectable, AfterViewInit } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { InternMerchandise, InternMerchandiseEdge, InternOrderTableDataGQL, NewInternOrderGQL } from './graphql.module';
-import { merge, Observable } from 'rxjs';
-import { catchError, first, last, map, startWith, switchMap } from 'rxjs/operators';
-import { UserService } from 'src/services/user.service';
-import { CloseScrollStrategy } from '@angular/cdk/overlay';
-import ObjectID from 'bson-objectid';
+import { CountInternMerchandiseGQL, InternMerchandise, InternMerchandiseEdge, InternOrderTableDataGQL, NewInternMerchandise, NewInternOrderGQL, Orderer, UpdateInternMerchandise, UpdateInternMerchGQL } from './graphql.module';
+import { Observable } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { User, UserService } from 'src/services/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { NewDialog } from './new-dialog/new-dialog';
+import ObjectID from 'bson-objectid';
+import { UpdateDialog } from './update-dialog/update-dialog';
 
-export interface NewInternOrder {
-    merchandiseName: String;
-    count: number;
-    url?: String;
-    purchasedOn: Date;
-    articleNumber?: String,
-    postage?: number;
-    useCase: String;
-    cost: number;
+
+export interface UpdateDialogData {
+    merch: InternMerchandise,
+    update: UpdateInternMerchandise
 }
 
 @Component({
@@ -38,8 +34,8 @@ export interface NewInternOrder {
 export class InternOrdersComponent implements OnInit, AfterViewInit {
 
     internMerchandiseSource = new MatTableDataSource<InternMerchandiseEdge>();
-    internMerch: Observable<InternMerchandiseEdge[]>
-    displayedColumns = ['no.', 'id', 'merchandiseId', 'merchandiseName', 'count', 'cost', 'orderer', 'status', 'actions'];
+    internMerch: Observable<InternMerchandiseEdge[]>;
+    displayedColumns = ['no.', 'id', 'merchandiseId', 'merchandiseName', 'count', 'cost', 'orderer', 'status', 'edit', 'download'];
 
     pageSizeOptions = [10, 25, 50, 100];
     pageSize: number = 10;
@@ -56,6 +52,8 @@ export class InternOrdersComponent implements OnInit, AfterViewInit {
     constructor(public dialog: MatDialog,
         private tableDataGQL: InternOrderTableDataGQL,
         private newInternOrderGQL: NewInternOrderGQL,
+        private countInternMerchGQL: CountInternMerchandiseGQL,
+        private updateInternMerchGQL: UpdateInternMerchGQL,
         private userService: UserService,
         private snackBar: MatSnackBar) {
     }
@@ -73,11 +71,9 @@ export class InternOrdersComponent implements OnInit, AfterViewInit {
         this.loadTableData();
     }
 
-    resetPaging(): void {
-        this.paginator.pageIndex = 0;
-    }
-
     loadTableData(): void {
+        this.countMerch();
+
         let first = this.pageSize;
         if (this.pageEvent.pageSize) {
             first = this.pageEvent.pageSize;
@@ -87,15 +83,28 @@ export class InternOrdersComponent implements OnInit, AfterViewInit {
             after = (this.pageEvent.pageSize * this.pageEvent.pageIndex).toString();
         }
 
-        console.log("previousPageIndex: " + this.pageEvent.previousPageIndex +
-            "\npageIndex: " + this.pageEvent.pageIndex);
-
-        console.log("first: " + first + " after: " + after);
-
-        this.internMerch = this.listInternMerchandise(first, null, null, after);
+        this.internMerch = this.listInternMerch(first, null, null, after);
     }
 
-    private listInternMerchandise(first?: number, last?: number, before?: string, after?: string): Observable<InternMerchandiseEdge[]> {
+    ordererName(orderer: Orderer): string {
+        var name = "";
+        if (orderer.firstname && orderer.lastname) {
+            name = orderer.firstname + " " + orderer.lastname;
+        } else {
+            name = orderer.username.toString()
+        }
+        return name;
+    }
+
+    private countMerch() {
+        this.isLoadingResults = true;
+        this.countInternMerchGQL.watch().valueChanges.subscribe(({ data, loading }) => {
+            this.isLoadingResults = loading;
+            this.pageLength = data.countInternMerch;
+        });
+    }
+
+    private listInternMerch(first?: number, last?: number, before?: string, after?: string): Observable<InternMerchandiseEdge[]> {
         this.isLoadingResults = true;
         return this.tableDataGQL.watch({
             first: first,
@@ -104,11 +113,10 @@ export class InternOrdersComponent implements OnInit, AfterViewInit {
             after: after
         }).valueChanges.pipe(
             map(result => {
-                this.pageLength = 100;
                 this.isLoadingResults = false;
-                return result.data.listInternMerchandise.edges;
+                return result.data.listInternMerch.edges;
             }),
-            catchError(({ err }) => {
+            catchError(err => {
                 this.isLoadingResults = false;
                 this.snackBar.open("Error: " + err)._dismissAfter(5000);
                 return [];
@@ -116,7 +124,7 @@ export class InternOrdersComponent implements OnInit, AfterViewInit {
         );
     }
 
-    submitNewInternOrder(newOder: NewInternOrder) {
+    submitNewInternOrder(newOder: NewInternMerchandise) {
         this.newInternOrderGQL
             .mutate({
                 newInternOrder: newOder,
@@ -127,19 +135,19 @@ export class InternOrdersComponent implements OnInit, AfterViewInit {
 
     openNewInternOrder(): void {
         const newOrder = undefined;
-        const dialogRef = this.dialog.open(NewInternOrderDialog, {
-            width: '40vw',
+        const dialogRef = this.dialog.open(NewDialog, {
+            width: '50vw',
             hasBackdrop: true,
             disableClose: true,
             data: { newInternOrder: newOrder }
         });
         var user;
-        this.userService.getUser().subscribe((user) => {
+        this.userService.getSelf().subscribe((user) => {
             user = user;
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if (result === undefined)
+            if (result)
                 return;
             result.ordererId = user.id;
             result.purchasedOn = Date.now().toString();
@@ -147,19 +155,30 @@ export class InternOrdersComponent implements OnInit, AfterViewInit {
         });
     }
 
-}
+    submitUpdateInternMerch(id: ObjectID, update: UpdateInternMerchandise) {
+        this.updateInternMerchGQL
+            .mutate({
+                id: id,
+                update: update
+            })
+            .subscribe();
+        this.loadTableData();
+    }
 
-@Component({
-    selector: 'new-intern-order-dialog',
-    templateUrl: 'new-intern-order-dialog.html',
-    styleUrls: ['./new-intern-order-dialog.scss'],
-})
-export class NewInternOrderDialog {
-    constructor(
-        public dialogRef: MatDialogRef<NewInternOrderDialog>,
-        @Inject(MAT_DIALOG_DATA) public data: NewInternOrder) { }
+    openUpdateDialog(merch: InternMerchandise): void {
+        const updatedOrder: UpdateInternMerchandise = undefined;
+        const dialogRef = this.dialog.open(UpdateDialog, {
+            width: '50vw',
+            hasBackdrop: true,
+            disableClose: true,
+            data: { merch: merch, update: updatedOrder }
+        });
 
-    onCancelClick(): void {
-        this.dialogRef.close();
+        dialogRef.afterClosed().subscribe((update) => {
+            if (!update)
+                return;
+            this.submitUpdateInternMerch(merch.id, update);
+        });
     }
 }
+

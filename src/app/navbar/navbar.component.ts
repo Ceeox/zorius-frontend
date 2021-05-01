@@ -28,7 +28,7 @@ export class NavbarComponent implements OnInit {
   }
 
   private getAvatarUrl(): Observable<string> {
-    return this.userService.getUser().pipe(
+    return this.userService.getSelf().pipe(
       map((user) => {
         console.log("user avatarUrl: " + user.avatarUrl);
         return user.avatarUrl;
@@ -37,7 +37,7 @@ export class NavbarComponent implements OnInit {
   }
 
   private getUserName(): Observable<string> {
-    return this.userService.getUser().pipe(
+    return this.userService.getSelf().pipe(
       map((user) => { return user.firstname + " " + user.lastname; })
     );
   }

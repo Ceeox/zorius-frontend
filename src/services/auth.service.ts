@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Apollo, Query, gql } from 'apollo-angular';
 import { doesNotReject } from 'assert';
@@ -46,7 +47,8 @@ export class AuthService {
     private apollo: Apollo,
     private loginGQL: LoginGQL,
     private router: Router,
-    private cookieService: CookieService
+    private cookieService: CookieService,
+    private _snackBar: MatSnackBar
   ) {
     let token = this.cookieService.get("token");
     if (!this.validToken(token)) {
@@ -94,16 +96,20 @@ export class AuthService {
       this.router.navigate(['/home']);
     },
       err => {
-        console.log(err);
+        this._snackBar.open("Wrong email or password!", null, {
+          duration: 5000,
+        });
       }
     );
   }
 
   public logout() {
-    this.cookieService.deleteAll();
+    this.cookieService.delete("token", "/");
+    this.cookieService.delete("userId", "/");
     this.loggedIn = false;
     this.apollo.client.resetStore();
-    //localStorage.removeItem("token");
+    localStorage.removeItem("token");
+
     this.router.navigate(['/']);
   }
 

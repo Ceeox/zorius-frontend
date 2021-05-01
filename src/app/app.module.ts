@@ -39,14 +39,17 @@ import { FooterComponent } from './footer/footer.component';
 import { HomeComponent } from './main/home/home.component';
 import { PageNotFoundComponent } from './main/pagenotfound/pagenotfound.component';
 import { WarenComponent } from './main/merchandise/waren.component';
-import { InternOrdersComponent, NewInternOrderDialog } from './main/merchandise/intern-orders/intern-orders.component';
+import { InternOrdersComponent } from './main/merchandise/intern-orders/intern-orders.component';
 import { ExternOrdersComponent } from './main/merchandise/extern-orders/extern-orders.component';
 import { StockComponent } from './main/merchandise/stock/stock.component';
 import { LoginComponent } from './main/login/login.component';
 import { WorkdayComponent } from './main/home/workday/workday.component';
+import { NewDialog } from './main/merchandise/intern-orders/new-dialog/new-dialog';
 
 //services
 import { AuthGuardService } from 'src/services/auth-guard.service';
+import { UpdateDialog } from './main/merchandise/intern-orders/update-dialog/update-dialog';
+
 
 
 @NgModule({
@@ -63,7 +66,8 @@ import { AuthGuardService } from 'src/services/auth-guard.service';
     LoginComponent,
     WorkdayComponent,
 
-    NewInternOrderDialog
+    NewDialog,
+    UpdateDialog
   ],
   imports: [
     FormsModule,
@@ -98,7 +102,8 @@ import { AuthGuardService } from 'src/services/auth-guard.service';
     HttpClientModule
   ],
   entryComponents: [
-    NewInternOrderDialog
+    NewDialog,
+    UpdateDialog
   ],
   providers: [CookieService, AuthGuardService, { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { hasBackdrop: false } }],
   bootstrap: [AppComponent]

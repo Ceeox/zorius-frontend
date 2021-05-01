@@ -17,6 +17,7 @@
         <div *ngIf="isLoadingResults">
             <mat-progress-bar *ngIf="isLoadingResults" mode="indeterminate"></mat-progress-bar>
         </div>
+
         <table mat-table [dataSource]="internMerch" multiTemplateDataRows>
 
             <ng-container matColumnDef="no.">
@@ -50,8 +51,8 @@
             </ng-container>
 
             <ng-container matColumnDef="orderer">
-                <th mat-header-cell *matHeaderCellDef> Orderer Id </th>
-                <td mat-cell *matCellDef="let edge"> {{edge.node.orderer}} </td>
+                <th mat-header-cell *matHeaderCellDef> Orderer</th>
+                <td mat-cell *matCellDef="let edge"> {{ ordererName(edge.node.orderer) }} </td>
             </ng-container>
 
             <ng-container matColumnDef="status">
@@ -59,12 +60,18 @@
                 <td mat-cell *matCellDef="let edge"> {{edge.node.status}} </td>
             </ng-container>
 
-            <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef></th>
+            <ng-container matColumnDef="edit">
+                <th mat-header-cell *matHeaderCellDef> Edit </th>
                 <td mat-cell *matCellDef="let edge">
-                    <button mat-icon-button title="Edit" (click)="edit(edge.node)">
+                    <button mat-icon-button title="Edit" (click)="openUpdateDialog(edge.node)">
                         <mat-icon>edit</mat-icon>
                     </button>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="download">
+                <th mat-header-cell *matHeaderCellDef> Download </th>
+                <td mat-cell *matCellDef="let edge">
                     <button mat-icon-button title="Download" (click)="edit(edge.node)">
                         <mat-icon>download_for_offline</mat-icon>
                     </button>
@@ -75,7 +82,6 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
         </table>
-
         <mat-paginator [length]="pageLength" [pageSizeOptions]="pageSizeOptions" [pageSize]="pageSize"
             (page)="handlePageEvent($event)" showFirstLastButtons>
         </mat-paginator>

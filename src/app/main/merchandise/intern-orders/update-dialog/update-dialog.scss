@@ -1,0 +1,23 @@
+.dialog {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-content: space-between;
+    
+    .article-info {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .prices {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .controls {
+        margin-bottom: 0.25vh;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}
