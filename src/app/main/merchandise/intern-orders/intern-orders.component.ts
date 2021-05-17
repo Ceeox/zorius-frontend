@@ -4,20 +4,16 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { CountInternMerchandiseGQL, InternMerchandise, InternMerchandiseEdge, InternOrderTableDataGQL, NewInternMerchandise, NewInternOrderGQL, Orderer, UpdateInternMerchandise, UpdateInternMerchGQL } from './graphql.module';
 import { Observable } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import { User, UserService } from 'src/services/user.service';
+import { UserService } from 'src/services/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NewDialog } from './new-dialog/new-dialog';
-import ObjectID from 'bson-objectid';
 import { UpdateDialog } from './update-dialog/update-dialog';
+import { InternMerchandise, InternMerchandiseEdge, InternMerchService, Orderer, UpdateInternMerchandise } from 'src/services/intern-merch.service';
+import { map } from 'rxjs/operators';
+import { SNACKBAR_TIMEOUT } from 'src/app/app.component';
+import ObjectID from 'bson-objectid';
 
-
-export interface UpdateDialogData {
-    merch: InternMerchandise,
-    update: UpdateInternMerchandise
-}
 
 @Component({
     selector: 'app-intern-orders',
@@ -34,13 +30,16 @@ export interface UpdateDialogData {
 export class InternOrdersComponent implements OnInit, AfterViewInit {
 
     internMerchandiseSource = new MatTableDataSource<InternMerchandiseEdge>();
-    internMerch: Observable<InternMerchandiseEdge[]>;
-    displayedColumns = ['no.', 'id', 'merchandiseId', 'merchandiseName', 'count', 'cost', 'orderer', 'status', 'edit', 'download'];
+    internMerchs: Observable<InternMerchandiseEdge[]>;
+    displayedColumns = ['no.', 'id', 'merchandiseId', 'merchandiseName', 'count', 'cost', 'orderer', 'status', 'edit', 'download', 'delete'];
 
     pageSizeOptions = [10, 25, 50, 100];
     pageSize: number = 10;
+    pageIndex: number = 0;
     pageLength: number;
-    pageEvent: PageEvent = new PageEvent();
+
+    updateMerch?: UpdateInternMerchandise;
+    internMerch: InternMerchandise;
 
     data;
 
@@ -49,41 +48,57 @@ export class InternOrdersComponent implements OnInit, AfterViewInit {
     @ViewChild(MatSort, { static: true }) sort: MatSort;
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
-    constructor(public dialog: MatDialog,
-        private tableDataGQL: InternOrderTableDataGQL,
-        private newInternOrderGQL: NewInternOrderGQL,
-        private countInternMerchGQL: CountInternMerchandiseGQL,
-        private updateInternMerchGQL: UpdateInternMerchGQL,
+    constructor(
+        public newMerchDialog: MatDialog,
+        public updateMerchDialog: MatDialog,
         private userService: UserService,
+        private internMerchService: InternMerchService,
         private snackBar: MatSnackBar) {
     }
 
     ngAfterViewInit(): void {
         this.internMerchandiseSource.paginator = this.paginator;
+
     }
 
     ngOnInit() {
+        this.countMerch();
         this.loadTableData();
     }
 
     handlePageEvent(event: PageEvent) {
-        this.pageEvent = event;
+        this.pageSize = event.pageSize;
+        this.pageIndex = event.pageIndex;
+        this.countMerch();
         this.loadTableData();
     }
 
-    loadTableData(): void {
-        this.countMerch();
+    countMerch() {
+        this.isLoadingResults = true;
+        this.internMerchService.countMerch().subscribe(result => {
+            this.isLoadingResults = false;
+            this.paginator.length = result;
+        });
+    }
 
+    loadTableData() {
         let first = this.pageSize;
-        if (this.pageEvent.pageSize) {
-            first = this.pageEvent.pageSize;
-        }
-        let after = null;
-        if (this.pageEvent.pageIndex) {
-            after = (this.pageEvent.pageSize * this.pageEvent.pageIndex).toString();
-        }
+        let after = (this.pageSize * this.pageIndex).toString();
+        this.internMerchs = this.internMerchService.listInternMerch(first, null, null, after)
+            .pipe(
+                map(result => {
+                    this.isLoadingResults = false;
+                    return result;
+                })
+            );
+    }
 
-        this.internMerch = this.listInternMerch(first, null, null, after);
+    download() {
+        this.snackBar.open("Not yet implemented!")._dismissAfter(SNACKBAR_TIMEOUT);
+    }
+
+    delete() {
+        this.snackBar.open("Not yet implemented!")._dismissAfter(SNACKBAR_TIMEOUT);
     }
 
     ordererName(orderer: Orderer): string {
@@ -96,47 +111,10 @@ export class InternOrdersComponent implements OnInit, AfterViewInit {
         return name;
     }
 
-    private countMerch() {
-        this.isLoadingResults = true;
-        this.countInternMerchGQL.watch().valueChanges.subscribe(({ data, loading }) => {
-            this.isLoadingResults = loading;
-            this.pageLength = data.countInternMerch;
-        });
-    }
-
-    private listInternMerch(first?: number, last?: number, before?: string, after?: string): Observable<InternMerchandiseEdge[]> {
-        this.isLoadingResults = true;
-        return this.tableDataGQL.watch({
-            first: first,
-            last: last,
-            before: before,
-            after: after
-        }).valueChanges.pipe(
-            map(result => {
-                this.isLoadingResults = false;
-                return result.data.listInternMerch.edges;
-            }),
-            catchError(err => {
-                this.isLoadingResults = false;
-                this.snackBar.open("Error: " + err)._dismissAfter(5000);
-                return [];
-            })
-        );
-    }
-
-    submitNewInternOrder(newOder: NewInternMerchandise) {
-        this.newInternOrderGQL
-            .mutate({
-                newInternOrder: newOder,
-            })
-            .subscribe();
-        this.loadTableData();
-    }
-
     openNewInternOrder(): void {
         const newOrder = undefined;
-        const dialogRef = this.dialog.open(NewDialog, {
-            width: '50vw',
+        const dialogRef = this.newMerchDialog.open(NewDialog, {
+            width: '40vw',
             hasBackdrop: true,
             disableClose: true,
             data: { newInternOrder: newOrder }
@@ -151,34 +129,46 @@ export class InternOrdersComponent implements OnInit, AfterViewInit {
                 return;
             result.ordererId = user.id;
             result.purchasedOn = Date.now().toString();
-            this.submitNewInternOrder(result);
+            this.internMerchService.submitNewInternOrder(result);
         });
     }
 
-    submitUpdateInternMerch(id: ObjectID, update: UpdateInternMerchandise) {
-        this.updateInternMerchGQL
-            .mutate({
-                id: id,
-                update: update
-            })
-            .subscribe();
-        this.loadTableData();
-    }
+    openUpdateDialog(id: ObjectID): void {
+        this.internMerchService.getInternMerchById(id).subscribe(result => {
+            this.internMerch = result;
+        });
 
-    openUpdateDialog(merch: InternMerchandise): void {
-        const updatedOrder: UpdateInternMerchandise = undefined;
-        const dialogRef = this.dialog.open(UpdateDialog, {
-            width: '50vw',
+        const dialogRef = this.updateMerchDialog.open(UpdateDialog, {
+            width: '40vw',
             hasBackdrop: true,
-            disableClose: true,
-            data: { merch: merch, update: updatedOrder }
+            data: { update: this.internMerch }
         });
 
         dialogRef.afterClosed().subscribe((update) => {
             if (!update)
                 return;
-            this.submitUpdateInternMerch(merch.id, update);
+            this.internMerchService.submitUpdateInternMerch(id, update);
         });
+    }
+
+    toUpdate(merch: InternMerchandise): UpdateInternMerchandise {
+        return {
+            arivedOn: merch.arivedOn,
+            articleNumber: merch.articleNumber,
+            cost: merch.cost,
+            count: merch.count,
+            invoiceNumber: merch.invoiceNumber,
+            merchandiseId: merch.merchandiseId,
+            merchandiseName: merch.merchandiseName,
+            orderer: merch.orderer,
+            postage: merch.postage,
+            projectLeader: merch.projectLeader,
+            purchasedOn: merch.purchasedOn,
+            serialNumber: merch.serialNumber,
+            shop: merch.shop,
+            url: merch.url,
+            useCase: merch.useCase,
+        };
     }
 }
 

@@ -49,7 +49,7 @@ import { NewDialog } from './main/merchandise/intern-orders/new-dialog/new-dialo
 //services
 import { AuthGuardService } from 'src/services/auth-guard.service';
 import { UpdateDialog } from './main/merchandise/intern-orders/update-dialog/update-dialog';
-
+import { RegisterComponent } from './main/register/register.component';
 
 
 @NgModule({
@@ -65,6 +65,7 @@ import { UpdateDialog } from './main/merchandise/intern-orders/update-dialog/upd
     StockComponent,
     LoginComponent,
     WorkdayComponent,
+    RegisterComponent,
 
     NewDialog,
     UpdateDialog

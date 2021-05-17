@@ -8,9 +8,6 @@
                 color="primary">
                 New Order
             </button>
-            <button mat-icon-button title="Download" (click)="loadTableData()">
-                <mat-icon>refresh</mat-icon>
-            </button>
         </div>
     </div>
     <div class="mat-elevation-z8">
@@ -18,7 +15,7 @@
             <mat-progress-bar *ngIf="isLoadingResults" mode="indeterminate"></mat-progress-bar>
         </div>
 
-        <table mat-table [dataSource]="internMerch" multiTemplateDataRows>
+        <table mat-table [dataSource]="internMerchs" multiTemplateDataRows>
 
             <ng-container matColumnDef="no.">
                 <th mat-header-cell *matHeaderCellDef> No. </th>
@@ -51,7 +48,7 @@
             </ng-container>
 
             <ng-container matColumnDef="orderer">
-                <th mat-header-cell *matHeaderCellDef> Orderer</th>
+                <th mat-header-cell *matHeaderCellDef> Orderer </th>
                 <td mat-cell *matCellDef="let edge"> {{ ordererName(edge.node.orderer) }} </td>
             </ng-container>
 
@@ -63,7 +60,7 @@
             <ng-container matColumnDef="edit">
                 <th mat-header-cell *matHeaderCellDef> Edit </th>
                 <td mat-cell *matCellDef="let edge">
-                    <button mat-icon-button title="Edit" (click)="openUpdateDialog(edge.node)">
+                    <button mat-icon-button title="Edit" (click)="openUpdateDialog(edge.node.id)">
                         <mat-icon>edit</mat-icon>
                     </button>
                 </td>
@@ -72,8 +69,17 @@
             <ng-container matColumnDef="download">
                 <th mat-header-cell *matHeaderCellDef> Download </th>
                 <td mat-cell *matCellDef="let edge">
-                    <button mat-icon-button title="Download" (click)="edit(edge.node)">
+                    <button mat-icon-button title="Download" (click)="download()">
                         <mat-icon>download_for_offline</mat-icon>
+                    </button>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="delete">
+                <th mat-header-cell *matHeaderCellDef> Delete </th>
+                <td mat-cell *matCellDef="let edge">
+                    <button mat-icon-button title="Delete" (click)="delete()">
+                        <mat-icon>delete</mat-icon>
                     </button>
                 </td>
             </ng-container>

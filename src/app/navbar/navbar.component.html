@@ -11,9 +11,9 @@
             <a routerLink="/workreports" mat-button>Berichte</a>
             <button mat-button [matMenuTriggerFor]="menu">Warenwirtschaft</button>
             <mat-menu #menu="matMenu">
-                <button mat-menu-item routerLink="/merchandise/intern_orders">Interne Bestellungen</button>
-                <button mat-menu-item routerLink="/merchandise/extern_orders">Externe Bestellungen</button>
-                <button mat-menu-item routerLink="/merchandise/stock">Lager</button>
+                <a mat-menu-item routerLink="/merch/intern">Interne Bestellungen</a>
+                <a mat-menu-item routerLink="/merch/extern">Externe Bestellungen</a>
+                <a mat-menu-item routerLink="/merch/stock">Lager</a>
             </mat-menu>
         </div>
 

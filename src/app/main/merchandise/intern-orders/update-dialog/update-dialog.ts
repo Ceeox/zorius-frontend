@@ -1,11 +1,12 @@
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, Inject, Input, OnInit } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import ObjectID from "bson-objectid";
 import { Observable } from "rxjs";
 import { map, startWith } from "rxjs/operators";
+import { InternMerchandise, InternMerchService, UpdateInternMerchandise } from "src/services/intern-merch.service";
 import { User, UserEdge, UserService } from "src/services/user.service";
-import { InternMerchandise, UpdateInternMerchandise } from "../graphql.module";
-import { UpdateDialogData } from "../intern-orders.component";
+
 
 @Component({
     selector: 'update-dialog',
@@ -20,10 +21,11 @@ export class UpdateDialog implements OnInit {
 
     constructor(
         public dialogRef: MatDialogRef<UpdateDialog>,
+        @Inject(MAT_DIALOG_DATA) public data: InternMerchandise,
+
         private userService: UserService,
-        @Inject(MAT_DIALOG_DATA) public data: UpdateDialogData,
-    ) {
-    }
+        private internMerchService: Observable<InternMerchService>,
+    ) { }
 
     ngOnInit(): void {
         this.userOptions = this.userService.listAllUsers();
@@ -45,7 +47,7 @@ export class UpdateDialog implements OnInit {
         return name;
     }
 
-    private _filter(name: string) {
+    private _filter(name: string): void {
         const filterValue = name.toLowerCase();
         console.log("in filter");
 

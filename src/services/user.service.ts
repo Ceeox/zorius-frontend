@@ -4,8 +4,8 @@ import { gql, Query } from "apollo-angular";
 import ObjectID from "bson-objectid";
 import { Observable } from 'rxjs';
 import { catchError, map } from "rxjs/operators";
-import { PageInfo } from "src/app/main/merchandise/intern-orders/graphql.module";
 import { AuthService } from "./auth.service";
+import { PageInfo } from "./intern-merch.service";
 
 export interface User {
     id: ObjectID;
