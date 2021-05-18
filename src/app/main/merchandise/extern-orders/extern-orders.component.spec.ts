@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ExternOrdersComponent } from './extern-orders.component';
 
@@ -6,7 +6,7 @@ describe('ExternOrdersComponent', () => {
   let component: ExternOrdersComponent;
   let fixture: ComponentFixture<ExternOrdersComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ExternOrdersComponent ]
     })
