@@ -3,9 +3,8 @@ import { APOLLO_OPTIONS } from 'apollo-angular';
 import { InMemoryCache, ApolloLink } from '@apollo/client/core';
 import { HttpLink } from 'apollo-angular/http';
 import { setContext } from '@apollo/client/link/context';
-import { CookieService } from 'ngx-cookie-service';
 
-const uri = 'https://localhost/graphql'; // <-- add the URL of the GraphQL server here
+const uri = 'https://localhost:8080/graphql'; // <-- add the URL of the GraphQL server here
 export function createApollo(httpLink: HttpLink) {
   const basic = setContext((operation, context) => ({
     headers: {

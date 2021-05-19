@@ -1,0 +1,38 @@
+.new-work-report {
+    padding: 1rem;
+    display: flex;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    flex-direction: column;
+    justify-content: space-between;
+    align-content: space-between;
+
+    .options {
+        padding-bottom: 1rem;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        .customer-project {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            
+            .customer {
+                padding-right: 1rem;
+            }
+        }
+    }
+    
+    .description {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .control-buttons {
+        padding-top: 1rem;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}

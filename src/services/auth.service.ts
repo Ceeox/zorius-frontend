@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { JwtHelperService } from '@auth0/angular-jwt';
 import { Apollo, Query, gql } from 'apollo-angular';
-import { doesNotReject } from 'assert';
 import ObjectID from 'bson-objectid';
-import { CookieService } from 'ngx-cookie-service';
-import { UserService } from './user.service';
+import { observable, Observable } from 'rxjs';
 
 
 
@@ -32,70 +31,58 @@ export class LoginGQL extends Query<LoginResponse> {
   }`;
 }
 
+export interface Claim {
+  sub: string,
+  id: ObjectID,
+  exp: number,
+  nbf: number,
+  iat: number,
+  iss: string,
+}
+
+export function getToken(): string {
+  return localStorage.getItem('token');
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  token: string;
-  loggedIn: boolean = false;
-  tokenExpiresAt?: Date;
-
-
+  claim?: Claim;
 
   constructor(
     private apollo: Apollo,
     private loginGQL: LoginGQL,
     private router: Router,
-    private cookieService: CookieService,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private jwtHelper: JwtHelperService,
   ) {
-    let token = this.cookieService.get("token");
-    if (!this.validToken(token)) {
-      this.router.navigate(['/login']);
-      return;
+    if (this._isTokenPresent()) {
+      this.claim = this._decodeToken();
+    } else {
+      this._snackBar.open("You have been loged out. Please login again.", null, {
+        duration: 5000,
+      });
     }
-    this.token = token;
-    this.loggedIn = true;
   }
 
-  getUserId(): ObjectID | null {
-    let id = this.cookieService.get("userId");
-    if (id == null || id == "") {
-      return null;
-    }
-    return new ObjectID(id);
-  }
+  public login(email: string, password: string) {
+    this._resetLoginData();
 
-  private validToken(token: string): boolean {
-    return token !== null && token.length > 0;
-  }
-
-  isAuthenticated(): boolean {
-    return this.loggedIn;
-  }
-
-  login(email: string, password: string) {
-    let userId = null;
     this.loginGQL.watch({
       email: email,
       password: password,
     }, {
       fetchPolicy: 'network-only'
     }).valueChanges.subscribe(({ data }) => {
-      this.token = data.login.token;
-      userId = data.login.userId;
-      this.tokenExpiresAt = data.login.expiresAt;
-      this.loggedIn = true;
+      const token = data.login.token;
+      localStorage.setItem("token", token);
 
-
-      this.cookieService.set("token", this.token, data.login.expiresAt);
-      this.cookieService.set("userId", userId, data.login.expiresAt);
-      localStorage.setItem("token", this.token);
+      this.claim = this._decodeToken();
 
       this.router.navigate(['/home']);
     },
-      err => {
+      () => {
         this._snackBar.open("Wrong email or password!", null, {
           duration: 5000,
         });
@@ -104,16 +91,47 @@ export class AuthService {
   }
 
   public logout() {
-    this.cookieService.delete("token", "/");
-    this.cookieService.delete("userId", "/");
-    this.loggedIn = false;
-    this.apollo.client.resetStore();
-    localStorage.removeItem("token");
-
-    this.router.navigate(['/']);
+    this._resetLoginData();
+    this.router.navigate(['/home']);
   }
 
-  getToken(): string {
-    return this.token;
+  public getUserId(): ObjectID | null {
+    if (this.claim !== null) {
+      return this.claim.id;
+    } else {
+      return null
+    }
+  }
+
+  public isAuthenticated(): boolean {
+    return this._isTokenValid();
+  }
+
+  private _isTokenValid(): boolean {
+    if (this.claim !== null) {
+      let now = Date.now() / 1000 | 0;
+      return now >= this.claim.nbf && now <= this.claim.exp;
+    } else {
+      return false;
+    }
+  }
+
+  private _resetLoginData() {
+    this.apollo.client.resetStore();
+    localStorage.removeItem("token");
+    this.claim = null;
+  }
+
+  private _decodeToken(): Claim {
+    let token = this._getToken();
+    return this.jwtHelper.decodeToken(token);
+  }
+
+  private _getToken(): string {
+    return localStorage.getItem("token");
+  }
+
+  private _isTokenPresent(): boolean {
+    return localStorage.getItem("token") !== undefined;
   }
 }

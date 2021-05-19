@@ -142,7 +142,11 @@ export class UserService {
     }
 
     getUserById(id: ObjectID): Observable<User> {
-        return this.getUserGQL.watch({ id: id }).valueChanges.pipe(
+        return this.getUserGQL.watch({
+            id: id
+        }, {
+            fetchPolicy: 'cache-and-network'
+        }).valueChanges.pipe(
             map(res => {
                 return res.data.getUser;
             }),
@@ -159,6 +163,8 @@ export class UserService {
             last: last,
             after: after,
             before: before
+        }, {
+            fetchPolicy: 'cache-and-network'
         }).valueChanges.pipe(
             map(res => {
                 return res.data.edges;
@@ -170,7 +176,9 @@ export class UserService {
     }
 
     listAllUsers(): Observable<UserEdge[]> {
-        return this.listAllUsersGQL.watch().valueChanges.pipe(
+        return this.listAllUsersGQL.watch({
+            fetchPolicy: 'cache-and-network'
+        }).valueChanges.pipe(
             map(res => {
                 console.log("listUsers: " + res);
                 return res.data.edges;

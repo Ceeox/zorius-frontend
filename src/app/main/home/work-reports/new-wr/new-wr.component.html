@@ -1,0 +1,43 @@
+<div class="new-work-report">
+  <form [formGroup]="newWRForm">
+    <div class=" options">
+      <div class="customer-project">
+
+        <mat-form-field appearance="fill" class="customer">
+          <mat-label>Customer</mat-label>
+          <mat-select formControlName="customer" required>
+            <mat-option *ngFor="let customer of customerOptions | async" [value]="customer.node">
+              {{ customer.node.name }} ({{ customer.node.identifier }})
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="project">
+          <mat-label>Project</mat-label>
+          <mat-select formControlName="project" required>
+            <mat-option *ngFor="let project of projectOptions | async" [value]="project.node">
+              {{ project.node.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <section>
+        <mat-checkbox [(ngModel)]="invoiced">Invoiced</mat-checkbox>
+      </section>
+
+    </div>
+
+    <div class="description">
+      <mat-form-field appearance="fill">
+        <mat-label>Leave a description</mat-label>
+        <textarea matInput placeholder="Description" formControlName="description" required></textarea>
+      </mat-form-field>
+    </div>
+
+    <div class="control-buttons">
+      <button mat-stroked-button color="primary" (click)="onSubmit()">Pause</button>
+      <button mat-raised-button color="primary" type="submit" [disabled]="!newWRForm.valid">Finish</button>
+    </div>
+  </form>
+</div>

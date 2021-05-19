@@ -1,0 +1,32 @@
+<div class="header">
+  <mat-toolbar color="primary">
+    <mat-label>Todays Work Reports</mat-label>
+  </mat-toolbar>
+</div>
+
+<mat-card class="card">
+  <div class="container">
+    <app-new-wr></app-new-wr>
+    <div class="list">
+      <mat-accordion multi>
+        <mat-expansion-panel *ngFor="let item of list">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{ item }}
+            </mat-panel-title>
+            <mat-panel-description>
+              {{ description }}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <div>
+
+          </div>
+          <mat-action-row>
+            <button mat-raised-button color="primary" (click)="update()">Update</button>
+          </mat-action-row>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+
+  </div>
+</mat-card>

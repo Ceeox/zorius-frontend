@@ -24,11 +24,12 @@ import { MatListModule } from '@angular/material/list';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatGridListModule } from '@angular/material/grid-list';
 
 // imports extern
 import { GraphQLModule } from './graphql.module';
 import { HttpClientModule } from '@angular/common/http';
-import { CookieService } from 'ngx-cookie-service';
+import { JwtHelperService, JwtModule, JWT_OPTIONS } from '@auth0/angular-jwt';
 
 // components
 import { AppRoutingModule } from './app-routing.module';
@@ -45,11 +46,14 @@ import { StockComponent } from './main/merchandise/stock/stock.component';
 import { LoginComponent } from './main/login/login.component';
 import { WorkdayComponent } from './main/home/workday/workday.component';
 import { NewDialog } from './main/merchandise/intern-orders/new-dialog/new-dialog';
+import { WorkReportsComponent } from './main/home/work-reports/work-reports.component';
+import { NewWrComponent } from './main/home/work-reports/new-wr/new-wr.component';
 
 //services
 import { AuthGuardService } from 'src/services/auth-guard.service';
 import { UpdateDialog } from './main/merchandise/intern-orders/update-dialog/update-dialog';
 import { RegisterComponent } from './main/register/register.component';
+import { getToken } from 'src/services/auth.service';
 
 
 @NgModule({
@@ -66,6 +70,8 @@ import { RegisterComponent } from './main/register/register.component';
     LoginComponent,
     WorkdayComponent,
     RegisterComponent,
+    WorkReportsComponent,
+    NewWrComponent,
 
     NewDialog,
     UpdateDialog
@@ -95,18 +101,25 @@ import { RegisterComponent } from './main/register/register.component';
     MatAutocompleteModule,
     MatProgressSpinnerModule,
     MatProgressBarModule,
+    MatGridListModule,
 
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     GraphQLModule,
-    HttpClientModule
+    HttpClientModule,
+
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: getToken
+      }
+    })
   ],
   entryComponents: [
     NewDialog,
     UpdateDialog
   ],
-  providers: [CookieService, AuthGuardService, { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { hasBackdrop: false } }],
+  providers: [JwtHelperService, AuthGuardService, { provide: [MAT_DIALOG_DEFAULT_OPTIONS, JWT_OPTIONS], useValue: [{ hasBackdrop: false }, JWT_OPTIONS] }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

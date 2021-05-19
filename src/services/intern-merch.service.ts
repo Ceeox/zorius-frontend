@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Query, Mutation, gql, Apollo } from 'apollo-angular';
 import ObjectID from 'bson-objectid';
-import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs/internal/Observable';
 import { catchError, map } from 'rxjs/operators';
 import { POLLING_INTERVAL, SNACKBAR_TIMEOUT } from 'src/app/app.component';

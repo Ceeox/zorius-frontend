@@ -6,7 +6,7 @@
                 <mat-label>Zorius</mat-label>
             </a>
         </div>
-        <div class="navigation-container" *ngIf="authService.isAuthenticated() == true">
+        <div class="navigation-container" *ngIf="isLogedIn() == true">
             <a routerLink="/workaccount" mat-button>Zeiterfassung</a>
             <a routerLink="/workreports" mat-button>Berichte</a>
             <button mat-button [matMenuTriggerFor]="menu">Warenwirtschaft</button>

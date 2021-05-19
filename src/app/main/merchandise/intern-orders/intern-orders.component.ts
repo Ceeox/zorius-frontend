@@ -14,6 +14,7 @@ import { map } from 'rxjs/operators';
 import { SNACKBAR_TIMEOUT } from 'src/app/app.component';
 import ObjectID from 'bson-objectid';
 
+const LS_PAGE_SIZE: string = "intern_merch_page_size";
 
 @Component({
     selector: 'app-intern-orders',
@@ -62,12 +63,16 @@ export class InternOrdersComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
+        if (localStorage.getItem(LS_PAGE_SIZE)) {
+            this.pageSize = Number.parseInt(localStorage.getItem(LS_PAGE_SIZE));
+        }
         this.countMerch();
         this.loadTableData();
     }
 
     handlePageEvent(event: PageEvent) {
         this.pageSize = event.pageSize;
+        localStorage.setItem(LS_PAGE_SIZE, this.pageSize.toString());
         this.pageIndex = event.pageIndex;
         this.countMerch();
         this.loadTableData();
