@@ -1,7 +1,3 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
 // material imports
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -25,6 +21,12 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // imports extern
 import { GraphQLModule } from './graphql.module';
@@ -34,7 +36,7 @@ import { JwtHelperService, JwtModule, JWT_OPTIONS } from '@auth0/angular-jwt';
 // components
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 import { NavbarComponent } from './navbar/navbar.component';
 import { FooterComponent } from './footer/footer.component';
 import { HomeComponent } from './main/home/home.component';
@@ -45,81 +47,88 @@ import { ExternOrdersComponent } from './main/merchandise/extern-orders/extern-o
 import { StockComponent } from './main/merchandise/stock/stock.component';
 import { LoginComponent } from './main/login/login.component';
 import { WorkdayComponent } from './main/home/workday/workday.component';
-import { NewDialog } from './main/merchandise/intern-orders/new-dialog/new-dialog';
+import { RegisterComponent } from './main/register/register.component';
 import { WorkReportsComponent } from './main/home/work-reports/work-reports.component';
 import { NewWrComponent } from './main/home/work-reports/new-wr/new-wr.component';
+import { ListWrTodayComponent } from './main/home/work-reports/list-wr-today/list-wr-today.component';
 
-//services
+// dialogs
+import { NewProjectDialog } from './dialogs/new-project/new-project.dialog';
+import { NewInternMerchDialog } from './dialogs/new-intern-merch/new-intern-merch.dialog';
+import { UpdateInternMerchDialog } from './dialogs/update-intern-merch/update-intern-merch.dialog';
+
+// services
 import { AuthGuardService } from 'src/services/auth-guard.service';
-import { UpdateDialog } from './main/merchandise/intern-orders/update-dialog/update-dialog';
-import { RegisterComponent } from './main/register/register.component';
 import { getToken } from 'src/services/auth.service';
 
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    NavbarComponent,
-    FooterComponent,
-    HomeComponent,
-    PageNotFoundComponent,
-    WarenComponent,
-    InternOrdersComponent,
-    ExternOrdersComponent,
-    StockComponent,
-    LoginComponent,
-    WorkdayComponent,
-    RegisterComponent,
-    WorkReportsComponent,
-    NewWrComponent,
+    declarations: [
+        AppComponent,
+        NavbarComponent,
+        FooterComponent,
+        HomeComponent,
+        PageNotFoundComponent,
+        WarenComponent,
+        InternOrdersComponent,
+        ExternOrdersComponent,
+        StockComponent,
+        LoginComponent,
+        WorkdayComponent,
+        RegisterComponent,
+        WorkReportsComponent,
+        NewWrComponent,
+        ListWrTodayComponent,
 
-    NewDialog,
-    UpdateDialog
-  ],
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
+        NewProjectDialog,
+        NewInternMerchDialog,
+        UpdateInternMerchDialog
+    ],
+    imports: [
+        FormsModule,
+        ReactiveFormsModule,
 
-    MatButtonModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatCardModule,
-    MatMenuModule,
-    MatTabsModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatDividerModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatStepperModule,
-    MatRippleModule,
-    MatSelectModule,
-    MatSnackBarModule,
-    MatExpansionModule,
-    MatListModule,
-    MatAutocompleteModule,
-    MatProgressSpinnerModule,
-    MatProgressBarModule,
-    MatGridListModule,
+        MatButtonModule,
+        MatToolbarModule,
+        MatIconModule,
+        MatCardModule,
+        MatMenuModule,
+        MatTabsModule,
+        MatDialogModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatDividerModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatStepperModule,
+        MatRippleModule,
+        MatSelectModule,
+        MatSnackBarModule,
+        MatExpansionModule,
+        MatListModule,
+        MatAutocompleteModule,
+        MatProgressSpinnerModule,
+        MatProgressBarModule,
+        MatGridListModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
 
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    GraphQLModule,
-    HttpClientModule,
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        GraphQLModule,
+        HttpClientModule,
 
-    JwtModule.forRoot({
-      config: {
-        tokenGetter: getToken
-      }
-    })
-  ],
-  entryComponents: [
-    NewDialog,
-    UpdateDialog
-  ],
-  providers: [JwtHelperService, AuthGuardService, { provide: [MAT_DIALOG_DEFAULT_OPTIONS, JWT_OPTIONS], useValue: [{ hasBackdrop: false }, JWT_OPTIONS] }],
-  bootstrap: [AppComponent]
+        JwtModule.forRoot({
+            config: {
+                tokenGetter: getToken
+            }
+        })
+    ],
+    providers: [JwtHelperService, AuthGuardService, {
+        provide: [MAT_DIALOG_DEFAULT_OPTIONS, JWT_OPTIONS],
+        useValue: [{ hasBackdrop: false }, JWT_OPTIONS]
+    }],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,36 +1,85 @@
 import { Injectable } from '@angular/core';
-import { gql, Query } from 'apollo-angular';
-import ObjectID from 'bson-objectid';
+import { gql, Mutation, Query } from 'apollo-angular';
+import { ObjectID } from 'mongodb';
 import { Observable } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import { POLLING_INTERVAL } from 'src/app/app.component';
-import { PageInfo } from './intern-merch.service';
+import { delay, map, retryWhen, take } from 'rxjs/operators';
+import { FETCH_POLICY, POLLING_INTERVAL, RETRY_COUNT, RETRY_DELAY } from 'src/app/graphql.module';
+import { Customer, ListCustomers } from 'src/models/customer';
 
-export interface ListAllCustomersResp {
-  listCustomers: CustomerResponseConnection;
-}
-
-export interface CustomerResponseConnection {
-  edges: CustomerResponseEdge[];
-  pageInfo: PageInfo;
-}
-
-export interface CustomerResponseEdge {
-  cursor: String;
-  node: CustomerResponse;
-}
-
-export interface CustomerResponse {
-  id: ObjectID,
-  name: string,
-  idenifier: string,
-  note: string,
+@Injectable({
+  providedIn: 'root',
+})
+export class NewCustomerGQL extends Mutation<Customer> {
+  document = gql`
+  mutation newCustomer($name: String!, $identifier: String!, $note: String, $projectIds: [ObjectId!]!) {
+    newCustomer(new: {name: $name, identifier: $identifier, note: $note, projectIds: $projectIds}) {
+      id
+      name
+      identifier
+      note
+      projects {
+        id
+        name
+        description
+        note
+      }
+      creator {
+        id
+        email
+        username
+        firstname
+        lastname
+        updated
+        createdAt
+      }
+    }
+  }`;
 }
 
 @Injectable({
   providedIn: 'root',
 })
-export class ListAllCustomersGQL extends Query<ListAllCustomersResp> {
+export class UpdateCustomerGQL extends Mutation<Customer> {
+  document = gql`
+    mutation updateCustomer($id: ObjectId!, $userId: ObjectId!, $name: String!, $identifier: String!, $note: String) {
+      updateCustomer(id: $id, update: {creator: $userId, name: $name, identifier: $identifier, note: $note}) {
+        id
+        name
+        identifier
+        note
+        projects {
+          id
+          name
+          description
+          note
+        }
+        creator {
+          id
+          email
+          username
+          firstname
+          lastname
+          updated
+          createdAt
+        }
+      }
+    }`;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class DeleteCustomerGQL extends Mutation<boolean> {
+  document = gql`
+    mutation deleteCustomer($id: ObjectId!) {
+      deleteCustomer(id: $id)
+    }`;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class ListCustomersGQL extends Query<ListCustomers> {
   document = gql`
   query listCustomers {
     listCustomers {
@@ -46,6 +95,10 @@ export class ListAllCustomersGQL extends Query<ListAllCustomersResp> {
           name
           identifier
           note
+          projects {
+            id
+            name
+          }
         }
         cursor
       }
@@ -58,22 +111,55 @@ export class ListAllCustomersGQL extends Query<ListAllCustomersResp> {
 })
 export class CustomerService {
   constructor(
-    private listAllCustomersGQL: ListAllCustomersGQL
+    private newCustomerGQL: NewCustomerGQL,
+    private updateCustomerGQL: UpdateCustomerGQL,
+    private deleteCustomerGQL: DeleteCustomerGQL,
+    private listCustomersGQL: ListCustomersGQL,
   ) { }
 
-  listCustomers(): Observable<CustomerResponseEdge[]> {
-    return this.listAllCustomersGQL.watch({
-      fetchPolicy: 'cache-and-network',
-      pollInterval: POLLING_INTERVAL,
-    }).valueChanges.pipe(
+  newCustomer(name: String, identifier: String, note: String, projectIds: [ObjectID]): Observable<Customer> {
+    return this.newCustomerGQL.mutate({
+      name,
+      identifier,
+      note,
+      projectIds,
+    }).pipe(
       map(res => {
-        return res.data.listCustomers.edges;
+        return res.data;
       }),
-      catchError((e, c) => {
-        console.error("listCustomersError: " + e);
-        return c;
-      })
+      retryWhen(errors => errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT)))
     );
   }
 
+  updateCustomer(id: ObjectID, userId: ObjectID, name?: String, identifier?: String, note?: String): Observable<Customer> {
+    return this.updateCustomerGQL.mutate({
+      id, userId, name, identifier, note
+    }).pipe(
+      map(res => {
+        return res.data;
+      }),
+      retryWhen(errors => errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT)))
+    )
+  }
+
+  listCustomers(first?: number, last?: number, after?: String, before?: String): Observable<ListCustomers> {
+    return this.listCustomersGQL.watch({
+      first,
+      last,
+      after,
+      before,
+    }, {
+      fetchPolicy: FETCH_POLICY,
+      pollInterval: POLLING_INTERVAL,
+    }).valueChanges.pipe(
+      map(res => {
+        return res.data;
+      }),
+      retryWhen(errors => errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT)))
+    );
+  }
+
+  deleteCustomer(id: ObjectID) {
+    return this.deleteCustomerGQL.mutate({ id }).subscribe();
+  }
 }

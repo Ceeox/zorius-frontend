@@ -1,104 +1,11 @@
 import { Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Query, Mutation, gql, Apollo } from 'apollo-angular';
-import ObjectID from 'bson-objectid';
+import { Query, Mutation, gql } from 'apollo-angular';
+import { ObjectID } from 'mongodb';
 import { Observable } from 'rxjs/internal/Observable';
-import { catchError, map } from 'rxjs/operators';
-import { POLLING_INTERVAL, SNACKBAR_TIMEOUT } from 'src/app/app.component';
-import { User } from 'src/services/user.service';
+import { delay, map, retryWhen, take } from 'rxjs/operators';
+import { FETCH_POLICY, POLLING_INTERVAL, RETRY_COUNT, RETRY_DELAY } from 'src/app/graphql.module';
+import { CountMerchResponse, InternMerchandise, ListInternMerch, NewInternMerchandise, UpdateInternMerchandise } from 'src/models/intern-merch';
 
-
-export interface Response {
-    listInternMerch: InternMerchandiseConnection;
-}
-
-export interface CountMerchResponse {
-    countInternMerch: number
-}
-
-export interface InternMerchandiseConnection {
-    edges: InternMerchandiseEdge[];
-    pageInfo: PageInfo;
-}
-
-export interface InternMerchandiseEdge {
-    cursor: number;
-    node: InternMerchandise;
-}
-
-export interface PageInfo {
-    startCursor: number;
-    endCursor: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-}
-
-export interface InternMerchandise {
-    id: ObjectID;
-    articleNumber: String;
-    merchandiseId: number;
-    merchandiseName: String;
-    cost: number;
-    orderer: User;
-    projectLeader: String;
-    status: InternMerchandiseStatus;
-    count: number;
-    createdDate: Date;
-    updatedDate: Date;
-    purchasedOn: Date;
-
-    postage?: number;
-    arivedOn?: Date;
-    url?: String;
-    serialNumber?: String[];
-    invoiceNumber?: number;
-    shop?: String;
-    useCase?: String;
-}
-
-export interface Orderer {
-    firstname?: String;
-    lastname?: String;
-    username: String;
-}
-
-export enum InternMerchandiseStatus {
-    Ordered,
-    Delivered,
-    Stored,
-    Used,
-}
-
-export interface NewInternMerchandise {
-    merchandiseName: String;
-    count: number;
-    url?: String;
-    purchasedOn: Date;
-    articleNumber?: String,
-    postage?: number;
-    useCase: String;
-    cost: number;
-    orderer: ObjectID,
-    shop: string,
-}
-
-export interface UpdateInternMerchandise {
-    arivedOn?: Date;
-    articleNumber?: String;
-    cost?: number;
-    count?: number;
-    invoiceNumber?: number;
-    merchandiseId?: number;
-    merchandiseName?: String;
-    orderer?: User;
-    postage?: number;
-    projectLeader?: String;
-    purchasedOn?: Date;
-    serialNumber?: String[];
-    shop?: String;
-    url?: String;
-    useCase?: String;
-}
 
 @Injectable({
     providedIn: 'root',
@@ -112,7 +19,7 @@ export class CountInternMerchandiseGQL extends Query<CountMerchResponse> {
 @Injectable({
     providedIn: 'root',
 })
-export class InternOrderTableDataGQL extends Query<Response> {
+export class ListInternMerchGQL extends Query<ListInternMerch> {
     document = gql`
     query listInternMerch($first: Int, $last: Int, $after: String, $before: String) {
       listInternMerch(first: $first, last: $last, after: $after, before: $before) {
@@ -145,18 +52,16 @@ export class InternOrderTableDataGQL extends Query<Response> {
 @Injectable({
     providedIn: 'root',
 })
-export class NewInternOrderGQL extends Mutation {
+export class NewInternOrderGQL extends Mutation<InternMerchandise> {
     document = gql`
     mutation newMerchandiseIntern($newInternOrder: NewInternOrder!) {
       newInternOrder(newInternOrder: $newInternOrder) {
         id
         arivedOn
-        projectLeader
         url
         createdDate
         updatedDate
         orderer
-        projectLeader
         count
         merchandiseId
         merchandiseName
@@ -172,12 +77,34 @@ export class NewInternOrderGQL extends Mutation {
 @Injectable({
     providedIn: 'root',
 })
-export class UpdateInternMerchGQL extends Mutation {
+export class UpdateInternMerchGQL extends Mutation<InternMerchandise> {
     document = gql`
     mutation newMerchandiseIntern($id: ObjectId!, $update: InternMerchandiseUpdate!) {
-      newInternOrder(id: $id, update: $update) {
-        id
-      }
+        newInternOrder(id: $id, update: $update) {
+            id
+            arivedOn
+            url
+            createdDate
+            updatedDate
+            orderer {
+                id
+                email
+                username
+                firstname
+                lastname
+                updated
+                createdAt
+            }
+            count
+            merchandiseId
+            merchandiseName
+            purchasedOn
+            serialNumber
+            invoiceNumber
+            shop
+            useCase
+            postage
+        }
     }`;
 }
 
@@ -188,44 +115,48 @@ export class GetInternMerchByIdGQL extends Query<InternMerchandise> {
     document = gql`
     query getInternMerchById($id: ObjectId!) {
         getInternMerchById(id: $id) {
-          id
-          arivedOn
-          projectLeader
-          url
-          createdDate
-          updatedDate
-          orderer {
+            id
+            arivedOn
+            projectLeader {
               id
               email
               username
               firstname
               lastname
-          }
-          count
-          merchandiseId
-          merchandiseName
-          purchasedOn
-          serialNumber
-          invoiceNumber
-          shop
-          useCase
-          status
+              updated
+              createdAt
+            }
+            url
+            createdDate
+            updatedDate
+            orderer {
+              id
+              email
+              username
+              firstname
+              lastname
+              updated
+              createdAt
+            }
+            count
+            merchandiseId
+            merchandiseName
+            purchasedOn
+            serialNumber
+            invoiceNumber
+            shop
+            useCase
+            status
         }
-      }`;
+    }`;
 }
 
 @Injectable({
     providedIn: 'root'
 })
 export class InternMerchService {
-    token: string;
-    loggedIn: boolean = false;
-    tokenExpiresAt?: Date;
-
     constructor(
-        private snackBar: MatSnackBar,
-
-        private tableDataGQL: InternOrderTableDataGQL,
+        private listInternMerchGQL: ListInternMerchGQL,
         private newInternOrderGQL: NewInternOrderGQL,
         private countInternMerchGQL: CountInternMerchandiseGQL,
         private updateInternMerchGQL: UpdateInternMerchGQL,
@@ -238,60 +169,58 @@ export class InternMerchService {
             map(result => {
                 return result.data.countInternMerch;
             }),
-            catchError(err => {
-                this.snackBar.open(err)._dismissAfter(SNACKBAR_TIMEOUT);
-                return [];
-            })
+            retryWhen(errors => errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT)))
         );
     }
 
     getInternMerchById(id: ObjectID): Observable<InternMerchandise> {
-        return this.getInternMerchByIdGQL.fetch({
-            id: id,
-        }).pipe(
+        return this.getInternMerchByIdGQL.watch({ id }, {
+            fetchPolicy: FETCH_POLICY,
+            pollInterval: POLLING_INTERVAL,
+        }).valueChanges.pipe(
             map(result => {
                 return result.data;
             }),
-            catchError(err => {
-                this.snackBar.open(err)._dismissAfter(SNACKBAR_TIMEOUT);
-                return [];
-            })
+            retryWhen(errors => errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT)))
         );
     }
 
-    listInternMerch(first?: number, last?: number, before?: string, after?: string): Observable<InternMerchandiseEdge[]> {
-        return this.tableDataGQL.watch({
+    listInternMerch(first?: number, last?: number, before?: string, after?: string): Observable<ListInternMerch> {
+        return this.listInternMerchGQL.watch({
             first: first,
             last: last,
             before: before,
             after: after
         }, {
+            fetchPolicy: FETCH_POLICY,
             pollInterval: POLLING_INTERVAL,
         }).valueChanges.pipe(
             map(result => {
-                return result.data.listInternMerch.edges;
+                return result.data;
             }),
-            catchError(err => {
-                this.snackBar.open(err)._dismissAfter(SNACKBAR_TIMEOUT);
-                return [];
-            })
+            retryWhen(errors => errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT)))
         );
     }
 
-    submitNewInternOrder(newOder: NewInternMerchandise) {
-        this.newInternOrderGQL
+    newInternMerch(newMerch: NewInternMerchandise): Observable<InternMerchandise> {
+        return this.newInternOrderGQL
             .mutate({
-                newInternOrder: newOder,
-            })
-            .subscribe();
+                newInternOrder: newMerch,
+            }).pipe(
+                map(result => {
+                    return result.data;
+                }),
+                retryWhen(errors => errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT)))
+            );
     }
 
-    submitUpdateInternMerch(id: ObjectID, update: UpdateInternMerchandise) {
-        this.updateInternMerchGQL
-            .mutate({
-                id: id,
-                update: update
-            })
-            .subscribe();
+    updateInternMerch(id: ObjectID, update: UpdateInternMerchandise): Observable<InternMerchandise> {
+        return this.updateInternMerchGQL.mutate({ id, update })
+            .pipe(
+                map(result => {
+                    return result.data;
+                }),
+                retryWhen(errors => errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT)))
+            );
     }
 }

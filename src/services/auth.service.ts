@@ -3,8 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Apollo, Query, gql } from 'apollo-angular';
-import ObjectID from 'bson-objectid';
-import { observable, Observable } from 'rxjs';
+import { ObjectID } from 'mongodb';
 
 
 
@@ -69,12 +68,12 @@ export class AuthService {
   public login(email: string, password: string) {
     this._resetLoginData();
 
-    this.loginGQL.watch({
+    this.loginGQL.fetch({
       email: email,
       password: password,
     }, {
       fetchPolicy: 'network-only'
-    }).valueChanges.subscribe(({ data }) => {
+    }).subscribe(({ data }) => {
       const token = data.login.token;
       localStorage.setItem("token", token);
 

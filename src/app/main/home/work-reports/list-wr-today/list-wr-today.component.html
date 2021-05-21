@@ -1,0 +1,20 @@
+<div>
+  <mat-accordion multi>
+    <mat-expansion-panel *ngFor="let item of workReports | async">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{ item }}
+        </mat-panel-title>
+        <mat-panel-description>
+          {{ description }}
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <div>
+
+      </div>
+      <mat-action-row>
+        <button mat-raised-button color="primary" (click)="update()">Update</button>
+      </mat-action-row>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

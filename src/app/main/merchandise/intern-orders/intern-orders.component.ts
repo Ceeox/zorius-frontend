@@ -1,18 +1,18 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Observable } from 'rxjs';
 import { UserService } from 'src/services/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { NewDialog } from './new-dialog/new-dialog';
-import { UpdateDialog } from './update-dialog/update-dialog';
-import { InternMerchandise, InternMerchandiseEdge, InternMerchService, Orderer, UpdateInternMerchandise } from 'src/services/intern-merch.service';
 import { map } from 'rxjs/operators';
 import { SNACKBAR_TIMEOUT } from 'src/app/app.component';
-import ObjectID from 'bson-objectid';
+import { InternMerchandise, InternMerchandiseEdge, Orderer, UpdateInternMerchandise } from 'src/models/intern-merch';
+import { InternMerchService } from 'src/services/intern-merch.service';
+import { NewInternMerchDialog } from 'src/app/dialogs/new-intern-merch/new-intern-merch.dialog';
+import { UpdateInternMerchDialog } from 'src/app/dialogs/update-intern-merch/update-intern-merch.dialog';
+import { ObjectID } from 'mongodb';
 
 const LS_PAGE_SIZE: string = "intern_merch_page_size";
 
@@ -20,19 +20,12 @@ const LS_PAGE_SIZE: string = "intern_merch_page_size";
     selector: 'app-intern-orders',
     templateUrl: './intern-orders.component.html',
     styleUrls: ['./intern-orders.component.scss'],
-    animations: [
-        trigger('detailExpand', [
-            state('collapsed', style({ height: '0px', minHeight: '0' })),
-            state('expanded', style({ height: '*' })),
-            transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-        ]),
-    ],
 })
 export class InternOrdersComponent implements OnInit, AfterViewInit {
 
     internMerchandiseSource = new MatTableDataSource<InternMerchandiseEdge>();
     internMerchs: Observable<InternMerchandiseEdge[]>;
-    displayedColumns = ['no.', 'id', 'merchandiseId', 'merchandiseName', 'count', 'cost', 'orderer', 'status', 'edit', 'download', 'delete'];
+    displayedColumns = ['no.', 'merchandiseId', 'merchandiseName', 'count', 'cost', 'orderer', 'status', 'edit', 'download', 'delete'];
 
     pageSizeOptions = [10, 25, 50, 100];
     pageSize: number = 10;
@@ -54,12 +47,11 @@ export class InternOrdersComponent implements OnInit, AfterViewInit {
         public updateMerchDialog: MatDialog,
         private userService: UserService,
         private internMerchService: InternMerchService,
-        private snackBar: MatSnackBar) {
-    }
+        private snackBar: MatSnackBar
+    ) { }
 
     ngAfterViewInit(): void {
         this.internMerchandiseSource.paginator = this.paginator;
-
     }
 
     ngOnInit() {
@@ -93,7 +85,7 @@ export class InternOrdersComponent implements OnInit, AfterViewInit {
             .pipe(
                 map(result => {
                     this.isLoadingResults = false;
-                    return result;
+                    return result.listInternMerch.edges;
                 })
             );
     }
@@ -118,62 +110,40 @@ export class InternOrdersComponent implements OnInit, AfterViewInit {
 
     openNewInternOrder(): void {
         const newOrder = undefined;
-        const dialogRef = this.newMerchDialog.open(NewDialog, {
-            width: '40vw',
+        const dialogRef = this.newMerchDialog.open(NewInternMerchDialog, {
+            minWidth: '30rem',
+            maxWidth: '150rem',
             hasBackdrop: true,
             disableClose: true,
             data: { newInternOrder: newOrder }
         });
-        var user;
+        let user;
         this.userService.getSelf().subscribe((user) => {
             user = user;
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if (result)
+            if (!result)
                 return;
             result.ordererId = user.id;
             result.purchasedOn = Date.now().toString();
-            this.internMerchService.submitNewInternOrder(result);
+            //this.internMerchService.newInternMerch(result);
         });
     }
 
     openUpdateDialog(id: ObjectID): void {
-        this.internMerchService.getInternMerchById(id).subscribe(result => {
-            this.internMerch = result;
-        });
-
-        const dialogRef = this.updateMerchDialog.open(UpdateDialog, {
-            width: '40vw',
+        const dialogRef = this.updateMerchDialog.open(UpdateInternMerchDialog, {
+            minWidth: '40rem',
+            maxWidth: '150rem',
             hasBackdrop: true,
-            data: { update: this.internMerch }
+            data: { internMerchId: id, update: undefined }
         });
 
         dialogRef.afterClosed().subscribe((update) => {
             if (!update)
                 return;
-            this.internMerchService.submitUpdateInternMerch(id, update);
+            //this.internMerchService.updateInternMerch(id, update);
         });
-    }
-
-    toUpdate(merch: InternMerchandise): UpdateInternMerchandise {
-        return {
-            arivedOn: merch.arivedOn,
-            articleNumber: merch.articleNumber,
-            cost: merch.cost,
-            count: merch.count,
-            invoiceNumber: merch.invoiceNumber,
-            merchandiseId: merch.merchandiseId,
-            merchandiseName: merch.merchandiseName,
-            orderer: merch.orderer,
-            postage: merch.postage,
-            projectLeader: merch.projectLeader,
-            purchasedOn: merch.purchasedOn,
-            serialNumber: merch.serialNumber,
-            shop: merch.shop,
-            url: merch.url,
-            useCase: merch.useCase,
-        };
     }
 }
 

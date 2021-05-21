@@ -1,10 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl } from '@angular/forms';
-import { throwServerError } from '@apollo/client/core';
+import { FormBuilder } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSelectChange } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
-import { CustomerResponseEdge, CustomerService } from 'src/services/customer.service';
-import { ProjectResponseEdge, ProjectService } from 'src/services/Project.service';
+import { map } from 'rxjs/operators';
+import { SNACKBAR_TIMEOUT } from 'src/app/app.component';
+import { CustomerEdge } from 'src/models/customer';
+import { NewProject, Project } from 'src/models/project';
+import { CustomerService } from 'src/services/customer.service';
+import { ProjectService } from 'src/services/project.service';
+import { NewProjectDialog } from 'src/app/dialogs/new-project/new-project.dialog';
 
 @Component({
   selector: 'app-new-wr',
@@ -13,11 +19,11 @@ import { ProjectResponseEdge, ProjectService } from 'src/services/Project.servic
 })
 export class NewWrComponent implements OnInit {
   //customerOptions: string[] = ['GKL Test Kunde GmbH & Co. KG', 'T45 Test Kunde', 'LSM Test Kunde'];
-  customerOptions: Observable<CustomerResponseEdge[]>;
-  projectOptions: Observable<ProjectResponseEdge[]>;
+  customerOptions: Observable<CustomerEdge[]>;
+  projectOptions: Observable<Project[]>;
 
-  selectedCustomer: string;
-  selectedProject: string;
+  selectedCustomerId: number;
+  selectedProjectId: string;
 
   newWRForm = this.fb.group({
     customer: [''],
@@ -27,29 +33,47 @@ export class NewWrComponent implements OnInit {
   invoiced: boolean = false;
 
   constructor(
+    public newProjectDialog: MatDialog,
     private fb: FormBuilder,
     private customerService: CustomerService,
     private projectService: ProjectService,
+    private snackBar: MatSnackBar,
   ) {
     this.customerOptions = this.customerService.listCustomers().pipe(
       map(result => {
-        console.log(result)
-        return result;
-      })
-    );
-
-    this.projectOptions = this.projectService.listProjects().pipe(
-      map(result => {
-        console.log(result)
-        return result;
+        return result.listCustomers.edges;
       })
     );
   }
 
   ngOnInit() {
+
+  }
+
+  newProject() {
+    const newProject: NewProject = undefined;
+    const dialogRef = this.newProjectDialog.open(NewProjectDialog, {
+      maxWidth: '125rem',
+      hasBackdrop: true,
+      disableClose: false,
+      data: { newProject: newProject }
+    });
+
+    dialogRef.afterClosed().subscribe((result: NewProject) => {
+      if (result) {
+        this.projectService.newProject(result.description, result.name, result.note);
+      }
+    });
+  }
+
+  onCustomerChange(event: MatSelectChange) {
+    this.projectOptions = new Observable(subscriber => {
+      subscriber.next(event.value.projects);
+    });
   }
 
   onSubmit() {
     console.warn(this.newWRForm.value);
+    this.snackBar.open("Not yet implemented!")._dismissAfter(SNACKBAR_TIMEOUT);
   }
 }

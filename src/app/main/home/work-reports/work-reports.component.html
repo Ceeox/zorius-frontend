@@ -6,26 +6,13 @@
 
 <mat-card class="card">
   <div class="container">
-    <app-new-wr></app-new-wr>
-    <div class="list">
-      <mat-accordion multi>
-        <mat-expansion-panel *ngFor="let item of list">
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              {{ item }}
-            </mat-panel-title>
-            <mat-panel-description>
-              {{ description }}
-            </mat-panel-description>
-          </mat-expansion-panel-header>
-          <div>
 
-          </div>
-          <mat-action-row>
-            <button mat-raised-button color="primary" (click)="update()">Update</button>
-          </mat-action-row>
-        </mat-expansion-panel>
-      </mat-accordion>
+    <div class="new-wr">
+      <app-new-wr></app-new-wr>
+    </div>
+
+    <div class="lsit-wr">
+      <app-list-wr-today></app-list-wr-today>
     </div>
 
   </div>

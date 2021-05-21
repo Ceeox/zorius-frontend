@@ -1,43 +1,20 @@
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
-import { gql, Query } from "apollo-angular";
-import ObjectID from "bson-objectid";
+import { gql, Mutation, Query } from "apollo-angular";
+import { ObjectID } from "mongodb";
 import { Observable } from 'rxjs';
-import { catchError, map } from "rxjs/operators";
+import { delay, map, retryWhen, take } from "rxjs/operators";
+import { FETCH_POLICY, POLLING_INTERVAL, RETRY_COUNT, RETRY_DELAY } from "src/app/graphql.module";
+import { GetUserById, ListUsers, User } from "src/models/user";
 import { AuthService } from "./auth.service";
-import { PageInfo } from "./intern-merch.service";
-
-export interface User {
-    id: ObjectID;
-    email: string;
-    username: string;
-    firstname?: string;
-    lastname?: string;
-    updated: Date;
-    createdAt: Date;
-    avatarUrl?: string;
-}
-export interface UserResponse {
-    getUser: User;
-}
-
-export interface UserConnection {
-    edges: UserEdge[];
-    pageInfo: PageInfo;
-}
-
-export interface UserEdge {
-    cursor: String;
-    node: User;
-}
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
-export class GetUserGQL extends Query<UserResponse> {
-    document = gql`
-    query getUserById($userId: ObjectId) {
-        getUserById(id: $userId) {
+export class GetUserByIdGQL extends Query<GetUserById> {
+  document = gql`
+    query getUserById($id: ObjectId!) {
+        getUserById(id: $id) {
             id
             email
             username
@@ -50,10 +27,10 @@ export class GetUserGQL extends Query<UserResponse> {
 }
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
-export class ListUsersGQL extends Query<UserConnection> {
-    document = gql`
+export class ListUsersGQL extends Query<ListUsers> {
+  document = gql`
       query listUsers($first: Int, $last: Int, $after: String, $before: String) {
         listUsers(first: $first, last: $last, after: $after, before: $before) {
             edges {
@@ -79,114 +56,77 @@ export class ListUsersGQL extends Query<UserConnection> {
 }
 
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
-export class ListAllUsersGQL extends Query<UserConnection> {
-    document = gql`
-      query listUsers {
-        listUsers {
-            edges {
-              node {
-                id
-                email
-                username
-                firstname
-                lastname
-                updated
-                createdAt
-              }
-              cursor
-            }
-            pageInfo {
-              startCursor
-              endCursor
-              hasPreviousPage
-              hasNextPage
-            }
-          }
-      }`;
+export class UpdateUserGQL extends Mutation<User> {
+  document = gql`
+    mutation updateUser($id: ObjectId!, $firstname: String, $lastname: String, $username: String) {
+      updateUser(
+        userId: $id,
+        userUpdate: { firstname: $firstname, lastname: $lastname, username: $username}
+      ) {
+        id
+        email
+        username
+        firstname
+        lastname
+        createdAt
+        updated
+      }
+    }`;
 }
 
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class UserService {
-    self: Observable<User>;
+  self: Observable<User>;
 
-    constructor(
-        private getUserGQL: GetUserGQL,
-        private listUsersGQL: ListUsersGQL,
-        private listAllUsersGQL: ListAllUsersGQL,
-        private authService: AuthService,
-        private router: Router
-    ) {
-        let userId = this.authService.getUserId();
-        if (userId === null) {
-            this.router.navigate(['/login']);
-            return;
-        }
-        this.self = this.getUserGQL.watch({
-            userId: userId,
-        }, {
-            fetchPolicy: 'cache-and-network'
-        }).valueChanges.pipe(
-            map((data) => {
-                return data.data.getUser;
-            })
-        );
+  constructor(
+    private getUserGQL: GetUserByIdGQL,
+    private listUsersGQL: ListUsersGQL,
+    private authService: AuthService,
+    private router: Router
+  ) {
+    let userId = this.authService.getUserId();
+    if (userId === null) {
+      this.router.navigate(['/login']);
+      return;
     }
+    this.self = this.getUserById(userId).pipe(
+      map(res => { return res; })
+    );
+  }
 
-    public getSelf(): Observable<User> {
-        return this.self;
-    }
+  public getSelf(): Observable<User> {
+    return this.self;
+  }
 
-    getUserById(id: ObjectID): Observable<User> {
-        return this.getUserGQL.watch({
-            id: id
-        }, {
-            fetchPolicy: 'cache-and-network'
-        }).valueChanges.pipe(
-            map(res => {
-                return res.data.getUser;
-            }),
-            catchError((e, c) => {
-                console.log(e);
-                return c;
-            })
-        );
-    }
+  getUserById(id: ObjectID): Observable<User> {
+    console.log(ObjectID.toString())
+    return this.getUserGQL.fetch({ id: id }).pipe(
+      map(res => {
+        return res.data.getUserById;
+      }),
+      retryWhen(errors => errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT)))
+    );
+  }
 
-    listUsers(first: number, last: number, after: String, before: String): Observable<UserEdge[]> {
-        return this.listUsersGQL.watch({
-            first: first,
-            last: last,
-            after: after,
-            before: before
-        }, {
-            fetchPolicy: 'cache-and-network'
-        }).valueChanges.pipe(
-            map(res => {
-                return res.data.edges;
-            }),
-            catchError((_e, c) => {
-                return c;
-            })
-        );
-    }
-
-    listAllUsers(): Observable<UserEdge[]> {
-        return this.listAllUsersGQL.watch({
-            fetchPolicy: 'cache-and-network'
-        }).valueChanges.pipe(
-            map(res => {
-                console.log("listUsers: " + res);
-                return res.data.edges;
-            }),
-            catchError(e => {
-                console.log(e);
-                return [];
-            })
-        );
-    }
+  listUsers(first?: number, last?: number, after?: String, before?: String): Observable<ListUsers> {
+    return this.listUsersGQL.watch({
+      first,
+      last,
+      after,
+      before,
+    }, {
+      fetchPolicy: FETCH_POLICY,
+      pollInterval: POLLING_INTERVAL,
+    }).valueChanges.pipe(
+      map(res => {
+        return res.data;
+      }),
+      retryWhen(errors => errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT)))
+    );
+  }
 }

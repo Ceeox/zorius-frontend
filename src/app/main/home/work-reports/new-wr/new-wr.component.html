@@ -5,7 +5,7 @@
 
         <mat-form-field appearance="fill" class="customer">
           <mat-label>Customer</mat-label>
-          <mat-select formControlName="customer" required>
+          <mat-select formControlName="customer" (selectionChange)="onCustomerChange($event)" required>
             <mat-option *ngFor="let customer of customerOptions | async" [value]="customer.node">
               {{ customer.node.name }} ({{ customer.node.identifier }})
             </mat-option>
@@ -15,11 +15,15 @@
         <mat-form-field appearance="fill" class="project">
           <mat-label>Project</mat-label>
           <mat-select formControlName="project" required>
-            <mat-option *ngFor="let project of projectOptions | async" [value]="project.node">
-              {{ project.node.name }}
+            <mat-option *ngFor="let project of projectOptions | async" [value]="project">
+              {{ project.name }}
             </mat-option>
           </mat-select>
         </mat-form-field>
+        <div class="add-project-btn">
+          <button mat-stroked-button color="primary" (click)="newProject()"> New Project </button>
+        </div>
+
       </div>
 
       <section>
@@ -35,9 +39,10 @@
       </mat-form-field>
     </div>
 
-    <div class="control-buttons">
-      <button mat-stroked-button color="primary" (click)="onSubmit()">Pause</button>
-      <button mat-raised-button color="primary" type="submit" [disabled]="!newWRForm.valid">Finish</button>
+    <div class="control-buttons" [formGroup]="newWRForm">
+      <button mat-stroked-button color="primary" [disabled]="!newWRForm.valid">Pause</button>
+      <button mat-raised-button color="primary" [disabled]="!newWRForm.valid">Finish</button>
     </div>
   </form>
+
 </div>

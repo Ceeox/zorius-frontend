@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { AuthService } from 'src/services/auth.service';
-import { User, UserService } from 'src/services/user.service';
+import { UserService } from 'src/services/user.service';
 import { Observable } from 'rxjs';
-import { subscribe } from 'graphql';
 
 @Component({
   selector: 'app-navbar',

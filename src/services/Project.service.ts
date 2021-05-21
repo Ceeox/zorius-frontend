@@ -1,36 +1,16 @@
 import { Injectable } from '@angular/core';
-import { gql, Query } from 'apollo-angular';
-import ObjectID from 'bson-objectid';
+import { gql, Mutation, Query } from 'apollo-angular';
+import { ObjectID } from 'mongodb';
 import { Observable } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import { POLLING_INTERVAL } from 'src/app/app.component';
-import { PageInfo } from './intern-merch.service';
+import { delay, map, retryWhen, take } from 'rxjs/operators';
+import { FETCH_POLICY, POLLING_INTERVAL, RETRY_COUNT, RETRY_DELAY } from 'src/app/graphql.module';
+import { ListProjects, Project } from 'src/models/project';
 
-export interface ListAllProjectsResp {
-  listProjects: ProjectResponseConnection;
-}
-
-export interface ProjectResponseConnection {
-  edges: ProjectResponseEdge[];
-  pageInfo: PageInfo;
-}
-
-export interface ProjectResponseEdge {
-  cursor: String;
-  node: ProjectResponse;
-}
-
-export interface ProjectResponse {
-  id: ObjectID,
-  name: string,
-  idenifier: string,
-  note: string,
-}
 
 @Injectable({
   providedIn: 'root',
 })
-export class ListAllProjectsGQL extends Query<ListAllProjectsResp> {
+export class ListProjectsGQL extends Query<ListProjects> {
   document = gql`
   query listProjects {
     listProjects {
@@ -54,26 +34,95 @@ export class ListAllProjectsGQL extends Query<ListAllProjectsResp> {
 }
 
 @Injectable({
+  providedIn: 'root',
+})
+export class NewProjectGQL extends Mutation<Project> {
+  document = gql`
+    mutation updateProject($id: ObjectId!, $description: String, $name: String, $note: String) {
+      updateProject(id: $id, update: {description: $description, name: $name, note: $note}) {
+        id
+        description
+        name
+        note
+      }
+    }`;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class UpdateProjectGQL extends Mutation<Project> {
+  document = gql`
+    mutation newProject($description: String!, $name: String!, $note: String) {
+      newProject(new: {description: $description, name: $name, note: $note}) {
+        id
+        description
+        name
+        note
+      }
+    }`;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class DeleteProjectGQL extends Mutation<boolean> {
+  document = gql`
+    mutation deleteProject($id: ObjectId!) {
+      deleteProject(id: $id)
+    }`;
+}
+
+@Injectable({
   providedIn: 'root'
 })
 export class ProjectService {
 
   constructor(
-    private listAllProjectsGQL: ListAllProjectsGQL
+    private listAllProjectsGQL: ListProjectsGQL,
+    private newProjectGQL: NewProjectGQL,
+    private updateProjectsGQL: UpdateProjectGQL,
+    private deleteProjectsGQL: DeleteProjectGQL,
   ) { }
 
-  listProjects(): Observable<ProjectResponseEdge[]> {
+  newProject(description: string, name: string, note?: string): Observable<Project> {
+    return this.newProjectGQL
+      .mutate({ description, name, note }).pipe(
+        map(res => {
+          return res.data;
+        }),
+        retryWhen(errors => errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT)))
+      );
+  }
+
+  updateProject(id: ObjectID, description: String, name: String, note: String): Observable<Project> {
+    return this.updateProjectsGQL
+      .mutate({ id, description, name, note }).pipe(
+        map(res => {
+          return res.data;
+        }),
+        retryWhen(errors => errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT)))
+      );
+  }
+
+  listProjects(first?: number, last?: number, after?: String, before?: String): Observable<ListProjects> {
     return this.listAllProjectsGQL.watch({
-      fetchPolicy: 'network-only',
+      first,
+      last,
+      after,
+      before,
+    }, {
+      fetchPolicy: FETCH_POLICY,
       pollInterval: POLLING_INTERVAL,
     }).valueChanges.pipe(
       map(res => {
-        return res.data.listProjects.edges;
+        return res.data;
       }),
-      catchError((e, c) => {
-        console.error("listCustomersError: " + e);
-        return c;
-      })
+      retryWhen(errors => errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT)))
     );
+  }
+
+  deleteProject(id: ObjectID) {
+    return this.deleteProjectsGQL.mutate({ id }).subscribe();
   }
 }

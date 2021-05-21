@@ -1,0 +1,29 @@
+<mat-toolbar>
+  <span>New Project</span>
+</mat-toolbar>
+
+<div class="form">
+  <form [formGroup]="newProjectForm">
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input formControlName="name" matInput #message maxlength="256" placeholder="OurCustomer GmbH & Co. KG" required>
+      <mat-hint align="start"></mat-hint>
+      <mat-hint align="end">{{message.value.length}} / 256</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Leave a description</mat-label>
+      <textarea formControlName="description" matInput placeholder="Support: for work that ..." required></textarea>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Note</mat-label>
+      <textarea formControlName="note" matInput placeholder="Notes ..."></textarea>
+    </mat-form-field>
+  </form>
+</div>
+
+<div class="control-btn">
+  <button mat-stroked-button (click)="onCancelClick()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!newProjectForm.valid">Create</button>
+</div>
