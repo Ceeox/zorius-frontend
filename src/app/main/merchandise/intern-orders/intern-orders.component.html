@@ -22,11 +22,6 @@
                 <td mat-cell *matCellDef="let edge"> {{edge.cursor}} </td>
             </ng-container>
 
-            <ng-container matColumnDef="id">
-                <th mat-header-cell *matHeaderCellDef> Id </th>
-                <td mat-cell *matCellDef="let edge"> {{edge.node.id}} </td>
-            </ng-container>
-
             <ng-container matColumnDef="merchandiseId">
                 <th mat-header-cell *matHeaderCellDef> Merchandise Id </th>
                 <td mat-cell *matCellDef="let edge"> {{edge.node.merchandiseId}} </td>
@@ -34,7 +29,7 @@
 
             <ng-container matColumnDef="merchandiseName">
                 <th mat-header-cell *matHeaderCellDef> Merchandise Name </th>
-                <td mat-cell *matCellDef="let edge"> {{edge.node.merchandiseName}} </td>
+                <td mat-cell *matCellDef="let edge"> {{ (edge.node.merchandiseName | slice:0:50)+' ...' }} </td>
             </ng-container>
 
             <ng-container matColumnDef="count">
