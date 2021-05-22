@@ -8,6 +8,10 @@ export interface ListCustomers {
     listCustomers: CustomerConnection;
 }
 
+export interface NewCustomer {
+    newCustomer: Customer;
+}
+
 export interface CustomerConnection {
     edges: CustomerEdge[];
     pageInfo: PageInfo;

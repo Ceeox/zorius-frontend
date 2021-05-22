@@ -5,12 +5,12 @@ import ObjectID from 'bson-objectid';
 import { Observable } from 'rxjs';
 import { delay, map, retryWhen, take } from 'rxjs/operators';
 import { FETCH_POLICY, POLLING_INTERVAL, RETRY_COUNT, RETRY_DELAY } from 'src/app/graphql.module';
-import { Customer, ListCustomers } from 'src/models/customer';
+import { Customer, ListCustomers, NewCustomer } from 'src/models/customer';
 
 @Injectable({
   providedIn: 'root',
 })
-export class NewCustomerGQL extends Mutation<Customer> {
+export class NewCustomerGQL extends Mutation<NewCustomer> {
   document = gql`
   mutation newCustomer($name: String!, $identifier: String!, $note: String, $projectIds: [ObjectId!]!) {
     newCustomer(new: {name: $name, identifier: $identifier, note: $note, projectIds: $projectIds}) {
@@ -126,7 +126,7 @@ export class CustomerService {
       projectIds,
     }).pipe(
       map(res => {
-        return res.data;
+        return res.data.newCustomer;
       }),
       retryWhen(errors => errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT)))
     );

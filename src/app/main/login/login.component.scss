@@ -4,38 +4,22 @@
     margin: auto;
     margin-top: 10rem;
     margin-bottom: 10rem;
-    max-width: 50rem;
-    //border: 0.1rem solid mat-color($primary);
-    border-radius: 1rem;
-    overflow: hidden;
+    max-width: 50vw;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 
     .login-form {
-        padding: 2.5rem;
-        padding-bottom: 0rem;
-        min-width: 2rem;
+        padding-top: 1rem;
 
-        .example-full-width {
+        .full-width {
             width: 100%;
             box-sizing: border-box;
         }
     }
-
     .login-control {
-        padding-bottom: 2.5rem;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-
-        .cancel-button {
-            align-self: flex-start;
-        }
-
-        .login-button {
-            align-self: flex-end;
-        }
-
     }
 }
