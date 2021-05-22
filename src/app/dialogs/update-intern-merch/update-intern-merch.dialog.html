@@ -3,33 +3,46 @@
 </mat-toolbar>
 <div class="dialog" mat-dialog-content>
     <form [formGroup]="newInternMerchForm">
-        <div class="article-info">
+        <div class="flex-container">
+            <mat-form-field appearance="outline">
+                <mat-label> Article Number </mat-label>
+                <input formControlName="articleNumber" type="text" matInput>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label> Status </mat-label>
+                <mat-select formControlName="status" required>
+                    <mat-option *ngFor="let status of statusOptions" [value]="status">
+                        {{ status }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <div class="flex-container">
             <mat-form-field appearance="outline">
                 <mat-label> Merchandise Id </mat-label>
-                <input formControlName="merchandiseId" type="text" matInput>
+                <input formControlName="merchandiseId" type="number" matInput>
             </mat-form-field>
 
             <mat-form-field appearance="outline">
                 <mat-label> Invoice Number </mat-label>
-                <input formControlName="invoiceNumber" type="text" matInput>
+                <input formControlName="invoiceNumber" type="number" matInput>
             </mat-form-field>
         </div>
-        <mat-form-field appearance="outline">
-            <mat-label> Article Number </mat-label>
-            <input formControlName="articleNumber" type="text" matInput>
-        </mat-form-field>
 
-        <mat-form-field appearance="fill">
+
+        <mat-form-field class="full-width" appearance="fill">
             <mat-label> Merchandise Name </mat-label>
             <textarea formControlName="merchandiseName" matInput></textarea>
         </mat-form-field>
 
-        <mat-form-field appearance="fill">
+        <mat-form-field class="full-width">
             <mat-label> Usecase </mat-label>
-            <textarea formControlName="useCase" matInput></textarea>
+            <input formControlName="useCase" type="url" matInput>
         </mat-form-field>
 
-        <div class="orderer">
+        <div class="flex-container">
             <mat-form-field appearance="fill">
                 <mat-label> Orderer </mat-label>
                 <mat-select formControlName="orderer" required>
@@ -49,28 +62,33 @@
         </div>
 
 
-        <mat-form-field>
+        <mat-form-field class="full-width">
             <mat-label>Link</mat-label>
             <input formControlName="url" type="url" matInput>
         </mat-form-field>
 
-        <div class="prices">
-            <mat-form-field>
-                <mat-label> Price (without tax) </mat-label>
-                <input formControlName="cost" type="number" matInput>
-            </mat-form-field>
-            <mat-form-field appearance="outline" required>
+        <mat-form-field class="full-width">
+            <mat-label>Shop</mat-label>
+            <input formControlName="shop" type="text" matInput>
+        </mat-form-field>
+
+        <div class="flex-container">
+            <mat-form-field appearance="outline">
                 <mat-label required>Count</mat-label>
                 <input formControlName="count" id="count" type="number" matInput>
             </mat-form-field>
-            <mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label> Price (without tax) </mat-label>
+                <input formControlName="cost" type="number" matInput>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
                 <mat-label> Postage </mat-label>
                 <input formControlName="postage" type="number" matInput>
             </mat-form-field>
         </div>
-        <div class="controls">
+        <div class="flex-container control-btn">
             <button mat-raised-button (click)="onCancelClick()"> Cancel </button>
-            <button mat-raised-button color="accent" (click)="onSubmit()"> Update </button>
+            <button mat-raised-button color="primary" (click)="onSubmit()"> Update </button>
         </div>
     </form>
 </div>

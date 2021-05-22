@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { gql, Mutation, Query } from 'apollo-angular';
-import { ObjectID } from 'mongodb';
+import ObjectID from 'bson-objectid';
 import { Observable } from 'rxjs';
 import { delay, map, retryWhen, take } from 'rxjs/operators';
 import { FETCH_POLICY, POLLING_INTERVAL, RETRY_COUNT, RETRY_DELAY } from 'src/app/graphql.module';

@@ -1,11 +1,11 @@
-@import "src/styles";
+@import "~src/styles";
 
 .login-container {
     margin: auto;
     margin-top: 10rem;
     margin-bottom: 10rem;
     max-width: 50rem;
-    border: 0.1rem solid mat-color($zorius-primary, 500);
+    //border: 0.1rem solid mat-color($primary);
     border-radius: 1rem;
     overflow: hidden;
     display: flex;

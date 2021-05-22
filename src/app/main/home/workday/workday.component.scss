@@ -1,8 +1,12 @@
 @import "src/styles";
 
-.workday {
+.workday {  
     .workday-container {
+        margin: auto;
+        max-width: 75vw;
+        min-width: 1000px;      
         padding: 2rem;
+        
         .workday-header {
             display: flex;
             justify-content: space-between;

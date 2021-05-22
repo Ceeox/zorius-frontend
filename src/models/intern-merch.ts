@@ -1,5 +1,4 @@
-
-import { ObjectID } from "mongodb";
+import ObjectID from "bson-objectid";
 import { PageInfo } from "./page-info";
 import { User } from "./user";
 
@@ -7,8 +6,20 @@ export interface ListInternMerch {
     listInternMerch: InternMerchandiseConnection;
 }
 
+export interface GetInternMerchById {
+    getInternMerchById: InternMerchandise;
+}
+
 export interface CountMerchResponse {
     countInternMerch: number
+}
+
+export interface DeleteInternMerch {
+    deleteInternMerch: boolean
+}
+
+export interface NewInternMerch {
+    newInternMerch: InternMerchandise;
 }
 
 export interface InternMerchandiseConnection {
@@ -61,29 +72,28 @@ export interface NewInternMerchandise {
     merchandiseName: String;
     count: number;
     url?: String;
-    purchasedOn: Date;
     articleNumber?: String,
     postage?: number;
     useCase: String;
     cost: number;
-    orderer: ObjectID,
+    ordererId: ObjectID,
+    projectLeaderId: ObjectID,
     shop: string,
 }
 
 export interface UpdateInternMerchandise {
-    arivedOn?: Date;
     articleNumber?: String;
     cost?: number;
     count?: number;
     invoiceNumber?: number;
     merchandiseId?: number;
     merchandiseName?: String;
-    orderer?: User;
+    orderer?: ObjectID;
     postage?: number;
-    projectLeader?: String;
-    purchasedOn?: Date;
+    projectLeader?: ObjectID;
     serialNumber?: String[];
     shop?: String;
     url?: String;
     useCase?: String;
+    status?: string;
 }

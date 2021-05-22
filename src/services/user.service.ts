@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { gql, Mutation, Query } from "apollo-angular";
-import { ObjectID } from "mongodb";
+import ObjectID from "bson-objectid";
 import { Observable } from 'rxjs';
 import { delay, map, retryWhen, take } from "rxjs/operators";
 import { FETCH_POLICY, POLLING_INTERVAL, RETRY_COUNT, RETRY_DELAY } from "src/app/graphql.module";
@@ -104,8 +104,7 @@ export class UserService {
   }
 
   getUserById(id: ObjectID): Observable<User> {
-    console.log(ObjectID.toString())
-    return this.getUserGQL.fetch({ id: id }).pipe(
+    return this.getUserGQL.fetch({ id }).pipe(
       map(res => {
         return res.data.getUserById;
       }),

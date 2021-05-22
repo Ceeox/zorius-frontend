@@ -1,12 +1,10 @@
 @import "src/styles";
 
-.card {
-    margin: 2rem;
+.work-reports {
+    height: 100%;
+    padding-top: 2rem;
 
-    .container {
-    
-        .list {
-            padding-top: 2rem;
-        }
-    }
+    margin: auto;
+    max-width: 75vw;
+    min-width: 1000px;
 }

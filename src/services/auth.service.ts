@@ -3,7 +3,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Apollo, Query, gql } from 'apollo-angular';
-import { ObjectID } from 'mongodb';
+import ObjectID from 'bson-objectid';
+import { FETCH_POLICY } from 'src/app/graphql.module';
 
 
 
@@ -32,7 +33,7 @@ export class LoginGQL extends Query<LoginResponse> {
 
 export interface Claim {
   sub: string,
-  id: ObjectID,
+  id: string,
   exp: number,
   nbf: number,
   iat: number,
@@ -66,13 +67,9 @@ export class AuthService {
   }
 
   public login(email: string, password: string) {
-    this._resetLoginData();
-
     this.loginGQL.fetch({
       email: email,
       password: password,
-    }, {
-      fetchPolicy: 'network-only'
     }).subscribe(({ data }) => {
       const token = data.login.token;
       localStorage.setItem("token", token);
@@ -80,13 +77,11 @@ export class AuthService {
       this.claim = this._decodeToken();
 
       this.router.navigate(['/home']);
-    },
-      () => {
-        this._snackBar.open("Wrong email or password!", null, {
-          duration: 5000,
-        });
-      }
-    );
+    }, (error) => {
+      this._snackBar.open(error, null, {
+        duration: 5000,
+      });
+    });
   }
 
   public logout() {
@@ -95,8 +90,8 @@ export class AuthService {
   }
 
   public getUserId(): ObjectID | null {
-    if (this.claim !== null) {
-      return this.claim.id;
+    if (this.claim !== null && ObjectID.isValid(this.claim.id)) {
+      return new ObjectID(this.claim.id);
     } else {
       return null
     }

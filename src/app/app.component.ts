@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ThemeSwitchService } from 'src/services/theme-switch.service';
 
 export const SNACKBAR_TIMEOUT = 5000;
 
@@ -7,6 +8,16 @@ export const SNACKBAR_TIMEOUT = 5000;
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'zorius';
+
+  constructor(
+    private themeSwitch: ThemeSwitchService,
+  ) { }
+
+  ngOnInit() {
+    if (this.themeSwitch.prefersColorSchemeDark()) {
+      this.themeSwitch.selectDarkTheme();
+    }
+  }
 }

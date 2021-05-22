@@ -1,5 +1,5 @@
-<div class="home">
-    <div *ngIf="authService.isAuthenticated() else notLoggedIn" class="home-container">
+<div class="home mat-app-background">
+    <div *ngIf="authService.isAuthenticated() else notLoggedIn">
         <!-- <app-workday></app-workday> -->
         <app-work-reports></app-work-reports>
     </div>
@@ -7,8 +7,8 @@
         <mat-toolbar>
             <span>Zorius</span>
         </mat-toolbar>
-        <div>
+        <p>
             Zoirus ist ein Zeit- und Warenwirtschaftstool. Es ist derzeit noch in Entwickung.
-        </div>
+        </p>
     </ng-template>
 </div>

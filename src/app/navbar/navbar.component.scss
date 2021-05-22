@@ -1,14 +1,19 @@
-@import '~src/styles';
+@import 'src/styles';
+@import '~@angular/material/theming';
 
-.navbar {
-    color: mat-color($zorius-font-light);
-    background-color: mat-color($zorius-primary, 500);
-    padding: 1rem;
-
+.content {
+    height: 100%;
+    overflow-x: auto;
+    
     .navbar-container {
         display: flex;
+        padding: 1rem;
+        a {
+            margin-right: 2rem;
+        }
+        
         .profile-container {
-            margin-left: auto;
+
             .profilePic {
                 height: 2.5rem;
                 width: 2.5rem;
@@ -22,3 +27,4 @@
         }
     }
 }
+

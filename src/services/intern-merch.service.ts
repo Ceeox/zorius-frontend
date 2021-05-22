@@ -1,10 +1,19 @@
 import { Injectable } from '@angular/core';
 import { Query, Mutation, gql } from 'apollo-angular';
-import { ObjectID } from 'mongodb';
+import ObjectID from 'bson-objectid';
 import { Observable } from 'rxjs/internal/Observable';
 import { delay, map, retryWhen, take } from 'rxjs/operators';
 import { FETCH_POLICY, POLLING_INTERVAL, RETRY_COUNT, RETRY_DELAY } from 'src/app/graphql.module';
-import { CountMerchResponse, InternMerchandise, ListInternMerch, NewInternMerchandise, UpdateInternMerchandise } from 'src/models/intern-merch';
+import {
+    CountMerchResponse,
+    DeleteInternMerch,
+    GetInternMerchById,
+    InternMerchandise,
+    ListInternMerch,
+    NewInternMerch,
+    UpdateInternMerchandise,
+    NewInternMerchandise,
+} from 'src/models/intern-merch';
 
 
 @Injectable({
@@ -52,16 +61,15 @@ export class ListInternMerchGQL extends Query<ListInternMerch> {
 @Injectable({
     providedIn: 'root',
 })
-export class NewInternOrderGQL extends Mutation<InternMerchandise> {
+export class NewInternMerchGQL extends Mutation<NewInternMerch> {
     document = gql`
-    mutation newMerchandiseIntern($newInternOrder: NewInternOrder!) {
-      newInternOrder(newInternOrder: $newInternOrder) {
+    mutation newInternMerch($new: NewInternMerchandise!) {
+        newInternMerch(new: $new) {
         id
         arivedOn
         url
         createdDate
         updatedDate
-        orderer
         count
         merchandiseId
         merchandiseName
@@ -79,8 +87,8 @@ export class NewInternOrderGQL extends Mutation<InternMerchandise> {
 })
 export class UpdateInternMerchGQL extends Mutation<InternMerchandise> {
     document = gql`
-    mutation newMerchandiseIntern($id: ObjectId!, $update: InternMerchandiseUpdate!) {
-        newInternOrder(id: $id, update: $update) {
+    mutation updateInternMerch($id: ObjectId!, $update: InternMerchandiseUpdate!) {
+        updateInternMerch(id: $id, update: $update) {
             id
             arivedOn
             url
@@ -111,7 +119,17 @@ export class UpdateInternMerchGQL extends Mutation<InternMerchandise> {
 @Injectable({
     providedIn: 'root',
 })
-export class GetInternMerchByIdGQL extends Query<InternMerchandise> {
+export class DeleteInternMerchGQL extends Mutation<DeleteInternMerch> {
+    document = gql`
+        mutation deleteInternMerch($id: ObjectId!) {
+            deleteInternMerch(id: $id)
+        }`;
+}
+
+@Injectable({
+    providedIn: 'root',
+})
+export class GetInternMerchByIdGQL extends Query<GetInternMerchById> {
     document = gql`
     query getInternMerchById($id: ObjectId!) {
         getInternMerchById(id: $id) {
@@ -157,10 +175,11 @@ export class GetInternMerchByIdGQL extends Query<InternMerchandise> {
 export class InternMerchService {
     constructor(
         private listInternMerchGQL: ListInternMerchGQL,
-        private newInternOrderGQL: NewInternOrderGQL,
+        private newInternMerchGQL: NewInternMerchGQL,
         private countInternMerchGQL: CountInternMerchandiseGQL,
         private updateInternMerchGQL: UpdateInternMerchGQL,
         private getInternMerchByIdGQL: GetInternMerchByIdGQL,
+        private deleteInternMerchGQL: DeleteInternMerchGQL,
     ) { }
 
     countMerch(): Observable<number> {
@@ -179,7 +198,7 @@ export class InternMerchService {
             pollInterval: POLLING_INTERVAL,
         }).valueChanges.pipe(
             map(result => {
-                return result.data;
+                return result.data.getInternMerchById;
             }),
             retryWhen(errors => errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT)))
         );
@@ -203,12 +222,12 @@ export class InternMerchService {
     }
 
     newInternMerch(newMerch: NewInternMerchandise): Observable<InternMerchandise> {
-        return this.newInternOrderGQL
+        return this.newInternMerchGQL
             .mutate({
-                newInternOrder: newMerch,
+                new: newMerch,
             }).pipe(
                 map(result => {
-                    return result.data;
+                    return result.data.newInternMerch;
                 }),
                 retryWhen(errors => errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT)))
             );
@@ -219,6 +238,16 @@ export class InternMerchService {
             .pipe(
                 map(result => {
                     return result.data;
+                }),
+                retryWhen(errors => errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT)))
+            );
+    }
+
+    deleteInternMerch(id: ObjectID): Observable<boolean> {
+        return this.deleteInternMerchGQL.mutate({ id })
+            .pipe(
+                map(result => {
+                    return result.data.deleteInternMerch;
                 }),
                 retryWhen(errors => errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT)))
             );

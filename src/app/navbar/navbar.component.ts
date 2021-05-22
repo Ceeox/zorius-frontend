@@ -3,6 +3,7 @@ import { map } from 'rxjs/operators';
 import { AuthService } from 'src/services/auth.service';
 import { UserService } from 'src/services/user.service';
 import { Observable } from 'rxjs';
+import { ThemeSwitchService } from 'src/services/theme-switch.service';
 
 @Component({
   selector: 'app-navbar',
@@ -13,13 +14,25 @@ export class NavbarComponent implements OnInit {
   avatarUrl: Observable<string>;
   userName: Observable<string>;
 
+  isDarkMode: boolean;
+
   constructor(
     public authService: AuthService,
-    private userService: UserService
+    private userService: UserService,
+    private themeSwitch: ThemeSwitchService,
   ) {
+    this.isDarkMode = this.themeSwitch.prefersColorSchemeDark();
   }
 
   ngOnInit(): void {
+  }
+
+  storeThemeMode(): void {
+    if (this.isDarkMode) {
+      this.themeSwitch.selectDarkTheme();
+    } else {
+      this.themeSwitch.selectLightTheme();
+    }
   }
 
   isLogedIn(): boolean {

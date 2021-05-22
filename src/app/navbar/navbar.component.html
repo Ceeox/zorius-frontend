@@ -1,50 +1,70 @@
-<div class="navbar">
-    <div class="navbar-container">
-        <div class="navbar-home">
-            <a routerLink="/home" mat-button style="font-size: large">
-                <mat-icon>home</mat-icon>
-                <mat-label>Zorius</mat-label>
-            </a>
-        </div>
-        <div class="navigation-container" *ngIf="isLogedIn() == true">
-            <a routerLink="/workaccount" mat-button>Zeiterfassung</a>
-            <a routerLink="/workreports" mat-button>Berichte</a>
-            <button mat-button [matMenuTriggerFor]="menu">Warenwirtschaft</button>
-            <mat-menu #menu="matMenu">
-                <a mat-menu-item routerLink="/merch/intern">Interne Bestellungen</a>
-                <a mat-menu-item routerLink="/merch/extern">Externe Bestellungen</a>
-                <a mat-menu-item routerLink="/merch/stock">Lager</a>
-            </mat-menu>
-        </div>
+<div class="content">
 
-        <div class="profile-container">
-            <div *ngIf="isLogedIn() == true then profile else registerLogin"></div>
+    <mat-toolbar>
+        <mat-toolbar-row>
+
+            <div class="navbar-home">
+                <a routerLink="/home" mat-button>
+                    <mat-icon>home</mat-icon>
+                    <mat-label>Zorius</mat-label>
+                </a>
+            </div>
+
+            <div class="navigation" *ngIf="isLogedIn() == true">
+                <a routerLink="/workaccount" mat-button>Work Account</a>
+                <a routerLink="/workreports" mat-button>Work Reports</a>
+                <button mat-button [matMenuTriggerFor]="menu">Merchandise</button>
+                <mat-menu #menu="matMenu">
+                    <a mat-menu-item routerLink="/merch/intern">Intern Merchandise</a>
+                    <a mat-menu-item routerLink="/merch/extern">Extern Merchandise</a>
+                    <a mat-menu-item routerLink="/merch/stock">Stock</a>
+                </mat-menu>
+            </div>
+
+            <span style="flex: auto;"></span>
+
+            <div *ngIf="isLogedIn() then profile else registerLogin"></div>
             <ng-template #profile>
                 <div class="avatar">
-                    <div *ngIf='(avatarUrl | async) !== null else defaultPic'>
+                    <div *ngIf='(avatarUrl | async) else defaultPic'>
                         <a class="profilePic" mat-icon-button [matMenuTriggerFor]="userProfile">
                             <img [src]="(avatarUrl | async)" />
                         </a>
                     </div>
+
                     <ng-template #defaultPic>
                         <a class="profilePic" mat-icon-button [matMenuTriggerFor]="userProfile">
                             <mat-icon>person</mat-icon>
                         </a>
                     </ng-template>
                 </div>
+
                 <mat-menu #userProfile>
                     <button mat-menu-item routerLink="/user">
                         <mat-icon>person</mat-icon>Profil
                     </button>
+
+                    <button mat-menu-item>
+                        <mat-slide-toggle labelPosition="before" [(ngModel)]="isDarkMode" (change)="storeThemeMode()">
+                            <mat-icon>bedtime</mat-icon>Dark Mode
+                        </mat-slide-toggle>
+                    </button>
+
                     <button mat-menu-item (click)="authService.logout()">
                         <mat-icon>login</mat-icon>Logout
                     </button>
                 </mat-menu>
             </ng-template>
+
             <ng-template #registerLogin>
                 <a mat-button routerLink="/login">Anmelden</a>
                 <a mat-button routerLink="/register">Registrieren</a>
             </ng-template>
-        </div>
-    </div>
+        </mat-toolbar-row>
+    </mat-toolbar>
+
+    <router-outlet></router-outlet>
+
+    <app-footer></app-footer>
+
 </div>

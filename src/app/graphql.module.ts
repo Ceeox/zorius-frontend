@@ -10,7 +10,9 @@ export const FETCH_POLICY = 'no-cache';
 export const RETRY_COUNT = 2;
 export const RETRY_DELAY = 5000;
 
-const uri = 'https://localhost:8080/graphql';
+import { environment } from '../environments/environment';
+
+const uri = environment.apiUrl + '/graphql';
 
 export function createApollo(httpLink: HttpLink) {
   const basic = setContext((operation, context) => ({

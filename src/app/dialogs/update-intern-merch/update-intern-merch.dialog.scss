@@ -3,21 +3,25 @@
     flex-direction: column;
     justify-content: space-between;
     align-content: space-between;
+    margin-top: 1rem;
+
     
-    .article-info {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
+    .full-width {
+        width: 100%;
     }
-    .prices {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
+
+    .control-btn {
+        margin-bottom: 0.5rem;
     }
-    .controls {
-        margin-bottom: 0.25vh;
+
+    .flex-container {
+        width: 100%;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+        
+        mat-form-field:not(:last-child) {
+            padding-right: 1rem;
+        }
     }
 }

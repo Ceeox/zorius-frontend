@@ -1,4 +1,5 @@
-import { ObjectID } from "mongodb";
+
+import ObjectID from "bson-objectid";
 import { Customer } from "./customer";
 import { PageInfo } from "./page-info";
 import { Project } from "./project";

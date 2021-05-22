@@ -1,7 +1,13 @@
 @import './src/styles';
 
+.pnf {
+    height: 100%;
+    padding-top: 2rem;
 
-.pnf-container {
-    width: 50%;
-    margin: auto;
+    .pnf-card {
+        margin: auto;
+        max-width: 75vw;
+        min-width: 1000px;
+    }
+
 }

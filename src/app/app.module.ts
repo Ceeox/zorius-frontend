@@ -27,6 +27,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 // imports extern
 import { GraphQLModule } from './graphql.module';
@@ -41,7 +42,6 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { FooterComponent } from './footer/footer.component';
 import { HomeComponent } from './main/home/home.component';
 import { PageNotFoundComponent } from './main/pagenotfound/pagenotfound.component';
-import { WarenComponent } from './main/merchandise/waren.component';
 import { InternOrdersComponent } from './main/merchandise/intern-orders/intern-orders.component';
 import { ExternOrdersComponent } from './main/merchandise/extern-orders/extern-orders.component';
 import { StockComponent } from './main/merchandise/stock/stock.component';
@@ -69,7 +69,6 @@ import { getToken } from 'src/services/auth.service';
         FooterComponent,
         HomeComponent,
         PageNotFoundComponent,
-        WarenComponent,
         InternOrdersComponent,
         ExternOrdersComponent,
         StockComponent,
@@ -112,6 +111,7 @@ import { getToken } from 'src/services/auth.service';
         MatGridListModule,
         MatDatepickerModule,
         MatNativeDateModule,
+        MatSlideToggleModule,
 
         BrowserModule,
         AppRoutingModule,

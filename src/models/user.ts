@@ -1,4 +1,5 @@
-import { ObjectID } from "mongodb";
+
+import ObjectID from "bson-objectid";
 import { PageInfo } from "./page-info";
 
 export interface User {

@@ -1,19 +1,14 @@
-<div class="header">
-  <mat-toolbar color="primary">
-    <mat-label>Todays Work Reports</mat-label>
-  </mat-toolbar>
+<div class="work-reports mat-app-background">
+
+  <mat-card class="work-reports-card">
+
+    <mat-toolbar>
+      <span>Todays Work Reports</span>
+    </mat-toolbar>
+
+    <app-new-wr></app-new-wr>
+
+    <app-list-wr-today></app-list-wr-today>
+
+  </mat-card>
 </div>
-
-<mat-card class="card">
-  <div class="container">
-
-    <div class="new-wr">
-      <app-new-wr></app-new-wr>
-    </div>
-
-    <div class="lsit-wr">
-      <app-list-wr-today></app-list-wr-today>
-    </div>
-
-  </div>
-</mat-card>

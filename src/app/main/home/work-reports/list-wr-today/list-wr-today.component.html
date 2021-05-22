@@ -1,9 +1,9 @@
 <div>
   <mat-accordion multi>
-    <mat-expansion-panel *ngFor="let item of workReports | async">
+    <mat-expansion-panel *ngFor="let wr of workReports | async">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          {{ item }}
+          {{ wr }}
         </mat-panel-title>
         <mat-panel-description>
           {{ description }}
