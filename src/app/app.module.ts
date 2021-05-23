@@ -51,6 +51,9 @@ import { RegisterComponent } from './main/register/register.component';
 import { WorkReportsComponent } from './main/home/work-reports/work-reports.component';
 import { NewWrComponent } from './main/home/work-reports/new-wr/new-wr.component';
 import { ListWrTodayComponent } from './main/home/work-reports/list-wr-today/list-wr-today.component';
+import { NewInternMerchComponent } from './main/merchandise/new-intern-merch/new-intern-merch.component';
+import { UpdateInternMerchComponent } from './main/merchandise/update-intern-merch/update-intern-merch.component';
+import { UserProfileComponent } from './main/user-profile/user-profile.component';
 
 // dialogs
 import { NewProjectDialog } from './dialogs/new-project/new-project.dialog';
@@ -78,6 +81,9 @@ import { getToken } from 'src/services/auth.service';
         WorkReportsComponent,
         NewWrComponent,
         ListWrTodayComponent,
+        NewInternMerchComponent,
+        UpdateInternMerchComponent,
+        UserProfileComponent,
 
         NewProjectDialog,
         NewInternMerchDialog,

@@ -13,6 +13,7 @@ import { InternMerchService } from 'src/services/intern-merch.service';
 import { NewInternMerchDialog } from 'src/app/dialogs/new-intern-merch/new-intern-merch.dialog';
 import { UpdateInternMerchDialog } from 'src/app/dialogs/update-intern-merch/update-intern-merch.dialog';
 import ObjectID from 'bson-objectid';
+import { Router } from '@angular/router';
 
 
 const LS_PAGE_SIZE: string = "intern_merch_page_size";
@@ -26,7 +27,7 @@ export class InternOrdersComponent implements OnInit, AfterViewInit {
 
     internMerchandiseSource = new MatTableDataSource<InternMerchandiseEdge>();
     internMerchs: Observable<InternMerchandiseEdge[]>;
-    displayedColumns = ['no.', 'merchandiseId', 'merchandiseName', 'count', 'cost', 'orderer', 'status', 'edit', 'download', 'delete'];
+    displayedColumns = ['no.', 'merchandiseId', 'merchandiseName', 'count', 'cost', 'orderer', 'status', 'menu'];
 
     pageSizeOptions = [10, 25, 50, 100];
     pageSize: number = 10;
@@ -48,7 +49,9 @@ export class InternOrdersComponent implements OnInit, AfterViewInit {
         public updateMerchDialog: MatDialog,
         private userService: UserService,
         private internMerchService: InternMerchService,
-        private snackBar: MatSnackBar
+
+        private snackBar: MatSnackBar,
+        private router: Router,
     ) { }
 
     ngAfterViewInit(): void {
@@ -91,11 +94,7 @@ export class InternOrdersComponent implements OnInit, AfterViewInit {
             );
     }
 
-    download() {
-        this.snackBar.open("Not yet implemented!")._dismissAfter(SNACKBAR_TIMEOUT);
-    }
-
-    delete(internMerch: InternMerchandise): void {
+    deleteInternMerch(internMerch: InternMerchandise): void {
         this.internMerchService.deleteInternMerch(internMerch.id).subscribe(res => {
             if (res) {
                 this.snackBar
@@ -115,57 +114,16 @@ export class InternOrdersComponent implements OnInit, AfterViewInit {
         return name;
     }
 
-    openNewInternOrder(): void {
-        const dialogRef = this.newMerchDialog.open(NewInternMerchDialog, {
-            minWidth: '30rem',
-            maxWidth: '150rem',
-            hasBackdrop: true,
-            disableClose: true,
-            data: { newInternOrder: undefined }
-        });
-
-
-        dialogRef.afterClosed().subscribe((result: NewInternMerchandise) => {
-            if (!result)
-                return;
-
-            this.userService.getSelf().subscribe((user) => {
-                result.ordererId = user.id
-                result.projectLeaderId = user.id;
-                console.log("new: " + JSON.stringify(result));
-                this.internMerchService.newInternMerch(result).subscribe();
-            });
-
-        });
+    openNewInternMerch(): void {
+        this.router.navigate(['merch/intern/new']);
     }
 
-    openUpdateDialog(id: ObjectID): void {
-        const dialogRef = this.internMerchService.getInternMerchById(id)
-            .pipe(
-                map(res => {
-                    return this.updateMerchDialog.open(UpdateInternMerchDialog, {
-                        minWidth: '40rem',
-                        maxWidth: '150rem',
-                        hasBackdrop: true,
-                        data: { internMerch: res, update: undefined }
-                    });
-                })
-            );
+    downloadInternMerch() {
+        this.snackBar.open("Not yet implemented!")._dismissAfter(SNACKBAR_TIMEOUT);
+    }
 
-        ;
-
-        dialogRef.subscribe((ref) => {
-            if (!ref)
-                return;
-
-            ref.afterClosed().subscribe(({ internMerch, update }) => {
-                if (!update)
-                    return;
-                console.log("update: " + JSON.stringify(update));
-                this.internMerchService.updateInternMerch(internMerch.id, update)
-                    .subscribe();
-            });
-        });
+    goUpdateInternMerch(id: ObjectID): void {
+        this.router.navigate(['merch/intern/update', id]);
     }
 }
 

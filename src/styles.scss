@@ -48,3 +48,27 @@ html, body {
   box-sizing: border-box;
 }
 
+.card {
+  margin: auto;
+  max-width: 75vw;
+  min-width: 600px;
+
+  .card-content {
+      padding-top: 1rem;
+  }
+
+  .full-width {
+      width: 100%;
+  }
+
+  .flex-container {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      
+      mat-form-field:not(:last-child) {
+          padding-right: 1rem;
+      }
+  }
+}

@@ -1,14 +1,15 @@
-<div class="intern-merch mat-app-background">
-    <mat-card class="intern-merch-card">
-        <mat-toolbar>
+<div class="intern-merch">
+    <mat-card class="card">
+        <mat-toolbar color="primary">
             <span>Intern Merchandise</span>
         </mat-toolbar>
-        <div class="new-merch-btn">
-            <button mat-raised-button (click)="openNewInternOrder()" color="primary">
-                New Order
-            </button>
-        </div>
-        <div>
+
+        <div class="card-content">
+            <div class="new-merch-btn">
+                <button mat-raised-button (click)="openNewInternMerch()" color="primary">
+                    New Intern Merchandise
+                </button>
+            </div>
             <div *ngIf="isLoadingResults">
                 <mat-progress-bar *ngIf="isLoadingResults" mode="indeterminate"></mat-progress-bar>
             </div>
@@ -50,30 +51,26 @@
                     <td mat-cell *matCellDef="let edge"> {{edge.node.status}} </td>
                 </ng-container>
 
-                <ng-container matColumnDef="edit">
-                    <th mat-header-cell *matHeaderCellDef> Edit </th>
+                <ng-container matColumnDef="menu">
+                    <th mat-header-cell *matHeaderCellDef></th>
                     <td mat-cell *matCellDef="let edge">
-                        <button mat-icon-button title="Edit" (click)="openUpdateDialog(edge.node.id)">
-                            <mat-icon>edit</mat-icon>
-                        </button>
-                    </td>
-                </ng-container>
 
-                <ng-container matColumnDef="download">
-                    <th mat-header-cell *matHeaderCellDef> Download </th>
-                    <td mat-cell *matCellDef="let edge">
-                        <button mat-icon-button title="Download" (click)="download()">
-                            <mat-icon>download_for_offline</mat-icon>
+                        <button mat-icon-button [matMenuTriggerFor]="menu">
+                            <mat-icon>more_vert</mat-icon>
                         </button>
-                    </td>
-                </ng-container>
 
-                <ng-container matColumnDef="delete">
-                    <th mat-header-cell *matHeaderCellDef> Delete </th>
-                    <td mat-cell *matCellDef="let edge">
-                        <button mat-icon-button title="Delete" (click)="delete(edge.node)">
-                            <mat-icon>delete</mat-icon>
-                        </button>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item (click)="goUpdateInternMerch(edge.node.id)">
+                                <mat-icon>edit</mat-icon>Edit
+                            </button>
+                            <button mat-menu-item (click)="downloadInternMerch">
+                                <mat-icon>download_for_offline</mat-icon>Download
+                            </button>
+                            <button mat-menu-item (click)="deleteInternMerch(edge.node)">
+                                <mat-icon>delete</mat-icon>Delete
+                            </button>
+                        </mat-menu>
+
                     </td>
                 </ng-container>
 
