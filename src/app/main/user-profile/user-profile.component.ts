@@ -22,22 +22,40 @@ export class UserProfileComponent implements OnInit {
   constructor(
     private userService: UserService,
     private fb: FormBuilder,
-  ) { }
-
-  ngOnInit() {
+  ) {
     this.self = this.userService.getSelf().pipe(
       map(res => {
-        this.updateUserForm.patchValue({
-          username: res.username,
-          firstname: res.firstname,
-          lastname: res.lastname,
-        })
         return res;
       })
-    );
+    )
+  }
+
+  ngOnInit() {
+    this.self.subscribe(res => {
+      this.updateForm(res.username, res.firstname, res.lastname);
+    })
+  }
+
+  updateForm(
+    username?: string,
+    firstname?: string,
+    lastname?: string,
+  ) {
+    this.updateUserForm.patchValue({
+      username,
+      firstname,
+      lastname,
+    });
   }
 
   onSubmit() {
+    this.userService.updateUser(
+      this.updateUserForm.get('username').value,
+      this.updateUserForm.get('firstname').value,
+      this.updateUserForm.get('lastname').value,
+    ).subscribe(res => {
+      this.updateForm(res.username, res.firstname, res.lastname);
+    });
   }
 
 }

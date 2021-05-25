@@ -13,7 +13,7 @@ export interface User {
     avatarUrl?: string;
 }
 
-export interface GetUserById {
+export interface GetUserByIdResp {
     getUserById: User;
 }
 
@@ -29,4 +29,8 @@ export interface UserConnection {
 export interface UserEdge {
     cursor: String;
     node: User;
+}
+
+export interface UpdateUserResp {
+    updateUser: User;
 }

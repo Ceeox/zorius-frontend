@@ -2,16 +2,17 @@ import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { gql, Mutation, Query } from "apollo-angular";
 import ObjectID from "bson-objectid";
+import { subscribe } from "graphql";
 import { Observable } from 'rxjs';
 import { delay, map, retryWhen, take } from "rxjs/operators";
 import { FETCH_POLICY, POLLING_INTERVAL, RETRY_COUNT, RETRY_DELAY } from "src/app/graphql.module";
-import { GetUserById, ListUsers, User } from "src/models/user";
+import { GetUserByIdResp, ListUsers, UpdateUserResp, User } from "src/models/user";
 import { AuthService } from "./auth.service";
 
 @Injectable({
   providedIn: 'root',
 })
-export class GetUserByIdGQL extends Query<GetUserById> {
+export class GetUserByIdGQL extends Query<GetUserByIdResp> {
   document = gql`
     query getUserById($id: ObjectId!) {
         getUserById(id: $id) {
@@ -58,7 +59,7 @@ export class ListUsersGQL extends Query<ListUsers> {
 @Injectable({
   providedIn: 'root',
 })
-export class UpdateUserGQL extends Mutation<User> {
+export class UpdateUserGQL extends Mutation<UpdateUserResp> {
   document = gql`
     mutation updateUser($id: ObjectId!, $firstname: String, $lastname: String, $username: String) {
       updateUser(
@@ -86,6 +87,7 @@ export class UserService {
   constructor(
     private getUserGQL: GetUserByIdGQL,
     private listUsersGQL: ListUsersGQL,
+    private updateUsersGQL: UpdateUserGQL,
     private authService: AuthService,
     private router: Router
   ) {
@@ -126,6 +128,23 @@ export class UserService {
         return res.data;
       }),
       retryWhen(errors => errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT)))
+    );
+  }
+
+  updateUser(username?: string, firstname?: string, lastname?: string): Observable<User> {
+    return this.getSelf().pipe(
+      map(res => {
+        let user: User;
+        this.updateUsersGQL.mutate({
+          id: res.id,
+          username,
+          firstname,
+          lastname,
+        }).subscribe(res => {
+          user = res.data.updateUser;
+        });
+        return user;
+      })
     );
   }
 }

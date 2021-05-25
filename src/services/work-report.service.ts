@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { gql, Mutation, Query } from 'apollo-angular';
-import { ObjectID } from 'bson-objectid';
+import ObjectID from 'bson-objectid';
 import { Observable } from 'rxjs';
 import { delay, map, retryWhen, take } from 'rxjs/operators';
 import { FETCH_POLICY, POLLING_INTERVAL, RETRY_COUNT, RETRY_DELAY } from 'src/app/graphql.module';
@@ -145,7 +145,7 @@ export class WorkReportService {
         return res.data;
       }),
       retryWhen(errors => errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT)))
-    );;
+    );
   }
 
   listWorkReports(first?: number, last?: number, after?: String, before?: String): Observable<ListWorkReport> {
@@ -166,7 +166,7 @@ export class WorkReportService {
   }
 
   updateWorkReport(id: ObjectID) {
-    console.log("nto implemented");
+    console.log("not implemented");
   }
 
   deleteWorkReport(id: ObjectID) {
