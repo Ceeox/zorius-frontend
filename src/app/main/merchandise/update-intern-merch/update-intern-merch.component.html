@@ -5,7 +5,7 @@
       <div *ngIf="internMerch | async">Update Intern Merchandise ({{ (internMerch | async).merchandiseId }}) </div>
     </mat-toolbar>
 
-    <mat-card-content class="card-content" [formGroup]="newInternMerchForm">
+    <mat-card-content class="card-content" [formGroup]="updateInternMerchForm">
 
       <div class="flex-container">
         <mat-form-field appearance="outline">
@@ -94,7 +94,7 @@
     </mat-card-content>
 
     <div class="flex-container control-btn">
-      <button mat-raised-button (click)="goBack()"> Back </button>
+      <button mat-raised-button (click)="onBack()"> Back </button>
       <button mat-raised-button color="primary" (click)="onSubmit()"> Update </button>
     </div>
 

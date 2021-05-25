@@ -3,8 +3,25 @@
     <mat-toolbar color="primary">
       <span>User Profile</span>
     </mat-toolbar>
-    <mat-card-content>
+    <div class="card-content" [formGroup]="updateUserForm">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Username</mat-label>
+        <input type="text" formControlName="username" matInput>
+      </mat-form-field>
 
-    </mat-card-content>
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Firstname</mat-label>
+        <input type="text" matInput formControlName="firstname">
+      </mat-form-field>
+
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Lastname</mat-label>
+        <input type="text" matInput formControlName="lastname">
+      </mat-form-field>
+
+      <div class="flex-container">
+        <button mat-raised-button color="primary" (click)="onSubmit()">Update</button>
+      </div>
+    </div>
   </mat-card>
 </div>

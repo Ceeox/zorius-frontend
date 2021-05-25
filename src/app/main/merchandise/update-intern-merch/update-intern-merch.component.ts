@@ -18,7 +18,7 @@ import { UserService } from 'src/services/user.service';
 })
 export class UpdateInternMerchComponent implements OnInit {
 
-  newInternMerchForm = this.fb.group({
+  updateInternMerchForm = this.fb.group({
     articleNumber: [''],
     cost: [''],
     count: [''],
@@ -58,7 +58,7 @@ export class UpdateInternMerchComponent implements OnInit {
         }
         return this.internMerchService.getInternMerchById(id).pipe(
           map(res => {
-            this.newInternMerchForm.patchValue({
+            this.updateInternMerchForm.patchValue({
               articleNumber: res.articleNumber,
               cost: res.cost,
               count: res.count,
@@ -87,7 +87,7 @@ export class UpdateInternMerchComponent implements OnInit {
 
   }
 
-  goBack() {
+  onBack() {
     this.location.back();
   }
 
@@ -102,20 +102,20 @@ export class UpdateInternMerchComponent implements OnInit {
   }
 
   onSubmit(): void {
-    console.log(this.newInternMerchForm.get('orderer').value);
+    console.log(this.updateInternMerchForm.get('orderer').value);
     let update: UpdateInternMerchandise = {
-      articleNumber: this.newInternMerchForm.get('articleNumber').value,
-      cost: this.newInternMerchForm.get('cost').value,
-      count: this.newInternMerchForm.get('count').value,
-      invoiceNumber: this.newInternMerchForm.get('invoiceNumber').value,
-      merchandiseId: this.newInternMerchForm.get('merchandiseId').value,
-      merchandiseName: this.newInternMerchForm.get('merchandiseName').value,
-      orderer: this.newInternMerchForm.get('orderer').value.id,
-      postage: this.newInternMerchForm.get('postage').value,
-      projectLeader: this.newInternMerchForm.get('projectLeader').value.id,
-      shop: this.newInternMerchForm.get('shop').value,
-      url: this.newInternMerchForm.get('url').value,
-      useCase: this.newInternMerchForm.get('useCase').value,
+      articleNumber: this.updateInternMerchForm.get('articleNumber').value,
+      cost: this.updateInternMerchForm.get('cost').value,
+      count: this.updateInternMerchForm.get('count').value,
+      invoiceNumber: this.updateInternMerchForm.get('invoiceNumber').value,
+      merchandiseId: this.updateInternMerchForm.get('merchandiseId').value,
+      merchandiseName: this.updateInternMerchForm.get('merchandiseName').value,
+      orderer: this.updateInternMerchForm.get('orderer').value.id,
+      postage: this.updateInternMerchForm.get('postage').value,
+      projectLeader: this.updateInternMerchForm.get('projectLeader').value.id,
+      shop: this.updateInternMerchForm.get('shop').value,
+      url: this.updateInternMerchForm.get('url').value,
+      useCase: this.updateInternMerchForm.get('useCase').value,
     };
 
     this.internMerch.subscribe(merch => {
@@ -123,6 +123,6 @@ export class UpdateInternMerchComponent implements OnInit {
         .subscribe();
     });
 
-    this.goBack();
+    this.onBack();
   }
 }
