@@ -1,27 +1,27 @@
 import { NgModule } from '@angular/core';
 import { APOLLO_OPTIONS } from 'apollo-angular';
-import { InMemoryCache, ApolloLink } from '@apollo/client/core';
+import { InMemoryCache, ApolloLink, WatchQueryFetchPolicy } from '@apollo/client/core';
 import { HttpLink } from 'apollo-angular/http';
 import { setContext } from '@apollo/client/link/context';
 import { onError } from "@apollo/client/link/error";
-
-export const POLLING_INTERVAL = 10000;
-export const FETCH_POLICY = 'no-cache';
-export const RETRY_COUNT = 2;
-export const RETRY_DELAY = 5000;
-
 import { environment } from '../environments/environment';
+
+export const POLLING_INTERVAL = environment.pollingInterval;
+export const FETCH_POLICY = environment.fetchPolicy as WatchQueryFetchPolicy;
+export const RETRY_COUNT = environment.retryCount;
+export const RETRY_DELAY = environment.retryDelay;
+
 
 const uri = environment.apiUrl + '/graphql';
 
 export function createApollo(httpLink: HttpLink) {
-  const basic = setContext((operation, context) => ({
+  const basic = setContext((_operation, _context) => ({
     headers: {
       Accept: 'charset=utf-8'
     }
   }));
 
-  const auth = setContext((operation, context) => {
+  const auth = setContext((_operation, _context) => {
     return {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token') || null}`

@@ -4,7 +4,11 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'https://localhost:8080'
+  apiUrl: 'https://localhost:8080',
+  pollingInterval: 10000,
+  fetchPolicy: 'no-cache',
+  retryCount: 2,
+  retryDelay: 500,
 };
 
 /*
