@@ -88,9 +88,9 @@ export interface UpdateInternMerchandise {
     invoiceNumber?: number;
     merchandiseId?: number;
     merchandiseName?: String;
-    orderer?: ObjectID;
+    ordererId?: ObjectID;
     postage?: number;
-    projectLeader?: ObjectID;
+    projectLeaderId?: ObjectID;
     serialNumber?: String[];
     shop?: String;
     url?: String;

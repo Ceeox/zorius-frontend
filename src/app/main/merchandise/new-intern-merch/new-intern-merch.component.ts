@@ -6,6 +6,9 @@ import { Location } from '@angular/common';
 import { InternMerchService } from 'src/services/intern-merch.service';
 import { UserService } from 'src/services/user.service';
 import ObjectID from 'bson-objectid';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { User, UserEdge } from 'src/models/user';
 
 @Component({
   selector: 'app-new-intern-merch',
@@ -31,23 +34,39 @@ export class NewInternMerchComponent implements OnInit {
     status: ['']
   });
   selfId: ObjectID;
+  ordererOptions: Observable<UserEdge[]>;
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private location: Location,
     private interMerch: InternMerchService,
-    private user: UserService,
+    private userService: UserService,
   ) { }
 
   ngOnInit() {
-    this.user.getSelf().subscribe(res => {
+    this.ordererOptions = this.userService.listUsers().pipe(
+      map(res => {
+        return res.listUsers.edges;
+      })
+    );
+    this.userService.getSelf().subscribe(res => {
       this.selfId = res.id;
     })
   }
 
   onBack() {
     this.location.back();
+  }
+
+  getUserName(user: User): string {
+    var name = "";
+    if (user.firstname && user.lastname) {
+      name = user.firstname + " " + user.lastname;
+    } else {
+      name = user.username.toString();
+    }
+    return name;
   }
 
   onSubmit(): void {

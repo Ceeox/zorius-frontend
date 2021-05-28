@@ -10,6 +10,7 @@ import { InternMerchandise, UpdateInternMerchandise } from 'src/models/intern-me
 import { User, UserEdge } from 'src/models/user';
 import { InternMerchService } from 'src/services/intern-merch.service';
 import { UserService } from 'src/services/user.service';
+import { MatSelectChange } from '@angular/material/select';
 
 @Component({
   selector: 'app-update-intern-merch',
@@ -25,9 +26,9 @@ export class UpdateInternMerchComponent implements OnInit {
     invoiceNumber: [''],
     merchandiseId: [''],
     merchandiseName: [''],
-    orderer: [''],
+    ordererId: [''],
     postage: [''],
-    projectLeader: [''],
+    projectLeaderId: [''],
     purchasedOn: [''],
     shop: [''],
     url: [''],
@@ -35,8 +36,9 @@ export class UpdateInternMerchComponent implements OnInit {
     status: ['']
   });
   ordererOptions: Observable<UserEdge[]>;
-  statusOptions: string[] = ['ORDERED', 'USED', 'DELIVERED', 'STORED'];
   internMerch: Observable<InternMerchandise>;
+  selectedOrderer: Observable<User>;
+  selectedProjectLeader: Observable<User>;
 
   constructor(
     private fb: FormBuilder,
@@ -58,6 +60,13 @@ export class UpdateInternMerchComponent implements OnInit {
         }
         return this.internMerchService.getInternMerchById(id).pipe(
           map(res => {
+            this.selectedOrderer = new Observable(subscriber => {
+              subscriber.next(res.orderer)
+            });
+            this.selectedProjectLeader = new Observable(subscriber => {
+              subscriber.next(res.projectLeader)
+            });
+
             this.updateInternMerchForm.patchValue({
               articleNumber: res.articleNumber,
               cost: res.cost,
@@ -65,9 +74,9 @@ export class UpdateInternMerchComponent implements OnInit {
               invoiceNumber: res.invoiceNumber,
               merchandiseId: res.merchandiseId,
               merchandiseName: res.merchandiseName,
-              orderer: res.orderer,
+              ordererId: res.orderer.id,
               postage: res.postage,
-              projectLeader: res.projectLeader,
+              projectLeaderId: res.projectLeader.id,
               purchasedOn: res.purchasedOn,
               shop: res.shop,
               url: res.url,
@@ -91,6 +100,20 @@ export class UpdateInternMerchComponent implements OnInit {
     this.location.back();
   }
 
+  onOrdererChange(change: MatSelectChange) {
+    this.selectedOrderer = change.value;
+    this.updateInternMerchForm.patchValue({
+      orderer: change.value.id,
+    });
+  }
+
+  onProjectLeaderChange(change: MatSelectChange) {
+    this.selectedProjectLeader = change.value;
+    this.updateInternMerchForm.patchValue({
+      projectLeader: change.value.id,
+    });
+  }
+
   getUserName(user: User): string {
     var name = "";
     if (user.firstname && user.lastname) {
@@ -110,9 +133,9 @@ export class UpdateInternMerchComponent implements OnInit {
       invoiceNumber: this.updateInternMerchForm.get('invoiceNumber').value,
       merchandiseId: this.updateInternMerchForm.get('merchandiseId').value,
       merchandiseName: this.updateInternMerchForm.get('merchandiseName').value,
-      orderer: this.updateInternMerchForm.get('orderer').value.id,
+      ordererId: this.updateInternMerchForm.get('ordererId').value.id,
       postage: this.updateInternMerchForm.get('postage').value,
-      projectLeader: this.updateInternMerchForm.get('projectLeader').value.id,
+      projectLeaderId: this.updateInternMerchForm.get('projectLeaderId').value.id,
       shop: this.updateInternMerchForm.get('shop').value,
       url: this.updateInternMerchForm.get('url').value,
       useCase: this.updateInternMerchForm.get('useCase').value,

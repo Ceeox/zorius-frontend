@@ -1,43 +1,59 @@
 <div class="new-intern-merch">
   <mat-card class="card">
-    <mat-toolbar>New Intern Merchandise</mat-toolbar>
+    <mat-toolbar color="primary">New Intern Merchandise</mat-toolbar>
     <div class="card-content" [formGroup]="newInternMerchForm">
       <div class="flex-container">
-        <mat-form-field appearance="outline" required>
-          <mat-label required>Count</mat-label>
-          <input formControlName="count" type="number" matInput>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="fill">
           <mat-label>Article Number</mat-label>
-          <input formControlName="articleNumber" type="text" matInput>
+          <input formControlName="articleNumber" type="text" matInput required>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label> Project Leader </mat-label>
+          <mat-select formControlName="projectLeader" required>
+            <mat-option *ngFor="let user of ordererOptions | async" [value]="user.node">
+              {{ getUserName(user.node) }}
+            </mat-option>
+          </mat-select>
         </mat-form-field>
       </div>
-      <mat-form-field class="full-width" appearance="outline">
+
+      <mat-form-field class="full-width" appearance="fill">
         <mat-label>Merchandise Name</mat-label>
-        <textarea formControlName="merchandiseName" matInput></textarea>
+        <textarea formControlName="merchandiseName" matInput required></textarea>
       </mat-form-field>
 
-      <mat-form-field class="full-width" appearance="outline">
+      <mat-form-field class="full-width" appearance="fill">
         <mat-label>Use Case</mat-label>
         <textarea matInput formControlName="useCase"></textarea>
       </mat-form-field>
-      <mat-form-field class="full-width" appearance="outline">
+
+      <mat-form-field class="full-width" appearance="fill">
         <mat-label>Url</mat-label>
         <input type="url" matInput formControlName="url">
       </mat-form-field>
-      <mat-form-field class="full-width" appearance="outline">
+
+      <mat-form-field class="full-width" appearance="fill">
         <mat-label>Shop</mat-label>
-        <input type="text" matInput formControlName="shop">
+        <input type="text" matInput formControlName="shop" required>
       </mat-form-field>
 
       <div class="flex-container">
-        <mat-form-field appearance="outline">
-          <mat-label>Price (wo. Tax)</mat-label>
-          <input type="number" matInput formControlName="cost">
-        </mat-form-field>
-        <mat-form-field appearance="outline">
+        <div>
+          <mat-form-field appearance="fill" required>
+            <mat-label required>Count</mat-label>
+            <input formControlName="count" type="number" matInput required>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Price (wo. Tax)</mat-label>
+            <input type="number" matInput formControlName="cost" required>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="fill">
           <mat-label>Postage</mat-label>
-          <input type="number" matInput formControlName="postage">
+          <input type="number" matInput formControlName="postage" required>
         </mat-form-field>
       </div>
       <div class="flex-container">
