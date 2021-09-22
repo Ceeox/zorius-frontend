@@ -6,12 +6,11 @@ describe('InternOrdersComponent', () => {
   let component: InternOrdersComponent;
   let fixture: ComponentFixture<InternOrdersComponent>;
 
-  beforeEach((() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [InternOrdersComponent]
-    })
-      .compileComponents();
-  }));
+      declarations: [InternOrdersComponent],
+    }).compileComponents();
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(InternOrdersComponent);

@@ -1,41 +1,40 @@
-@import "src/styles";
+@import 'src/styles';
 
-.workday {  
-    .workday-container {
-        margin: auto;
-        max-width: 75vw;
-        min-width: 1000px;      
-        padding: 2rem;
-        
-        .workday-header {
-            display: flex;
-            justify-content: space-between;
-            flex-direction: row;
-            align-items: center;
-            width: 100%;
+.workday {
+  .workday-container {
+    margin: auto;
+    max-width: 75vw;
+    min-width: 1000px;
+    padding: 2rem;
 
-            .workday-text{
-                padding-left: 1rem;
-                h1 {
-                    display: table-cell;
-                    vertical-align: middle;
-                }
-            }
+    .workday-header {
+      display: flex;
+      justify-content: space-between;
+      flex-direction: row;
+      align-items: center;
+      width: 100%;
 
-            .workday-duration {
-                height: 100%;
-                align-self: flex-end;
-                margin-left: auto;
-            }
+      .workday-text {
+        padding-left: 1rem;
+        h1 {
+          display: table-cell;
+          vertical-align: middle;
         }
-        .time-records-table {
-            padding: 1rem;
-            .tr-table-container {
-                
-                table {
-                    width: 100%;
-                }
-            }
-        }
+      }
+
+      .workday-duration {
+        height: 100%;
+        align-self: flex-end;
+        margin-left: auto;
+      }
     }
+    .time-records-table {
+      padding: 1rem;
+      .tr-table-container {
+        table {
+          width: 100%;
+        }
+      }
+    }
+  }
 }

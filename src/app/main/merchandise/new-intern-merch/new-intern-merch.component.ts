@@ -5,7 +5,7 @@ import { NewInternMerchandise } from 'src/models/intern-merch';
 import { Location } from '@angular/common';
 import { InternMerchService } from 'src/services/intern-merch.service';
 import { UserService } from 'src/services/user.service';
-import ObjectID from 'bson-objectid';
+
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { User, UserEdge } from 'src/models/user';
@@ -13,10 +13,9 @@ import { User, UserEdge } from 'src/models/user';
 @Component({
   selector: 'app-new-intern-merch',
   templateUrl: './new-intern-merch.component.html',
-  styleUrls: ['./new-intern-merch.component.scss']
+  styleUrls: ['./new-intern-merch.component.scss'],
 })
 export class NewInternMerchComponent implements OnInit {
-
   newInternMerchForm = this.fb.group({
     articleNumber: [''],
     cost: [''],
@@ -31,9 +30,9 @@ export class NewInternMerchComponent implements OnInit {
     shop: [''],
     url: [''],
     useCase: [''],
-    status: ['']
+    status: [''],
   });
-  selfId: ObjectID;
+  selfId: string;
   ordererOptions: Observable<UserEdge[]>;
 
   constructor(
@@ -41,18 +40,18 @@ export class NewInternMerchComponent implements OnInit {
     private router: Router,
     private location: Location,
     private interMerch: InternMerchService,
-    private userService: UserService,
-  ) { }
+    private userService: UserService
+  ) {}
 
   ngOnInit() {
     this.ordererOptions = this.userService.listUsers().pipe(
-      map(res => {
+      map((res) => {
         return res.listUsers.edges;
       })
     );
-    this.userService.getSelf().subscribe(res => {
+    this.userService.getSelf().subscribe((res) => {
       this.selfId = res.id;
-    })
+    });
   }
 
   onBack() {
@@ -60,9 +59,9 @@ export class NewInternMerchComponent implements OnInit {
   }
 
   getUserName(user: User): string {
-    var name = "";
+    var name = '';
     if (user.firstname && user.lastname) {
-      name = user.firstname + " " + user.lastname;
+      name = user.firstname + ' ' + user.lastname;
     } else {
       name = user.username.toString();
     }
@@ -88,5 +87,4 @@ export class NewInternMerchComponent implements OnInit {
 
     this.onBack();
   }
-
 }

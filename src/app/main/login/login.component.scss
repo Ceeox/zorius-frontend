@@ -1,25 +1,25 @@
-@import "~src/styles";
+@import '~src/styles';
 
 .login-container {
-    margin: auto;
-    margin-top: 10rem;
-    margin-bottom: 10rem;
-    max-width: 50vw;
+  margin: auto;
+  margin-top: 10rem;
+  margin-bottom: 10rem;
+  max-width: 50vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .login-form {
+    padding-top: 1rem;
+
+    .full-width {
+      width: 100%;
+      box-sizing: border-box;
+    }
+  }
+  .login-control {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: space-between;
-
-    .login-form {
-        padding-top: 1rem;
-
-        .full-width {
-            width: 100%;
-            box-sizing: border-box;
-        }
-    }
-    .login-control {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-    }
+  }
 }

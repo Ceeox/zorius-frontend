@@ -6,7 +6,7 @@ import { WorkReportService } from './work-report.service';
 describe('Service: WorkReports', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [WorkReportService]
+      providers: [WorkReportService],
     });
   });
 

@@ -1,129 +1,150 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  AfterViewInit,
+  OnDestroy,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { UserService } from 'src/services/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { SNACKBAR_TIMEOUT } from 'src/app/app.component';
-import { InternMerchandise, InternMerchandiseEdge, NewInternMerchandise, Orderer, UpdateInternMerchandise } from 'src/models/intern-merch';
+import {
+  InternMerchandise,
+  InternMerchandiseEdge,
+  ListInternMerch,
+  UpdateInternMerchandise,
+} from 'src/models/intern-merch';
 import { InternMerchService } from 'src/services/intern-merch.service';
-import { NewInternMerchDialog } from 'src/app/dialogs/new-intern-merch/new-intern-merch.dialog';
-import { UpdateInternMerchDialog } from 'src/app/dialogs/update-intern-merch/update-intern-merch.dialog';
-import ObjectID from 'bson-objectid';
+
 import { Router } from '@angular/router';
 
-
-const LS_PAGE_SIZE: string = "intern_merch_page_size";
+const LS_PAGE_SIZE: string = 'intern_merch_page_size';
 
 @Component({
-    selector: 'app-intern-orders',
-    templateUrl: './intern-orders.component.html',
-    styleUrls: ['./intern-orders.component.scss'],
+  selector: 'app-intern-orders',
+  templateUrl: './intern-orders.component.html',
+  styleUrls: ['./intern-orders.component.scss'],
 })
-export class InternOrdersComponent implements OnInit, AfterViewInit {
+export class InternOrdersComponent implements OnInit, AfterViewInit, OnDestroy {
+  internMerchandiseSource = new MatTableDataSource<InternMerchandiseEdge>();
+  internMerchs: InternMerchandiseEdge[];
 
-    internMerchandiseSource = new MatTableDataSource<InternMerchandiseEdge>();
-    internMerchs: Observable<InternMerchandiseEdge[]>;
-    displayedColumns = ['no.', 'merchandiseId', 'merchandiseName', 'count', 'cost', 'orderer', 'status', 'menu'];
+  countInternMerch$: Subscription;
+  listInternMerch$: Subscription;
+  deleteInternMerch$: Subscription;
 
-    pageSizeOptions = [10, 25, 50, 100];
-    pageSize: number = 10;
-    pageIndex: number = 0;
-    pageLength: number;
+  displayedColumns = [
+    'no.',
+    'merchandiseId',
+    'merchandiseName',
+    'count',
+    'cost',
+    'orderer',
+    'status',
+    'menu',
+  ];
 
-    updateMerch?: UpdateInternMerchandise;
-    internMerch: InternMerchandise;
+  pageSizeOptions = [10, 25, 50, 100];
+  pageSize: number = 10;
+  pageIndex: number = 0;
+  pageLength: number;
 
-    data;
+  updateMerch?: UpdateInternMerchandise;
+  internMerch: InternMerchandise;
 
-    isLoadingResults = true;
+  data;
 
-    @ViewChild(MatSort, { static: true }) sort: MatSort;
-    @ViewChild(MatPaginator) paginator: MatPaginator;
+  isLoadingResults = true;
 
-    constructor(
-        public newMerchDialog: MatDialog,
-        public updateMerchDialog: MatDialog,
-        private userService: UserService,
-        private internMerchService: InternMerchService,
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
-        private snackBar: MatSnackBar,
-        private router: Router,
-    ) { }
+  constructor(
+    private userService: UserService,
+    private internMerchService: InternMerchService,
 
-    ngAfterViewInit(): void {
-        this.internMerchandiseSource.paginator = this.paginator;
+    private snackBar: MatSnackBar,
+    private router: Router
+  ) {}
+
+  ngOnInit() {
+    if (localStorage.getItem(LS_PAGE_SIZE)) {
+      this.pageSize = Number.parseInt(localStorage.getItem(LS_PAGE_SIZE));
     }
+    this.countMerch();
+    this.listInternMerch();
+  }
 
-    ngOnInit() {
-        if (localStorage.getItem(LS_PAGE_SIZE)) {
-            this.pageSize = Number.parseInt(localStorage.getItem(LS_PAGE_SIZE));
+  ngAfterViewInit(): void {
+    this.internMerchandiseSource.paginator = this.paginator;
+  }
+
+  ngOnDestroy(): void {
+    this.listInternMerch$.unsubscribe();
+    this.countInternMerch$.unsubscribe();
+    this.deleteInternMerch$.unsubscribe();
+  }
+
+  handlePageEvent(event: PageEvent) {
+    this.pageSize = event.pageSize;
+    localStorage.setItem(LS_PAGE_SIZE, this.pageSize.toString());
+    this.pageIndex = event.pageIndex;
+    this.countMerch();
+    this.listInternMerch();
+  }
+
+  countMerch() {
+    this.isLoadingResults = true;
+    this.countInternMerch$ = this.internMerchService
+      .countMerch()
+      .subscribe((result) => {
+        this.isLoadingResults = false;
+        this.paginator.length = result;
+      });
+  }
+
+  listInternMerch() {
+    let first = this.pageSize;
+    let after = (this.pageSize * this.pageIndex).toString();
+    this.listInternMerch$ = this.internMerchService
+      .listInternMerch(first, null, null, after)
+      .subscribe((result) => {
+        this.isLoadingResults = false;
+        this.internMerchs = result.listInternMerch.edges;
+      });
+  }
+
+  deleteInternMerch(internMerch: InternMerchandise): void {
+    this.deleteInternMerch$ = this.internMerchService
+      .deleteInternMerch(internMerch.id)
+      .subscribe((res) => {
+        if (res) {
+          this.snackBar
+            .open(internMerch.merchandiseName + ' successfully deleted.')
+            ._dismissAfter(SNACKBAR_TIMEOUT);
         }
-        this.countMerch();
-        this.loadTableData();
-    }
+      });
+  }
 
-    handlePageEvent(event: PageEvent) {
-        this.pageSize = event.pageSize;
-        localStorage.setItem(LS_PAGE_SIZE, this.pageSize.toString());
-        this.pageIndex = event.pageIndex;
-        this.countMerch();
-        this.loadTableData();
-    }
+  ordererName(ordererId: string) {
+    return ordererId;
+  }
 
-    countMerch() {
-        this.isLoadingResults = true;
-        this.internMerchService.countMerch().subscribe(result => {
-            this.isLoadingResults = false;
-            this.paginator.length = result;
-        });
-    }
+  openNewInternMerch(): void {
+    this.router.navigate(['merch/intern/new']);
+  }
 
-    loadTableData() {
-        let first = this.pageSize;
-        let after = (this.pageSize * this.pageIndex).toString();
-        this.internMerchs = this.internMerchService.listInternMerch(first, null, null, after)
-            .pipe(
-                map(result => {
-                    this.isLoadingResults = false;
-                    return result.listInternMerch.edges;
-                })
-            );
-    }
+  downloadInternMerch() {
+    this.snackBar.open('Not yet implemented!')._dismissAfter(SNACKBAR_TIMEOUT);
+  }
 
-    deleteInternMerch(internMerch: InternMerchandise): void {
-        this.internMerchService.deleteInternMerch(internMerch.id).subscribe(res => {
-            if (res) {
-                this.snackBar
-                    .open(internMerch.merchandiseName + " successfull deleted.")
-                    ._dismissAfter(SNACKBAR_TIMEOUT);
-            }
-        });
-    }
-
-    ordererName(orderer: Orderer): string {
-        var name = "";
-        if (orderer.firstname && orderer.lastname) {
-            name = orderer.firstname + " " + orderer.lastname;
-        } else {
-            name = orderer.username.toString()
-        }
-        return name;
-    }
-
-    openNewInternMerch(): void {
-        this.router.navigate(['merch/intern/new']);
-    }
-
-    downloadInternMerch() {
-        this.snackBar.open("Not yet implemented!")._dismissAfter(SNACKBAR_TIMEOUT);
-    }
-
-    goUpdateInternMerch(id: ObjectID): void {
-        this.router.navigate(['merch/intern/update', id]);
-    }
+  goUpdateInternMerch(id: string): void {
+    this.router.navigate(['merch/intern/update', id]);
+  }
 }
-

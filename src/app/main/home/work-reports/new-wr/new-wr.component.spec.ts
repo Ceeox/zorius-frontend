@@ -11,9 +11,8 @@ describe('NewWrComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NewWrComponent ]
-    })
-    .compileComponents();
+      declarations: [NewWrComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -1,54 +1,84 @@
 <mat-card class="new-work-report">
   <mat-card-header>
     <mat-card-title>Create a new work report</mat-card-title>
-    <mat-card-subtitle>This creates a new Work report. You can update the report later (see below) in the work report
-      list.</mat-card-subtitle>
+    <mat-card-subtitle>
+      This creates a new Work report. You can update the report later (see
+      below) in the work report list.
+    </mat-card-subtitle>
   </mat-card-header>
   <form [formGroup]="newWRForm">
     <mat-card-content>
-
       <div class="options">
         <div class="customer-project">
-
           <mat-form-field appearance="fill" class="customer">
             <mat-label>Customer</mat-label>
-            <mat-select formControlName="customer" (selectionChange)="onCustomerChange($event)" required>
-              <mat-option *ngFor="let customer of customerOptions | async" [value]="customer.node">
+            <input
+              type="text"
+              placeholder="Customer XYZ"
+              aria-label="customer"
+              matInput
+              formControlName="customer"
+              [matAutocomplete]="auto" />
+            <mat-autocomplete
+              #auto="matAutocomplete"
+              autoActiveFirstOption="true"
+              (optionSelected)="onCustomerChange($event)"
+              [displayWith]="displayCustomer">
+              <mat-option
+                *ngFor="let customer of filteredCustomerOptions | async"
+                [value]="customer">
                 {{ customer.node.name }} ({{ customer.node.identifier }})
               </mat-option>
-            </mat-select>
+            </mat-autocomplete>
           </mat-form-field>
 
           <mat-form-field appearance="fill" class="project">
             <mat-label>Project</mat-label>
             <mat-select formControlName="project" required>
-              <mat-option *ngFor="let project of projectOptions | async" [value]="project">
+              <mat-option
+                *ngFor="let project of projectOptions | async"
+                [value]="project">
                 {{ project.name }}
               </mat-option>
             </mat-select>
           </mat-form-field>
-          <button class="add-project-btn" mat-button matSuffix mat-icon-button aria-label="Add new project"
+          <button
+            class="add-project-btn"
+            mat-button
+            matSuffix
+            mat-icon-button
+            aria-label="Add new project"
             (click)="newProject()">
             <mat-icon>add</mat-icon>
           </button>
-
         </div>
 
         <section>
           <mat-checkbox [(ngModel)]="invoiced">Invoiced</mat-checkbox>
         </section>
-
       </div>
 
       <mat-form-field class="description" appearance="fill">
-        <mat-label>Leave a description</mat-label>
-        <textarea matInput placeholder="Description" formControlName="description" required></textarea>
+        <mat-label>Leave a description here</mat-label>
+        <textarea
+          matInput
+          placeholder="Description"
+          formControlName="description"
+          required>
+        </textarea>
       </mat-form-field>
-
     </mat-card-content>
     <mat-card-actions>
-      <button mat-stroked-button color="primary" [disabled]="!newWRForm.valid">Pause</button>
-      <button mat-raised-button color="primary" [disabled]="!newWRForm.valid">Finish</button>
+      <button mat-stroked-button color="primary" [disabled]="!newWRForm.valid">
+        Pause
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        [disabled]="!newWRForm.valid"
+        (click)="onSubmit()">
+        Finish
+      </button>
     </mat-card-actions>
   </form>
 </mat-card>

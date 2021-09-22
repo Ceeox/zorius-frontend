@@ -30,6 +30,7 @@
     "material-design-icons": "^3.0.1",
     "rxjs": "^6.6.7",
     "tslib": "^2.2.0",
+    "uuid": "^8.3.2",
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
@@ -48,6 +49,7 @@
     "karma-coverage-istanbul-reporter": "~3.0.2",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.6.0",
+    "prettier": "2.4.1",
     "protractor": "~7.0.0",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",

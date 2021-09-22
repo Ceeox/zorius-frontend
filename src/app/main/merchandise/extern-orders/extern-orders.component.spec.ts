@@ -6,12 +6,13 @@ describe('ExternOrdersComponent', () => {
   let component: ExternOrdersComponent;
   let fixture: ComponentFixture<ExternOrdersComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ExternOrdersComponent ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [ExternOrdersComponent],
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ExternOrdersComponent);

@@ -11,9 +11,8 @@ describe('WorkReportsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WorkReportsComponent ]
-    })
-    .compileComponents();
+      declarations: [WorkReportsComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

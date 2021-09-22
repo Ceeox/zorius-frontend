@@ -11,9 +11,8 @@ describe('NewInternMerchComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NewInternMerchComponent ]
-    })
-    .compileComponents();
+      declarations: [NewInternMerchComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

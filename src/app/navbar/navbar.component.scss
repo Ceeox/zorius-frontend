@@ -2,29 +2,27 @@
 @import '~@angular/material/theming';
 
 .content {
-    height: 100%;
-    overflow-x: auto;
-    
-    .navbar-container {
-        display: flex;
-        padding: 1rem;
-        a {
-            margin-right: 2rem;
-        }
-        
-        .profile-container {
+  height: 100%;
+  overflow-x: auto;
 
-            .profilePic {
-                height: 2.5rem;
-                width: 2.5rem;
-                img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                    clip-path: circle();
-                }
-            }
-        }
+  .navbar-container {
+    display: flex;
+    padding: 1rem;
+    a {
+      margin-right: 2rem;
     }
-}
 
+    .profile-container {
+      .profilePic {
+        height: 2.5rem;
+        width: 2.5rem;
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          clip-path: circle();
+        }
+      }
+    }
+  }
+}

@@ -6,11 +6,14 @@ import { ThemeSwitchService } from './theme-switch.service';
 describe('Service: ThemeSwitch', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ThemeSwitchService]
+      providers: [ThemeSwitchService],
     });
   });
 
-  it('should ...', inject([ThemeSwitchService], (service: ThemeSwitchService) => {
-    expect(service).toBeTruthy();
-  }));
+  it('should ...', inject(
+    [ThemeSwitchService],
+    (service: ThemeSwitchService) => {
+      expect(service).toBeTruthy();
+    }
+  ));
 });

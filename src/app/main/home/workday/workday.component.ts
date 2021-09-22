@@ -3,31 +3,38 @@ import { MatTableDataSource } from '@angular/material/table';
 import moment from 'moment';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { GetWorkdayGQL, TimeRecord, WorkDay, WorkdayPauseGQL, WorkDayResumeGQL, WorkDayStartGQL } from './graphql.module';
+import {
+  GetWorkdayGQL,
+  TimeRecord,
+  WorkDay,
+  WorkdayPauseGQL,
+  WorkDayResumeGQL,
+  WorkDayStartGQL,
+} from './graphql.module';
 
 enum WorkdayState {
-  Start = "start",
-  Pause = "pause",
-  Resume = "resume",
+  Start = 'start',
+  Pause = 'pause',
+  Resume = 'resume',
 }
 
 enum ControlText {
-  Start = "Starte dein Arbeitstag",
-  Pause = "Mache eine Pause",
-  Resume = "Beende deine Pause",
+  Start = 'Starte dein Arbeitstag',
+  Pause = 'Mache eine Pause',
+  Resume = 'Beende deine Pause',
 }
 
 @Component({
   selector: 'app-workday',
   templateUrl: './workday.component.html',
-  styleUrls: ['./workday.component.scss']
+  styleUrls: ['./workday.component.scss'],
 })
 export class WorkdayComponent implements OnInit {
   controlText: ControlText = ControlText.Start;
   currentWorkdayState = WorkdayState.Start;
 
   startedTime: number = 0;
-  time: string = "00:00:00";
+  time: string = '00:00:00';
   runningTimeRecord: TimeRecord = null;
   timeout: any;
 
@@ -42,10 +49,8 @@ export class WorkdayComponent implements OnInit {
     private getWorkdayGQL: GetWorkdayGQL,
     private workDayStartGQL: WorkDayStartGQL,
     private workdayPauseGQL: WorkdayPauseGQL,
-    private workDayResumeGQL: WorkDayResumeGQL,
-  ) {
-
-  }
+    private workDayResumeGQL: WorkDayResumeGQL
+  ) {}
 
   ngOnInit(): void {
     this.getWorkday();
@@ -67,9 +72,9 @@ export class WorkdayComponent implements OnInit {
 
   formatToHHmm(date: string): string {
     if (date == null) {
-      return "00:00";
+      return '00:00';
     }
-    return (moment(new Date(date))).format("HH:mm");
+    return moment(new Date(date)).format('HH:mm');
   }
 
   isTRRunning(wd: WorkDay): boolean {
@@ -99,16 +104,21 @@ export class WorkdayComponent implements OnInit {
   }
 
   getWorkday() {
-    let today = (moment(Date.now())).format("YYYY-MM-DD");
-    this.workday = this.getWorkdayGQL.watch({
-      date: today
-    }, {
-      fetchPolicy: 'network-only'
-    }).valueChanges.pipe(
-      map((data) => {
-        return data.data.getWorkday;
-      })
-    );
+    let today = moment(Date.now()).format('YYYY-MM-DD');
+    this.workday = this.getWorkdayGQL
+      .watch(
+        {
+          date: today,
+        },
+        {
+          fetchPolicy: 'network-only',
+        }
+      )
+      .valueChanges.pipe(
+        map((data) => {
+          return data.data.getWorkday;
+        })
+      );
   }
 
   updateWorkdayData(data: WorkDay) {
@@ -120,99 +130,119 @@ export class WorkdayComponent implements OnInit {
     this.currentWorkdayState = nextState;
 
     switch (this.currentWorkdayState) {
-      case WorkdayState.Start: {
-        this.currentWorkdayState = WorkdayState.Start;
-        this.controlText = ControlText.Start;
-      } break;
-      case WorkdayState.Pause: {
-        this.currentWorkdayState = WorkdayState.Pause;
-        this.controlText = ControlText.Pause;
-      } break;
-      case WorkdayState.Resume: {
-        this.currentWorkdayState = WorkdayState.Resume;
-        this.controlText = ControlText.Resume;
-      } break;
+      case WorkdayState.Start:
+        {
+          this.currentWorkdayState = WorkdayState.Start;
+          this.controlText = ControlText.Start;
+        }
+        break;
+      case WorkdayState.Pause:
+        {
+          this.currentWorkdayState = WorkdayState.Pause;
+          this.controlText = ControlText.Pause;
+        }
+        break;
+      case WorkdayState.Resume:
+        {
+          this.currentWorkdayState = WorkdayState.Resume;
+          this.controlText = ControlText.Resume;
+        }
+        break;
     }
   }
 
   enableTimer(started: Date) {
-    console.log("runningTR.started: " + started);
+    console.log('runningTR.started: ' + started);
     this.startedTime = new Date(started).getTime();
     this.timeout = setTimeout(() => {
-      let dur = moment.duration(Date.now() - this.startedTime, "milliseconds");
-      this.time = moment.utc(dur.as("milliseconds")).format("HH:mm:ss");
+      let dur = moment.duration(Date.now() - this.startedTime, 'milliseconds');
+      this.time = moment.utc(dur.as('milliseconds')).format('HH:mm:ss');
     }, 1000);
   }
 
   startWorkday() {
     this.isLoadingResults = true;
-    this.workDayStartGQL.mutate({}).subscribe(({ data }) => {
-      this.updateWorkdayData(data.workdayStart);
-      let trLen = data.workdayStart.timeRecords.length;
-      this.runningTimeRecord = data.workdayStart.timeRecords[trLen - 1];
-      this.enableTimer(this.runningTimeRecord.started);
-      this.isLoadingResults = false;
-    }, err => {
-      this.isRateLimitReached = true;
-      console.log(err);
-    });
+    this.workDayStartGQL.mutate({}).subscribe(
+      ({ data }) => {
+        this.updateWorkdayData(data.workdayStart);
+        let trLen = data.workdayStart.timeRecords.length;
+        this.runningTimeRecord = data.workdayStart.timeRecords[trLen - 1];
+        this.enableTimer(this.runningTimeRecord.started);
+        this.isLoadingResults = false;
+      },
+      (err) => {
+        this.isRateLimitReached = true;
+        console.log(err);
+      }
+    );
   }
 
   pauseWorkday() {
     this.isLoadingResults = true;
-    this.workdayPauseGQL.mutate({}).subscribe(({ data }) => {
-      this.updateWorkdayData(data.workdayPause);
-      this.runningTimeRecord = null;
-      this.switchControlState(WorkdayState.Resume);
-      this.startedTime = 0;
-      clearTimeout(this.timeout);
-      this.time = "00:00:00";
-      this.isLoadingResults = false;
-    }, err => {
-      this.isRateLimitReached = true;
-      console.log(err);
-    });
+    this.workdayPauseGQL.mutate({}).subscribe(
+      ({ data }) => {
+        this.updateWorkdayData(data.workdayPause);
+        this.runningTimeRecord = null;
+        this.switchControlState(WorkdayState.Resume);
+        this.startedTime = 0;
+        clearTimeout(this.timeout);
+        this.time = '00:00:00';
+        this.isLoadingResults = false;
+      },
+      (err) => {
+        this.isRateLimitReached = true;
+        console.log(err);
+      }
+    );
   }
 
   resumeWorkday() {
     this.isLoadingResults = true;
-    this.workDayResumeGQL.mutate({}).subscribe(({ data }) => {
-      this.updateWorkdayData(data.workdayResume);
-      let trLen = data.workdayResume.timeRecords.length;
-      this.runningTimeRecord = data.workdayResume.timeRecords[trLen - 1];
-      this.switchControlState(WorkdayState.Pause);
-      this.enableTimer(this.runningTimeRecord.started);
-      this.isLoadingResults = false;
-    }, err => {
-      this.isRateLimitReached = true;
-      console.log(err);
-    });
-
+    this.workDayResumeGQL.mutate({}).subscribe(
+      ({ data }) => {
+        this.updateWorkdayData(data.workdayResume);
+        let trLen = data.workdayResume.timeRecords.length;
+        this.runningTimeRecord = data.workdayResume.timeRecords[trLen - 1];
+        this.switchControlState(WorkdayState.Pause);
+        this.enableTimer(this.runningTimeRecord.started);
+        this.isLoadingResults = false;
+      },
+      (err) => {
+        this.isRateLimitReached = true;
+        console.log(err);
+      }
+    );
   }
 
   controlButtonClicked() {
     switch (this.currentWorkdayState) {
-      case WorkdayState.Start: {
-        this.switchControlState(WorkdayState.Pause);
-        this.pauseWorkday();
-      } break;
-      case WorkdayState.Pause: {
-        this.pauseWorkday();
-        this.switchControlState(WorkdayState.Resume);
-      } break;
-      case WorkdayState.Resume: {
-        this.resumeWorkday();
-        this.switchControlState(WorkdayState.Pause);
-      } break;
+      case WorkdayState.Start:
+        {
+          this.switchControlState(WorkdayState.Pause);
+          this.pauseWorkday();
+        }
+        break;
+      case WorkdayState.Pause:
+        {
+          this.pauseWorkday();
+          this.switchControlState(WorkdayState.Resume);
+        }
+        break;
+      case WorkdayState.Resume:
+        {
+          this.resumeWorkday();
+          this.switchControlState(WorkdayState.Pause);
+        }
+        break;
     }
   }
 
   getTRDuration(tr: TimeRecord): string {
     if (tr.ended === null) {
-      return "running";
+      return 'running';
     } else {
-      var dur = moment.duration(tr.duration, "seconds");
-      var durStr = moment.utc(dur.as("milliseconds")).format("HH:mm");
+      var dur = moment.duration(tr.duration, 'seconds');
+      var durStr = moment.utc(dur.as('milliseconds')).format('HH:mm');
       return durStr;
     }
   }

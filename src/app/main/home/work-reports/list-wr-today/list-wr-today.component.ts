@@ -5,15 +5,12 @@ import { WorkReport } from 'src/models/work-reports';
 @Component({
   selector: 'app-list-wr-today',
   templateUrl: './list-wr-today.component.html',
-  styleUrls: ['./list-wr-today.component.scss']
+  styleUrls: ['./list-wr-today.component.scss'],
 })
 export class ListWrTodayComponent implements OnInit {
+  workReports: Observable<WorkReport[]>;
 
-  workReports: Observable<WorkReport[]>
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

@@ -6,43 +6,45 @@ $zorius-light-primary: mat-palette($mat-indigo);
 $zorius-light-accent: mat-palette($mat-pink, A200, A100, A400);
 $zorius-light-warn: mat-palette($mat-red);
 
-$zorius-light-theme: mat-light-theme((
-  color: (
-    primary: $zorius-light-primary,
-    accent: $zorius-light-accent,
-    warn: $zorius-light-warn,  
+$zorius-light-theme: mat-light-theme(
+  (
+    color: (
+      primary: $zorius-light-primary,
+      accent: $zorius-light-accent,
+      warn: $zorius-light-warn,
+    ),
   )
-));
+);
 .light-theme {
   @include angular-material-theme($zorius-light-theme);
 }
-
-
 
 $zorius-dark-primary: mat-palette($mat-light-blue);
 $zorius-dark-accent: mat-palette($mat-lime, A200, A100, A400);
 $zorius-dark-warn: mat-palette($mat-red);
 
-$zorius-dark-theme: mat-dark-theme((
-  color: (
-    primary: $zorius-dark-primary,
-    accent: $zorius-dark-accent,
-    warn: $zorius-dark-warn,  
+$zorius-dark-theme: mat-dark-theme(
+  (
+    color: (
+      primary: $zorius-dark-primary,
+      accent: $zorius-dark-accent,
+      warn: $zorius-dark-warn,
+    ),
   )
-));
+);
 
 .dark-theme {
   @include angular-material-theme($zorius-dark-theme);
 }
 
-
-html, body {
+html,
+body {
   padding: 0;
   margin: 0;
 
   height: 100vh;
   width: 100vw;
-} 
+}
 
 * {
   box-sizing: border-box;
@@ -54,21 +56,21 @@ html, body {
   min-width: 600px;
 
   .card-content {
-      padding-top: 1rem;
+    padding-top: 1rem;
   }
 
   .full-width {
-      width: 100%;
+    width: 100%;
   }
 
   .flex-container {
-      width: 100%;
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      
-      mat-form-field:not(:last-child) {
-          padding-right: 1rem;
-      }
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    mat-form-field:not(:last-child) {
+      padding-right: 1rem;
+    }
   }
 }

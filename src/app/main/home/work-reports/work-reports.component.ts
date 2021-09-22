@@ -10,13 +10,10 @@ export interface User {
 @Component({
   selector: 'app-work-reports',
   templateUrl: './work-reports.component.html',
-  styleUrls: ['./work-reports.component.scss']
+  styleUrls: ['./work-reports.component.scss'],
 })
 export class WorkReportsComponent implements OnInit {
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

@@ -1,25 +1,37 @@
 <div class="login-container mat-app-background">
-    <mat-card>
-        <mat-toolbar color="primary"><span>Login</span></mat-toolbar>
-        <div class="login-form">
-            <mat-form-field class="full-width" appearance="outline">
-                <mat-label>Enter your email</mat-label>
-                <input matInput placeholder="pat@example.com" [(ngModel)]="emailInput" [formControl]="email" required>
-                <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
-            </mat-form-field>
-            <mat-form-field class="full-width" appearance="outline">
-                <mat-label>Enter your password</mat-label>
-                <input matInput placeholder="Password" type="password" [(ngModel)]="passwordInput" required
-                    (keyup.enter)="loginClicked()">
-            </mat-form-field>
-            <div class="login-control">
-                <div class="cancel-button">
-                    <button mat-raised-button (click)="cancelClicked()">Cancel</button>
-                </div>
-                <div class="login-button">
-                    <button mat-raised-button color="primary" (click)="loginClicked()">Login</button>
-                </div>
-            </div>
+  <mat-card>
+    <mat-toolbar color="primary"><span>Login</span></mat-toolbar>
+    <div class="login-form">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Enter your email</mat-label>
+        <input
+          matInput
+          placeholder="pat@example.com"
+          [(ngModel)]="emailInput"
+          [formControl]="email"
+          required />
+        <mat-error *ngIf="email.invalid">{{ getErrorMessage() }}</mat-error>
+      </mat-form-field>
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Enter your password</mat-label>
+        <input
+          matInput
+          placeholder="Password"
+          type="password"
+          [(ngModel)]="passwordInput"
+          required
+          (keyup.enter)="loginClicked()" />
+      </mat-form-field>
+      <div class="login-control">
+        <div class="cancel-button">
+          <button mat-raised-button (click)="cancelClicked()">Cancel</button>
         </div>
-    </mat-card>
+        <div class="login-button">
+          <button mat-raised-button color="primary" (click)="loginClicked()">
+            Login
+          </button>
+        </div>
+      </div>
+    </div>
+  </mat-card>
 </div>

@@ -1,16 +1,16 @@
 .form {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
 
-    * {
-        padding-top: 1rem;
-        width: 100%;
-    }
+  * {
+    padding-top: 1rem;
+    width: 100%;
+  }
 }
 
 .control-btn {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: row;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
 }

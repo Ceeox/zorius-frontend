@@ -8,7 +8,7 @@ import { ThemeSwitchService } from 'src/services/theme-switch.service';
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.scss']
+  styleUrls: ['./navbar.component.scss'],
 })
 export class NavbarComponent implements OnInit {
   avatarUrl: Observable<string>;
@@ -19,13 +19,12 @@ export class NavbarComponent implements OnInit {
   constructor(
     public authService: AuthService,
     private userService: UserService,
-    private themeSwitch: ThemeSwitchService,
+    private themeSwitch: ThemeSwitchService
   ) {
     this.isDarkMode = this.themeSwitch.prefersColorSchemeDark();
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   storeThemeMode(): void {
     if (this.isDarkMode) {
@@ -42,7 +41,7 @@ export class NavbarComponent implements OnInit {
   private getAvatarUrl(): Observable<string> {
     return this.userService.getSelf().pipe(
       map((user) => {
-        console.log("user avatarUrl: " + user.avatarUrl);
+        console.log('user avatarUrl: ' + user.avatarUrl);
         return user.avatarUrl;
       })
     );
@@ -50,7 +49,9 @@ export class NavbarComponent implements OnInit {
 
   private getUserName(): Observable<string> {
     return this.userService.getSelf().pipe(
-      map((user) => { return user.firstname + " " + user.lastname; })
+      map((user) => {
+        return user.firstname + ' ' + user.lastname;
+      })
     );
   }
 }

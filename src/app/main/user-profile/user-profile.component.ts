@@ -8,54 +8,44 @@ import { UserService } from 'src/services/user.service';
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
-  styleUrls: ['./user-profile.component.scss']
+  styleUrls: ['./user-profile.component.scss'],
 })
 export class UserProfileComponent implements OnInit {
-
-  self: Observable<User>
+  self: Observable<User>;
   updateUserForm = this.fb.group({
-    username: [''],
     firstname: [''],
-    lastname: ['']
+    lastname: [''],
   });
 
-  constructor(
-    private userService: UserService,
-    private fb: FormBuilder,
-  ) {
+  constructor(private userService: UserService, private fb: FormBuilder) {
     this.self = this.userService.getSelf().pipe(
-      map(res => {
+      map((res) => {
         return res;
       })
-    )
+    );
   }
 
   ngOnInit() {
-    this.self.subscribe(res => {
-      this.updateForm(res.username, res.firstname, res.lastname);
-    })
+    this.self.subscribe((res) => {
+      this.updateForm(res.firstname, res.lastname);
+    });
   }
 
-  updateForm(
-    username?: string,
-    firstname?: string,
-    lastname?: string,
-  ) {
+  updateForm(firstname?: string, lastname?: string) {
     this.updateUserForm.patchValue({
-      username,
       firstname,
       lastname,
     });
   }
 
   onSubmit() {
-    this.userService.updateUser(
-      this.updateUserForm.get('username').value,
-      this.updateUserForm.get('firstname').value,
-      this.updateUserForm.get('lastname').value,
-    ).subscribe(res => {
-      this.updateForm(res.username, res.firstname, res.lastname);
-    });
+    this.userService
+      .updateUser(
+        this.updateUserForm.get('firstname').value,
+        this.updateUserForm.get('lastname').value
+      )
+      .subscribe((res) => {
+        this.updateForm(res.firstname, res.lastname);
+      });
   }
-
 }

@@ -3,22 +3,25 @@ import { FormBuilder } from '@angular/forms';
 import { Location } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import ObjectID from 'bson-objectid';
+
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { InternMerchandise, UpdateInternMerchandise } from 'src/models/intern-merch';
+import {
+  InternMerchandise,
+  UpdateInternMerchandise,
+} from 'src/models/intern-merch';
 import { User, UserEdge } from 'src/models/user';
 import { InternMerchService } from 'src/services/intern-merch.service';
 import { UserService } from 'src/services/user.service';
 import { MatSelectChange } from '@angular/material/select';
+import { validate as uuidValidate } from 'uuid';
 
 @Component({
   selector: 'app-update-intern-merch',
   templateUrl: './update-intern-merch.component.html',
-  styleUrls: ['./update-intern-merch.component.scss']
+  styleUrls: ['./update-intern-merch.component.scss'],
 })
 export class UpdateInternMerchComponent implements OnInit {
-
   updateInternMerchForm = this.fb.group({
     articleNumber: [''],
     cost: [''],
@@ -33,7 +36,7 @@ export class UpdateInternMerchComponent implements OnInit {
     shop: [''],
     url: [''],
     useCase: [''],
-    status: ['']
+    status: [''],
   });
   ordererOptions: Observable<UserEdge[]>;
   internMerch: Observable<InternMerchandise>;
@@ -47,24 +50,24 @@ export class UpdateInternMerchComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private snackBar: MatSnackBar,
     private router: Router,
-    private location: Location,
-  ) { }
+    private location: Location
+  ) {}
 
   ngOnInit(): void {
     this.internMerch = this.activatedRoute.paramMap.pipe(
-      switchMap(params => {
-        const id = new ObjectID(params.get('id'));
+      switchMap((params) => {
+        const id = params.get('id');
 
-        if (!ObjectID.isValid(id)) {
+        if (uuidValidate(id)) {
           this.router.navigate(['/404']);
         }
         return this.internMerchService.getInternMerchById(id).pipe(
-          map(res => {
-            this.selectedOrderer = new Observable(subscriber => {
-              subscriber.next(res.orderer)
+          map((res) => {
+            this.selectedOrderer = new Observable((subscriber) => {
+              subscriber.next(res.orderer);
             });
-            this.selectedProjectLeader = new Observable(subscriber => {
-              subscriber.next(res.projectLeader)
+            this.selectedProjectLeader = new Observable((subscriber) => {
+              subscriber.next(res.projectLeader);
             });
 
             this.updateInternMerchForm.patchValue({
@@ -89,11 +92,10 @@ export class UpdateInternMerchComponent implements OnInit {
     );
 
     this.ordererOptions = this.userService.listUsers().pipe(
-      map(res => {
+      map((res) => {
         return res.listUsers.edges;
       })
     );
-
   }
 
   onBack() {
@@ -115,9 +117,9 @@ export class UpdateInternMerchComponent implements OnInit {
   }
 
   getUserName(user: User): string {
-    var name = "";
+    var name = '';
     if (user.firstname && user.lastname) {
-      name = user.firstname + " " + user.lastname;
+      name = user.firstname + ' ' + user.lastname;
     } else {
       name = user.username.toString();
     }
@@ -135,15 +137,15 @@ export class UpdateInternMerchComponent implements OnInit {
       merchandiseName: this.updateInternMerchForm.get('merchandiseName').value,
       ordererId: this.updateInternMerchForm.get('ordererId').value.id,
       postage: this.updateInternMerchForm.get('postage').value,
-      projectLeaderId: this.updateInternMerchForm.get('projectLeaderId').value.id,
+      projectLeaderId:
+        this.updateInternMerchForm.get('projectLeaderId').value.id,
       shop: this.updateInternMerchForm.get('shop').value,
       url: this.updateInternMerchForm.get('url').value,
       useCase: this.updateInternMerchForm.get('useCase').value,
     };
 
-    this.internMerch.subscribe(merch => {
-      this.internMerchService.updateInternMerch(merch.id, update)
-        .subscribe();
+    this.internMerch.subscribe((merch) => {
+      this.internMerchService.updateInternMerch(merch.id, update).subscribe();
     });
 
     this.onBack();

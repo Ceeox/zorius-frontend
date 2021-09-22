@@ -1,30 +1,33 @@
-import { Injectable } from "@angular/core";
-import { Router } from "@angular/router";
-import { gql, Mutation, Query } from "apollo-angular";
-import ObjectID from "bson-objectid";
-import { subscribe } from "graphql";
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { gql, Mutation, Query } from 'apollo-angular';
 import { Observable } from 'rxjs';
-import { delay, map, retryWhen, take } from "rxjs/operators";
-import { FETCH_POLICY, POLLING_INTERVAL, RETRY_COUNT, RETRY_DELAY } from "src/app/graphql.module";
-import { GetUserByIdResp, ListUsers, UpdateUserResp, User } from "src/models/user";
-import { AuthService } from "./auth.service";
+import { delay, first, map, retryWhen, take } from 'rxjs/operators';
+import { FETCH_POLICY, RETRY_COUNT, RETRY_DELAY } from 'src/app/graphql.module';
+import {
+  GetUserByIdResp,
+  ListUsers,
+  UpdateUserResp,
+  User,
+} from 'src/models/user';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GetUserByIdGQL extends Query<GetUserByIdResp> {
   document = gql`
-    query getUserById($id: ObjectId!) {
-        getUserById(id: $id) {
-            id
-            email
-            username
-            firstname
-            lastname
-            createdAt
-            avatarUrl
-        }
-    }`;
+    query getUserById($id: String!) {
+      getUserById(id: $id) {
+        id
+        email
+        firstname
+        lastname
+        createdAt
+        updatedAt
+      }
+    }
+  `;
 }
 
 @Injectable({
@@ -32,28 +35,28 @@ export class GetUserByIdGQL extends Query<GetUserByIdResp> {
 })
 export class ListUsersGQL extends Query<ListUsers> {
   document = gql`
-      query listUsers($first: Int, $last: Int, $after: String, $before: String) {
-        listUsers(first: $first, last: $last, after: $after, before: $before) {
-            edges {
-              node {
-                id
-                email
-                username
-                firstname
-                lastname
-                updated
-                createdAt
-              }
-              cursor
-            }
-            pageInfo {
-              startCursor
-              endCursor
-              hasPreviousPage
-              hasNextPage
-            }
+    query listUsers($first: Int, $last: Int, $after: String, $before: String) {
+      listUsers(first: $first, last: $last, after: $after, before: $before) {
+        edges {
+          node {
+            id
+            email
+            firstname
+            lastname
+            updatedAt
+            createdAt
           }
-      }`;
+          cursor
+        }
+        pageInfo {
+          startCursor
+          endCursor
+          hasPreviousPage
+          hasNextPage
+        }
+      }
+    }
+  `;
 }
 
 @Injectable({
@@ -61,25 +64,33 @@ export class ListUsersGQL extends Query<ListUsers> {
 })
 export class UpdateUserGQL extends Mutation<UpdateUserResp> {
   document = gql`
-    mutation updateUser($id: ObjectId!, $firstname: String, $lastname: String, $username: String) {
+    mutation updateUser(
+      $id: String!
+      $firstname: String
+      $lastname: String
+      $username: String
+    ) {
       updateUser(
-        userId: $id,
-        userUpdate: { firstname: $firstname, lastname: $lastname, username: $username}
+        userId: $id
+        userUpdate: {
+          firstname: $firstname
+          lastname: $lastname
+          username: $username
+        }
       ) {
         id
         email
-        username
         firstname
         lastname
         createdAt
-        updated
+        updatedAt
       }
-    }`;
+    }
+  `;
 }
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
   self: Observable<User>;
@@ -92,12 +103,14 @@ export class UserService {
     private router: Router
   ) {
     let userId = this.authService.getUserId();
-    if (userId === null) {
+    if (!userId) {
       this.router.navigate(['/login']);
       return;
     }
     this.self = this.getUserById(userId).pipe(
-      map(res => { return res; })
+      map((res) => {
+        return res;
+      })
     );
   }
 
@@ -105,44 +118,58 @@ export class UserService {
     return this.self;
   }
 
-  getUserById(id: ObjectID): Observable<User> {
+  getUserById(id: string): Observable<User> {
     return this.getUserGQL.fetch({ id }).pipe(
-      map(res => {
+      map((res) => {
+        console.log(res.data.getUserById);
         return res.data.getUserById;
       }),
-      retryWhen(errors => errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT)))
+      first(),
+      retryWhen((errors) => errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT)))
     );
   }
 
-  listUsers(first?: number, last?: number, after?: String, before?: String): Observable<ListUsers> {
-    return this.listUsersGQL.watch({
-      first,
-      last,
-      after,
-      before,
-    }, {
-      fetchPolicy: FETCH_POLICY,
-      pollInterval: POLLING_INTERVAL,
-    }).valueChanges.pipe(
-      map(res => {
-        return res.data;
-      }),
-      retryWhen(errors => errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT)))
-    );
+  listUsers(
+    first?: number,
+    last?: number,
+    after?: String,
+    before?: String
+  ): Observable<ListUsers> {
+    return this.listUsersGQL
+      .fetch({
+        first,
+        last,
+        after,
+        before,
+      })
+      .pipe(
+        map((res) => {
+          return res.data;
+        }),
+        retryWhen((errors) =>
+          errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT))
+        )
+      );
   }
 
-  updateUser(username?: string, firstname?: string, lastname?: string): Observable<User> {
+  updateUser(
+    username?: string,
+    firstname?: string,
+    lastname?: string
+  ): Observable<User> {
     return this.getSelf().pipe(
-      map(res => {
+      map((res) => {
         let user: User;
-        this.updateUsersGQL.mutate({
-          id: res.id,
-          username,
-          firstname,
-          lastname,
-        }).subscribe(res => {
-          user = res.data.updateUser;
-        });
+        this.updateUsersGQL
+          .mutate({
+            id: res.id,
+            username,
+            firstname,
+            lastname,
+          })
+          .subscribe((res) => {
+            user = res.data.updateUser;
+          });
         return user;
       })
     );

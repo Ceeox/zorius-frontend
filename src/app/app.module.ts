@@ -5,7 +5,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
+import {
+  MatDialogModule,
+  MAT_DIALOG_DEFAULT_OPTIONS,
+} from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDividerModule } from '@angular/material/divider';
@@ -64,77 +67,80 @@ import { UpdateInternMerchDialog } from './dialogs/update-intern-merch/update-in
 import { AuthGuardService } from 'src/services/auth-guard.service';
 import { getToken } from 'src/services/auth.service';
 
-
 @NgModule({
-    declarations: [
-        AppComponent,
-        NavbarComponent,
-        FooterComponent,
-        HomeComponent,
-        PageNotFoundComponent,
-        InternOrdersComponent,
-        ExternOrdersComponent,
-        StockComponent,
-        LoginComponent,
-        WorkdayComponent,
-        RegisterComponent,
-        WorkReportsComponent,
-        NewWrComponent,
-        ListWrTodayComponent,
-        NewInternMerchComponent,
-        UpdateInternMerchComponent,
-        UserProfileComponent,
+  declarations: [
+    AppComponent,
+    NavbarComponent,
+    FooterComponent,
+    HomeComponent,
+    PageNotFoundComponent,
+    InternOrdersComponent,
+    ExternOrdersComponent,
+    StockComponent,
+    LoginComponent,
+    WorkdayComponent,
+    RegisterComponent,
+    WorkReportsComponent,
+    NewWrComponent,
+    ListWrTodayComponent,
+    NewInternMerchComponent,
+    UpdateInternMerchComponent,
+    UserProfileComponent,
 
-        NewProjectDialog,
-        NewInternMerchDialog,
-        UpdateInternMerchDialog
-    ],
-    imports: [
-        FormsModule,
-        ReactiveFormsModule,
+    NewProjectDialog,
+    NewInternMerchDialog,
+    UpdateInternMerchDialog,
+  ],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
 
-        MatButtonModule,
-        MatToolbarModule,
-        MatIconModule,
-        MatCardModule,
-        MatMenuModule,
-        MatTabsModule,
-        MatDialogModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatDividerModule,
-        MatTableModule,
-        MatPaginatorModule,
-        MatStepperModule,
-        MatRippleModule,
-        MatSelectModule,
-        MatSnackBarModule,
-        MatExpansionModule,
-        MatListModule,
-        MatAutocompleteModule,
-        MatProgressSpinnerModule,
-        MatProgressBarModule,
-        MatGridListModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
-        MatSlideToggleModule,
+    MatButtonModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatCardModule,
+    MatMenuModule,
+    MatTabsModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDividerModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatStepperModule,
+    MatRippleModule,
+    MatSelectModule,
+    MatSnackBarModule,
+    MatExpansionModule,
+    MatListModule,
+    MatAutocompleteModule,
+    MatProgressSpinnerModule,
+    MatProgressBarModule,
+    MatGridListModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatSlideToggleModule,
 
-        BrowserModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        GraphQLModule,
-        HttpClientModule,
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    GraphQLModule,
+    HttpClientModule,
 
-        JwtModule.forRoot({
-            config: {
-                tokenGetter: getToken
-            }
-        })
-    ],
-    providers: [JwtHelperService, AuthGuardService, {
-        provide: [MAT_DIALOG_DEFAULT_OPTIONS, JWT_OPTIONS],
-        useValue: [{ hasBackdrop: false }, JWT_OPTIONS]
-    }],
-    bootstrap: [AppComponent]
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: getToken,
+      },
+    }),
+  ],
+  providers: [
+    JwtHelperService,
+    AuthGuardService,
+    {
+      provide: [MAT_DIALOG_DEFAULT_OPTIONS, JWT_OPTIONS],
+      useValue: [{ hasBackdrop: false }, JWT_OPTIONS],
+    },
+  ],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

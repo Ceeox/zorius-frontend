@@ -1,45 +1,47 @@
 <mat-toolbar>New Intern Merchandise</mat-toolbar>
 <div class="io-dialog" mat-dialog-content>
-    <div class="io-article-info">
-        <mat-form-field appearance="outline" required>
-            <mat-label required>Count</mat-label>
-            <input type="number" matInput [(ngModel)]="data.count">
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-            <mat-label>Article Number</mat-label>
-            <input type="text" matInput [(ngModel)]="data.articleNumber">
-        </mat-form-field>
-    </div>
-    <mat-form-field appearance="fill">
-        <mat-label>Merchandise Name</mat-label>
-        <textarea matInput [(ngModel)]="data.merchandiseName"></textarea>
+  <div class="io-article-info">
+    <mat-form-field appearance="outline" required>
+      <mat-label required>Count</mat-label>
+      <input type="number" matInput [(ngModel)]="data.count" />
     </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Article Number</mat-label>
+      <input type="text" matInput [(ngModel)]="data.articleNumber" />
+    </mat-form-field>
+  </div>
+  <mat-form-field appearance="fill">
+    <mat-label>Merchandise Name</mat-label>
+    <textarea matInput [(ngModel)]="data.merchandiseName"></textarea>
+  </mat-form-field>
 
-    <mat-form-field appearance="fill">
-        <mat-label>Use Case</mat-label>
-        <textarea matInput [(ngModel)]="data.useCase"></textarea>
+  <mat-form-field appearance="fill">
+    <mat-label>Use Case</mat-label>
+    <textarea matInput [(ngModel)]="data.useCase"></textarea>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Url</mat-label>
+    <input type="url" matInput [(ngModel)]="data.url" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Shop</mat-label>
+    <input type="text" matInput [(ngModel)]="data.shop" />
+  </mat-form-field>
+
+  <div class="io-prices">
+    <mat-form-field>
+      <mat-label>Price (wo. Tax)</mat-label>
+      <input type="number" matInput [(ngModel)]="data.cost" />
     </mat-form-field>
     <mat-form-field>
-        <mat-label>Url</mat-label>
-        <input type="url" matInput [(ngModel)]="data.url">
+      <mat-label>Postage</mat-label>
+      <input type="number" matInput [(ngModel)]="data.postage" />
     </mat-form-field>
-    <mat-form-field>
-        <mat-label>Shop</mat-label>
-        <input type="text" matInput [(ngModel)]="data.shop">
-    </mat-form-field>
-
-    <div class="io-prices">
-        <mat-form-field>
-            <mat-label>Price (wo. Tax)</mat-label>
-            <input type="number" matInput [(ngModel)]="data.cost">
-        </mat-form-field>
-        <mat-form-field>
-            <mat-label>Postage</mat-label>
-            <input type="number" matInput [(ngModel)]="data.postage">
-        </mat-form-field>
-    </div>
-    <div class="io-controls">
-        <button mat-raised-button (click)="onCancelClick()">Cancel</button>
-        <button mat-raised-button color="primary" (click)="saveAndClose()">Save</button>
-    </div>
+  </div>
+  <div class="io-controls">
+    <button mat-raised-button (click)="onCancelClick()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="saveAndClose()">
+      Save
+    </button>
+  </div>
 </div>

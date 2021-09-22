@@ -11,9 +11,8 @@ describe('NewProjectDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [NewProjectDialog]
-    })
-      .compileComponents();
+      declarations: [NewProjectDialog],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

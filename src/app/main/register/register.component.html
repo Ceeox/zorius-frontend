@@ -1,71 +1,87 @@
 <div class="register-container">
-    <mat-horizontal-stepper linear #stepper>
-        <mat-step [stepControl]="firstFormGroup">
-            <form [formGroup]="firstFormGroup">
-                <ng-template matStepLabel>Fill out your email</ng-template>
-                <mat-form-field>
-                    <mat-label>email</mat-label>
-                    <input matInput placeholder="E-Mail" formControlName="firstCtrl" required>
-                </mat-form-field>
-                <div>
-                    <button mat-raised-button color="primary" matStepperNext>Next</button>
-                </div>
-            </form>
-        </mat-step>
-        <mat-step [stepControl]="firstFormGroup">
-            <form [formGroup]="firstFormGroup">
-                <ng-template matStepLabel>Fill out your username</ng-template>
-                <mat-form-field>
-                    <mat-label>username</mat-label>
-                    <input matInput formControlName="firstCtrl" required>
-                </mat-form-field>
-                <div>
-                    <button mat-raised matStepperPrevious>Back</button>
-                    <button mat-raised-button color="primary" matStepperNext>Next</button>
-                </div>
-            </form>
-        </mat-step>
-        <mat-step [stepControl]="secondFormGroup">
-            <form [formGroup]="secondFormGroup">
-                <ng-template matStepLabel>Fill out your password</ng-template>
-                <mat-form-field>
-                    <mat-label>Password</mat-label>
-                    <input matInput type="password" formControlName="secondCtrl" required>
-                </mat-form-field>
-                <mat-form-field>
-                    <mat-label>Repeat password</mat-label>
-                    <input matInput type="password" formControlName="secondCtrl" required>
-                </mat-form-field>
-                <div>
-                    <button mat-raised matStepperPrevious>Back</button>
-                    <button mat-raised-button color="primary" matStepperNext>Next</button>
-                </div>
-            </form>
-        </mat-step>
-        <mat-step [stepControl]="secondFormGroup" [optional]="true">
-            <form [formGroup]="secondFormGroup">
-                <ng-template matStepLabel>Fill out your Firstname and Lastname</ng-template>
-                <mat-form-field>
-                    <mat-label>Firstname</mat-label>
-                    <input matInput formControlName="secondCtrl">
-                </mat-form-field>
-                <mat-form-field>
-                    <mat-label>Lastname</mat-label>
-                    <input matInput formControlName="secondCtrl">
-                </mat-form-field>
-                <div>
-                    <button mat-raised matStepperPrevious>Back</button>
-                    <button mat-raised-button color="primary" matStepperNext>Next</button>
-                </div>
-            </form>
-        </mat-step>
-        <mat-step>
-            <ng-template matStepLabel>Done</ng-template>
-            <p>You are now done.</p>
-            <div>
-                <button mat-raised matStepperPrevious>Back</button>
-                <button mat-raised-button color="primary" (click)="stepper.reset()">Register</button>
-            </div>
-        </mat-step>
-    </mat-horizontal-stepper>
+  <mat-horizontal-stepper linear #stepper>
+    <mat-step [stepControl]="firstFormGroup">
+      <form [formGroup]="firstFormGroup">
+        <ng-template matStepLabel>Fill out your email</ng-template>
+        <mat-form-field>
+          <mat-label>email</mat-label>
+          <input
+            matInput
+            placeholder="E-Mail"
+            formControlName="firstCtrl"
+            required />
+        </mat-form-field>
+        <div>
+          <button mat-raised-button color="primary" matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step [stepControl]="firstFormGroup">
+      <form [formGroup]="firstFormGroup">
+        <ng-template matStepLabel>Fill out your username</ng-template>
+        <mat-form-field>
+          <mat-label>username</mat-label>
+          <input matInput formControlName="firstCtrl" required />
+        </mat-form-field>
+        <div>
+          <button mat-raised matStepperPrevious>Back</button>
+          <button mat-raised-button color="primary" matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step [stepControl]="secondFormGroup">
+      <form [formGroup]="secondFormGroup">
+        <ng-template matStepLabel>Fill out your password</ng-template>
+        <mat-form-field>
+          <mat-label>Password</mat-label>
+          <input
+            matInput
+            type="password"
+            formControlName="secondCtrl"
+            required />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Repeat password</mat-label>
+          <input
+            matInput
+            type="password"
+            formControlName="secondCtrl"
+            required />
+        </mat-form-field>
+        <div>
+          <button mat-raised matStepperPrevious>Back</button>
+          <button mat-raised-button color="primary" matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step [stepControl]="secondFormGroup" [optional]="true">
+      <form [formGroup]="secondFormGroup">
+        <ng-template matStepLabel
+          >Fill out your Firstname and Lastname</ng-template
+        >
+        <mat-form-field>
+          <mat-label>Firstname</mat-label>
+          <input matInput formControlName="secondCtrl" />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Lastname</mat-label>
+          <input matInput formControlName="secondCtrl" />
+        </mat-form-field>
+        <div>
+          <button mat-raised matStepperPrevious>Back</button>
+          <button mat-raised-button color="primary" matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Done</ng-template>
+      <p>You are now done.</p>
+      <div>
+        <button mat-raised matStepperPrevious>Back</button>
+        <button mat-raised-button color="primary" (click)="stepper.reset()">
+          Register
+        </button>
+      </div>
+    </mat-step>
+  </mat-horizontal-stepper>
 </div>

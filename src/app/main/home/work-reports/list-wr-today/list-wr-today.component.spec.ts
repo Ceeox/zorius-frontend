@@ -11,9 +11,8 @@ describe('ListWrTodayComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ListWrTodayComponent ]
-    })
-    .compileComponents();
+      declarations: [ListWrTodayComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -4,7 +4,6 @@ import { Location } from '@angular/common';
 import { AuthService } from 'src/services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -18,12 +17,10 @@ export class LoginComponent implements OnInit {
   constructor(
     private _last_location: Location,
     private authService: AuthService,
-    private _snackBar: MatSnackBar,
-  ) {
-  }
+    private _snackBar: MatSnackBar
+  ) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   getErrorMessage() {
     if (this.email.hasError('required')) {
@@ -38,9 +35,8 @@ export class LoginComponent implements OnInit {
   }
 
   loginClicked() {
-
     if (this.emailInput === null || this.passwordInput === null) {
-      this._snackBar.open("Bitte E-Mail und Passwort eingeben!", null, {
+      this._snackBar.open('Bitte E-Mail und Passwort eingeben!', null, {
         duration: 5000,
       });
       return;

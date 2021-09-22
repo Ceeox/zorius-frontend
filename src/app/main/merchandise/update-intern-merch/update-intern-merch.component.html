@@ -1,22 +1,24 @@
 <div class="update-intern-merch">
   <mat-card class="card">
     <mat-toolbar color="primary">
-      <div *ngIf="internMerch | async">Update Intern Merchandise ({{ (internMerch | async).merchandiseId }}) </div>
+      <div *ngIf="internMerch | async">
+        Update Intern Merchandise ({{ (internMerch | async).merchandiseId }})
+      </div>
     </mat-toolbar>
     <mat-card-content class="card-content" [formGroup]="updateInternMerchForm">
       <div class="flex-container">
         <mat-form-field appearance="outline">
           <mat-label> Article Number </mat-label>
-          <input formControlName="articleNumber" type="text" matInput>
+          <input formControlName="articleNumber" type="text" matInput />
         </mat-form-field>
         <div>
           <mat-form-field appearance="outline">
             <mat-label> Merchandise Id </mat-label>
-            <input formControlName="merchandiseId" type="number" matInput>
+            <input formControlName="merchandiseId" type="number" matInput />
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label> Invoice Number </mat-label>
-            <input formControlName="invoiceNumber" type="number" matInput>
+            <input formControlName="invoiceNumber" type="number" matInput />
           </mat-form-field>
         </div>
       </div>
@@ -27,23 +29,33 @@
 
       <mat-form-field class="full-width" appearance="outline">
         <mat-label> Usecase </mat-label>
-        <input formControlName="useCase" type="url" matInput>
+        <input formControlName="useCase" type="url" matInput />
       </mat-form-field>
       <div class="flex-container">
         <mat-form-field appearance="outline">
           <mat-label> Orderer </mat-label>
-          <mat-select formControlName="ordererId" [(value)]="selectedOrderer"
-            (selectionChange)="onOrdererChange($event)" required>
-            <mat-option *ngFor="let user of ordererOptions | async" [value]="user.node">
+          <mat-select
+            formControlName="ordererId"
+            [(value)]="selectedOrderer"
+            (selectionChange)="onOrdererChange($event)"
+            required>
+            <mat-option
+              *ngFor="let user of ordererOptions | async"
+              [value]="user.node">
               {{ getUserName(user.node) }}
             </mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label> Project Leader </mat-label>
-          <mat-select formControlName="projectLeaderId" [(value)]="selectedProjectLeader"
-            (selectionChange)="onProjectLeaderChange($event)" required>
-            <mat-option *ngFor="let user of ordererOptions | async" [value]="user.node">
+          <mat-select
+            formControlName="projectLeaderId"
+            [(value)]="selectedProjectLeader"
+            (selectionChange)="onProjectLeaderChange($event)"
+            required>
+            <mat-option
+              *ngFor="let user of ordererOptions | async"
+              [value]="user.node">
               {{ getUserName(user.node) }}
             </mat-option>
           </mat-select>
@@ -51,32 +63,34 @@
       </div>
       <mat-form-field class="full-width" appearance="outline">
         <mat-label>Link</mat-label>
-        <input formControlName="url" type="url" matInput>
+        <input formControlName="url" type="url" matInput />
       </mat-form-field>
       <mat-form-field class="full-width" appearance="outline">
         <mat-label>Shop</mat-label>
-        <input formControlName="shop" type="text" matInput>
+        <input formControlName="shop" type="text" matInput />
       </mat-form-field>
       <div class="flex-container">
         <div>
           <mat-form-field appearance="outline">
             <mat-label required>Count</mat-label>
-            <input formControlName="count" type="number" matInput>
+            <input formControlName="count" type="number" matInput />
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label> Price (without tax) </mat-label>
-            <input formControlName="cost" type="number" matInput>
+            <input formControlName="cost" type="number" matInput />
           </mat-form-field>
         </div>
         <mat-form-field appearance="outline">
           <mat-label> Postage </mat-label>
-          <input formControlName="postage" type="number" matInput>
+          <input formControlName="postage" type="number" matInput />
         </mat-form-field>
       </div>
     </mat-card-content>
     <div class="flex-container control-btn">
-      <button mat-raised-button (click)="onBack()"> Back </button>
-      <button mat-raised-button color="primary" (click)="onSubmit()"> Update </button>
+      <button mat-raised-button (click)="onBack()">Back</button>
+      <button mat-raised-button color="primary" (click)="onSubmit()">
+        Update
+      </button>
     </div>
   </mat-card>
 </div>
