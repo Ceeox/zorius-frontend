@@ -6,8 +6,9 @@ import { ProjectService } from './project.service';
 describe('Service: Project', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ProjectService],
-    });
+    providers: [ProjectService],
+    teardown: { destroyAfterEach: false }
+});
   });
 
   it('should ...', inject([ProjectService], (service: ProjectService) => {

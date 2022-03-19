@@ -8,8 +8,9 @@ describe('InternOrdersComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [InternOrdersComponent],
-    }).compileComponents();
+    declarations: [InternOrdersComponent],
+    teardown: { destroyAfterEach: false }
+}).compileComponents();
   });
 
   beforeEach(() => {

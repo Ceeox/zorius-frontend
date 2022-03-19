@@ -11,8 +11,9 @@ describe('WorkReportsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [WorkReportsComponent],
-    }).compileComponents();
+    declarations: [WorkReportsComponent],
+    teardown: { destroyAfterEach: false }
+}).compileComponents();
   }));
 
   beforeEach(() => {

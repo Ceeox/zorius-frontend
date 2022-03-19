@@ -6,8 +6,9 @@ import { WorkReportService } from './work-report.service';
 describe('Service: WorkReports', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [WorkReportService],
-    });
+    providers: [WorkReportService],
+    teardown: { destroyAfterEach: false }
+});
   });
 
   it('should ...', inject([WorkReportService], (service: WorkReportService) => {

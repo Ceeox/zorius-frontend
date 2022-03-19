@@ -9,8 +9,9 @@ describe('ExternOrdersComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [ExternOrdersComponent],
-      }).compileComponents();
+    declarations: [ExternOrdersComponent],
+    teardown: { destroyAfterEach: false }
+}).compileComponents();
     })
   );
 

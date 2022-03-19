@@ -6,8 +6,9 @@ import { ThemeSwitchService } from './theme-switch.service';
 describe('Service: ThemeSwitch', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ThemeSwitchService],
-    });
+    providers: [ThemeSwitchService],
+    teardown: { destroyAfterEach: false }
+});
   });
 
   it('should ...', inject(
