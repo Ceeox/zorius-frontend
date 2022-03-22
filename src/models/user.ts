@@ -1,35 +1,26 @@
-import ObjectID from 'bson-objectid';
-import { PageInfo } from './page-info';
+import { Connection } from './page-info';
 
 export interface User {
   id: string;
   email: string;
-  username: string;
-  firstname?: string;
-  lastname?: string;
-  updated: Date;
-  createdAt: Date;
-  avatarUrl?: string;
-}
-
-export interface GetUserByIdResp {
-  getUserById: User;
+  name: string;
+  avatarFilename: string;
+  isAdmin: boolean;
 }
 
 export interface ListUsers {
-  listUsers: UserConnection;
+  users: Connection<User>;
 }
 
-export interface UserConnection {
-  edges: UserEdge[];
-  pageInfo: PageInfo;
+export interface UserUpdate {
+  name?: string;
+  isAdmin?: boolean;
 }
 
-export interface UserEdge {
-  cursor: String;
-  node: User;
-}
-
-export interface UpdateUserResp {
-  updateUser: User;
+export interface ListUserOptions {
+  ids?: string[];
+  first?: number;
+  last?: number;
+  after?: String;
+  before?: String;
 }

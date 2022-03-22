@@ -10,11 +10,12 @@ import {
   InternMerchandise,
   UpdateInternMerchandise,
 } from 'src/models/intern-merch';
-import { User, UserEdge } from 'src/models/user';
+import { User } from 'src/models/user';
 import { InternMerchService } from 'src/services/intern-merch.service';
-import { UserService } from 'src/services/user.service';
+import { UserService } from 'src/services/user/user.service';
 import { MatSelectChange } from '@angular/material/select';
 import { validate as uuidValidate } from 'uuid';
+import { Edge } from 'src/models/page-info';
 
 @Component({
   selector: 'app-update-intern-merch',
@@ -38,7 +39,7 @@ export class UpdateInternMerchComponent implements OnInit {
     useCase: [''],
     status: [''],
   });
-  ordererOptions: Observable<UserEdge[]>;
+  ordererOptions: Observable<Edge<User>[]>;
   internMerch: Observable<InternMerchandise>;
   selectedOrderer: Observable<User>;
   selectedProjectLeader: Observable<User>;
@@ -91,9 +92,9 @@ export class UpdateInternMerchComponent implements OnInit {
       })
     );
 
-    this.ordererOptions = this.userService.listUsers().pipe(
+    this.ordererOptions = this.userService.users().pipe(
       map((res) => {
-        return res.listUsers.edges;
+        return res.users.edges;
       })
     );
   }
@@ -114,16 +115,6 @@ export class UpdateInternMerchComponent implements OnInit {
     this.updateInternMerchForm.patchValue({
       projectLeader: change.value.id,
     });
-  }
-
-  getUserName(user: User): string {
-    var name = '';
-    if (user.firstname && user.lastname) {
-      name = user.firstname + ' ' + user.lastname;
-    } else {
-      name = user.username.toString();
-    }
-    return name;
   }
 
   onSubmit(): void {

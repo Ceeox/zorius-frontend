@@ -1,72 +1,54 @@
-import ObjectID from 'bson-objectid';
+import { Connection } from './page-info';
 import { Customer } from './customer';
-import { PageInfo } from './page-info';
 import { Project } from './project';
+import { User } from './user';
 
 export interface WorkReport {
   id: string;
-  status: WorkReportStatus;
+  owner: User;
   times: WorkReportTimes[];
   invoiced: boolean;
   description: string;
-  projects: Project[];
+  projects?: Project[];
   customer: Customer;
   createdAt: Date;
-  tripInfo: TripInfo;
-}
-
-export interface TripInfo {
-  fromCustomerArrived: Date;
-  fromCustomerStarted: Date;
-  toCustomerArrived: Date;
-  toCustomerStarted: Date;
 }
 
 export interface WorkReportTimes {
+  id: string;
   started: Date;
   ended: Date;
-}
-
-export enum WorkReportStatus {
-  FINISHED,
-  PAUSED,
-  RUNNING,
 }
 
 export interface NewWorkReport {
   customerId: string;
   projectId: string;
   description: String;
-
-  fromCustomerArrived?: Date;
-  fromCustomerStarted?: Date;
-  toCustomerArrived?: Date;
-  toCustomerStarted?: Date;
+  invoiced: boolean;
 }
 
 export interface UpdateWorkReport {
-  customerId: string;
-  description: String;
-  invoiced: boolean;
-  projectId: string;
-  status: WorkReportStatus;
+  id: string;
+  forUserId?: string;
+  customer?: string;
+  project?: string;
+  description?: string;
+  invoiced?: boolean;
+  timeRecordUpdate?: TimeRecordUpdate;
+}
 
-  fromCustomerArrived: Date;
-  fromCustomerStarted: Date;
-  toCustomerArrived: Date;
-  toCustomerStarted: Date;
+export interface TimeRecordUpdate {
+  id: string;
+  command?: TimeRecordCommand;
+  updateStart?: Date;
+  updateEnd?: Date;
+}
+
+export enum TimeRecordCommand {
+  Start,
+  End,
 }
 
 export interface ListWorkReport {
-  listProjects: WorkReportConnection;
-}
-
-export interface WorkReportConnection {
-  edges: WorkReportEdge[];
-  pageInfo: PageInfo;
-}
-
-export interface WorkReportEdge {
-  cursor: String;
-  node: WorkReport;
+  workReports: Connection<WorkReport>;
 }

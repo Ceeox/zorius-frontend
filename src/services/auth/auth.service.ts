@@ -3,23 +3,24 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Apollo, Query, gql } from 'apollo-angular';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { User } from 'src/models/user';
 
 import { validate as uuidValidate } from 'uuid';
-import { FETCH_POLICY } from 'src/app/graphql.module';
+import { UserService } from '../user/user.service';
 
 export interface Login {
   token: string;
-  expiresAt: Date;
-  userId: string;
 }
-export interface LoginResponse {
+export interface LoginResult {
   login: Login;
 }
 
 @Injectable({
   providedIn: 'root',
 })
-export class LoginGQL extends Query<LoginResponse> {
+export class LoginGQL extends Query<LoginResult> {
   document = gql`
     query login($email: String!, $password: String!) {
       login(email: $email, password: $password) {
@@ -49,22 +50,19 @@ export class AuthService {
   claim?: Claim;
 
   constructor(
+    private userService: UserService,
     private apollo: Apollo,
     private loginGQL: LoginGQL,
     private router: Router,
-    private _snackBar: MatSnackBar,
+    private snackBar: MatSnackBar,
     private jwtHelper: JwtHelperService
   ) {
     if (this._isTokenPresent()) {
       this.claim = this._decodeToken();
     } else {
-      this._snackBar.open(
-        'You have been loged out. Please login again.',
-        null,
-        {
-          duration: 5000,
-        }
-      );
+      this.snackBar.open('You have been loged out. Please login again.', null, {
+        duration: 5000,
+      });
     }
   }
 
@@ -84,7 +82,7 @@ export class AuthService {
           this.router.navigate(['/home']);
         },
         (error) => {
-          this._snackBar.open(error, null, {
+          this.snackBar.open(error, null, {
             duration: 5000,
           });
         }
@@ -102,6 +100,17 @@ export class AuthService {
     } else {
       return null;
     }
+  }
+
+  user(): Observable<User> {
+    if (this.getUserId) {
+      return this.userService.users({ ids: [this.getUserId()] }).pipe(
+        map((user) => {
+          return user.users.edges[0].node;
+        })
+      );
+    }
+    this.router.navigate(['/login']);
   }
 
   public isAuthenticated(): boolean {

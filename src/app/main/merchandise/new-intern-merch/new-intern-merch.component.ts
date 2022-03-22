@@ -4,11 +4,12 @@ import { Router } from '@angular/router';
 import { NewInternMerchandise } from 'src/models/intern-merch';
 import { Location } from '@angular/common';
 import { InternMerchService } from 'src/services/intern-merch.service';
-import { UserService } from 'src/services/user.service';
+import { UserService } from 'src/services/user/user.service';
 
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { User, UserEdge } from 'src/models/user';
+import { User } from 'src/models/user';
+import { Edge } from 'src/models/page-info';
 
 @Component({
   selector: 'app-new-intern-merch',
@@ -33,7 +34,7 @@ export class NewInternMerchComponent implements OnInit {
     status: [''],
   });
   selfId: string;
-  ordererOptions: Observable<UserEdge[]>;
+  ordererOptions: Observable<Edge<User>[]>;
 
   constructor(
     private fb: FormBuilder,
@@ -44,28 +45,15 @@ export class NewInternMerchComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.ordererOptions = this.userService.listUsers().pipe(
+    this.ordererOptions = this.userService.users().pipe(
       map((res) => {
-        return res.listUsers.edges;
+        return res.users.edges;
       })
     );
-    this.userService.getSelf().subscribe((res) => {
-      this.selfId = res.id;
-    });
   }
 
   onBack() {
     this.location.back();
-  }
-
-  getUserName(user: User): string {
-    var name = '';
-    if (user.firstname && user.lastname) {
-      name = user.firstname + ' ' + user.lastname;
-    } else {
-      name = user.username.toString();
-    }
-    return name;
   }
 
   onSubmit(): void {

@@ -10,7 +10,7 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Observable, Subscription } from 'rxjs';
-import { UserService } from 'src/services/user.service';
+import { UserService } from 'src/services/user/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { map, take } from 'rxjs/operators';
 import { SNACKBAR_TIMEOUT } from 'src/app/app.component';

@@ -1,4 +1,3 @@
-import ObjectID from 'bson-objectid';
 import { PageInfo } from './page-info';
 import { User } from './user';
 

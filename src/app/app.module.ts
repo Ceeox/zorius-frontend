@@ -51,9 +51,9 @@ import { StockComponent } from './main/merchandise/stock/stock.component';
 import { LoginComponent } from './main/login/login.component';
 import { WorkdayComponent } from './main/home/workday/workday.component';
 import { RegisterComponent } from './main/register/register.component';
-import { WorkReportsComponent } from './main/home/work-reports/work-reports.component';
-import { NewWrComponent } from './main/home/work-reports/new-wr/new-wr.component';
-import { ListWrTodayComponent } from './main/home/work-reports/list-wr-today/list-wr-today.component';
+import { WorkReportsComponent } from './work-reports/work-reports.component';
+import { NewWrComponent } from './work-reports/new-wr/new-wr.component';
+import { ListWrTodayComponent } from './work-reports/list-wr-today/list-wr-today.component';
 import { NewInternMerchComponent } from './main/merchandise/new-intern-merch/new-intern-merch.component';
 import { UpdateInternMerchComponent } from './main/merchandise/update-intern-merch/update-intern-merch.component';
 import { UserProfileComponent } from './main/user-profile/user-profile.component';
@@ -64,8 +64,9 @@ import { NewInternMerchDialog } from './dialogs/new-intern-merch/new-intern-merc
 import { UpdateInternMerchDialog } from './dialogs/update-intern-merch/update-intern-merch.dialog';
 
 // services
-import { AuthGuardService } from 'src/services/auth-guard.service';
-import { getToken } from 'src/services/auth.service';
+import { AuthGuardService } from 'src/services/auth/auth-guard.service';
+import { getToken } from 'src/services/auth/auth.service';
+import { Apollo } from 'apollo-angular';
 
 @NgModule({
   declarations: [
@@ -134,6 +135,7 @@ import { getToken } from 'src/services/auth.service';
     }),
   ],
   providers: [
+    Apollo,
     JwtHelperService,
     AuthGuardService,
     {

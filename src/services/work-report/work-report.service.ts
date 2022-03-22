@@ -57,17 +57,25 @@ export class NewWorkReportGQL extends Mutation<WorkReport> {
 })
 export class ListWorkReportGQL extends Query<ListWorkReport> {
   document = gql`
-    query listWorkReports(
+    query workReports(
+      $ids: [UUID!]
+      $start_date: NaiveDate
+      $end_date: NaiveDate
       $first: Int
       $last: Int
       $after: String
       $before: String
     ) {
-      listWorkReports(
-        first: $first
-        last: $last
-        after: $after
-        before: $before
+      workReports(
+        options: {
+          ids: $ids
+          start_date: $start_date
+          end_date: $end_date
+          first: $first
+          last: $last
+          after: $after
+          before: $before
+        }
       ) {
         pageInfo {
           startCursor
@@ -78,36 +86,40 @@ export class ListWorkReportGQL extends Query<ListWorkReport> {
         edges {
           node {
             id
-            status
-            times {
-              started
-              ended
-            }
-            invoiced
-            tripInfo {
-              toCustomerStarted
-              toCustomerArrived
-              fromCustomerStarted
-              fromCustomerArrived
-            }
-            description
-            project {
+            owner {
               id
+              email
               name
-              description
-              note
+              createdAt
+              updatedAt
+              deletedAt
             }
             customer {
               id
-              projects {
-                id
-                name
-              }
+              name
+              identifier
+              note
+              createdAt
+              updatedAt
+              deletedAt
+            }
+            project {
+              id
               name
               note
+              createdAt
+              updatedAt
+              deletedAt
             }
+            timeRecords {
+              start
+              end
+            }
+            description
+            invoiced
+            createdAt
+            updatedAt
           }
-          cursor
         }
       }
     }
@@ -164,24 +176,19 @@ export class WorkReportService {
       );
   }
 
-  listWorkReports(
-    first?: number,
-    last?: number,
-    after?: String,
-    before?: String
-  ): Observable<ListWorkReport> {
+  workReports(options: {
+    ids?: string[];
+    startDate?: Date;
+    endDate?: Date;
+    first?: number;
+    last?: number;
+    after?: String;
+    before?: String;
+  }): Observable<ListWorkReport> {
     return this.listWorkReportGQL
-      .watch(
-        {
-          first,
-          last,
-          after,
-          before,
-        },
-        {
-          nextFetchPolicy: FETCH_POLICY,
-        }
-      )
+      .watch(options, {
+        nextFetchPolicy: FETCH_POLICY,
+      })
       .valueChanges.pipe(
         map((res) => {
           return res.data;

@@ -7,9 +7,10 @@ import {
   InternMerchandise,
   UpdateInternMerchandise,
 } from 'src/models/intern-merch';
-import { User, UserEdge } from 'src/models/user';
+import { Edge } from 'src/models/page-info';
+import { User } from 'src/models/user';
 import { InternMerchService } from 'src/services/intern-merch.service';
-import { UserService } from 'src/services/user.service';
+import { UserService } from 'src/services/user/user.service';
 
 @Component({
   selector: 'update-intern-merch.dialog',
@@ -33,7 +34,7 @@ export class UpdateInternMerchDialog implements OnInit {
     useCase: [''],
     status: [''],
   });
-  ordererOptions: Observable<UserEdge[]>;
+  ordererOptions: Observable<Edge<User>[]>;
   statusOptions: string[] = ['ORDERED', 'USED', 'DELIVERED', 'STORED'];
 
   constructor(
@@ -49,10 +50,10 @@ export class UpdateInternMerchDialog implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.ordererOptions = this.userService.listUsers().pipe(
+    this.ordererOptions = this.userService.users().pipe(
       map((res) => {
-        console.log(res.listUsers.edges);
-        return res.listUsers.edges;
+        console.log(res.users.edges);
+        return res.users.edges;
       })
     );
     console.log(this.data.internMerch.cost);
@@ -71,16 +72,6 @@ export class UpdateInternMerchDialog implements OnInit {
       url: this.data.internMerch.url,
       useCase: this.data.internMerch.useCase,
     });
-  }
-
-  getUserName(user: User): string {
-    var name = '';
-    if (user.firstname && user.lastname) {
-      name = user.firstname + ' ' + user.lastname;
-    } else {
-      name = user.username.toString();
-    }
-    return name;
   }
 
   onSubmit(): void {

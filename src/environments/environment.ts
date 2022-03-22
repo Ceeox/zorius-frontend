@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'https://localhost:13443',
+  apiUrl: 'http://localhost:8080',
   pollingInterval: 10000,
   fetchPolicy: 'no-cache',
   retryCount: 2,

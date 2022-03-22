@@ -9,8 +9,7 @@
       </div>
 
       <div class="navigation" *ngIf="isLogedIn() == true">
-        <a routerLink="/workaccount" mat-button>Work Account</a>
-        <a routerLink="/workreports" mat-button>Work Reports</a>
+        <a [routerLink]="['work-reports']" mat-button>Work Reports</a>
         <button mat-button [matMenuTriggerFor]="menu">Merchandise</button>
         <mat-menu #menu="matMenu">
           <a mat-menu-item routerLink="/merch/intern/list"

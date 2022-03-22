@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { map } from 'rxjs/operators';
-import { AuthService } from 'src/services/auth.service';
-import { UserService } from 'src/services/user.service';
+import { AuthService } from 'src/services/auth/auth.service';
 import { Observable } from 'rxjs';
-import { ThemeSwitchService } from 'src/services/theme-switch.service';
+import { ThemeSwitchService } from 'src/services/theme-switch/theme-switch.service';
 
 @Component({
   selector: 'app-navbar',
@@ -18,7 +17,6 @@ export class NavbarComponent implements OnInit {
 
   constructor(
     public authService: AuthService,
-    private userService: UserService,
     private themeSwitch: ThemeSwitchService
   ) {
     this.isDarkMode = this.themeSwitch.prefersColorSchemeDark();
@@ -39,18 +37,18 @@ export class NavbarComponent implements OnInit {
   }
 
   private getAvatarUrl(): Observable<string> {
-    return this.userService.getSelf().pipe(
+    return this.authService.user().pipe(
       map((user) => {
-        console.log('user avatarUrl: ' + user.avatarUrl);
-        return user.avatarUrl;
+        console.log('user avatarFilename: ' + user.avatarFilename);
+        return user.avatarFilename;
       })
     );
   }
 
   private getUserName(): Observable<string> {
-    return this.userService.getSelf().pipe(
+    return this.authService.user().pipe(
       map((user) => {
-        return user.firstname + ' ' + user.lastname;
+        return user.name;
       })
     );
   }

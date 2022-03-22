@@ -7,17 +7,23 @@ import { InternOrdersComponent } from './main/merchandise/intern-orders/intern-o
 import { ExternOrdersComponent } from './main/merchandise/extern-orders/extern-orders.component';
 import { StockComponent } from './main/merchandise/stock/stock.component';
 import { LoginComponent } from './main/login/login.component';
-import { AuthGuardService } from 'src/services/auth-guard.service';
+import { AuthGuardService } from 'src/services/auth/auth-guard.service';
 import { RegisterComponent } from './main/register/register.component';
 import { NewInternMerchComponent } from './main/merchandise/new-intern-merch/new-intern-merch.component';
 import { UpdateInternMerchComponent } from './main/merchandise/update-intern-merch/update-intern-merch.component';
 import { UserProfileComponent } from './main/user-profile/user-profile.component';
+import { WorkReportsComponent } from './work-reports/work-reports.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
+  {
+    path: 'work-reports',
+    component: WorkReportsComponent,
+    canActivate: [AuthGuardService],
+  },
   {
     path: 'merch',
     children: [

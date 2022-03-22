@@ -1,7 +1,11 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { NewProject } from 'src/models/project';
+
+export interface NewProjectDialogData {
+  name: string;
+  note?: string;
+}
 
 @Component({
   selector: 'app-new-project-dialog',
@@ -11,25 +15,23 @@ import { NewProject } from 'src/models/project';
 export class NewProjectDialog implements OnInit {
   newProjectForm = this.fb.group({
     name: [''],
-    description: [''],
     note: [''],
   });
 
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<NewProjectDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: { newProject: NewProject }
+    @Inject(MAT_DIALOG_DATA) public data: NewProjectDialogData
   ) {}
 
   ngOnInit() {}
 
   onSubmit() {
-    this.data.newProject = {
+    this.data = {
       name: this.newProjectForm.get('name').value,
-      description: this.newProjectForm.get('description').value,
       note: this.newProjectForm.get('note').value,
     };
-    this.dialogRef.close(this.data.newProject);
+    this.dialogRef.close(this.data);
   }
 
   onCancelClick() {

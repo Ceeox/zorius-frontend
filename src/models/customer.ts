@@ -1,24 +1,4 @@
-import ObjectID from 'bson-objectid';
-import { PageInfo } from './page-info';
 import { Project } from './project';
-
-export interface ListCustomers {
-  listCustomers: CustomerConnection;
-}
-
-export interface NewCustomer {
-  newCustomer: Customer;
-}
-
-export interface CustomerConnection {
-  edges: CustomerEdge[];
-  pageInfo: PageInfo;
-}
-
-export interface CustomerEdge {
-  cursor: String;
-  node: Customer;
-}
 
 export interface Customer {
   id: string;
@@ -26,4 +6,28 @@ export interface Customer {
   idenifier: string;
   note: string;
   projects: Project[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface UpdateCustomer {
+  name?: string;
+  idenifier?: string;
+  note?: string;
+  projects?: string[];
+}
+
+export interface NewCustomer {
+  name: string;
+  idenifier: string;
+  note?: string;
+  projects: Project[];
+}
+
+export interface ListCustomerOptions {
+  ids?: string[];
+  first?: number;
+  last?: number;
+  after?: String;
+  before?: String;
 }

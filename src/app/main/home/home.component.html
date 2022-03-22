@@ -1,8 +1,5 @@
 <div class="home mat-app-background">
-  <div *ngIf="authService.isAuthenticated(); else notLoggedIn">
-    <!-- <app-workday></app-workday> -->
-    <app-work-reports></app-work-reports>
-  </div>
+  <div *ngIf="authService.isAuthenticated(); else notLoggedIn"></div>
   <ng-template #notLoggedIn>
     <mat-toolbar>
       <span>Zorius</span>

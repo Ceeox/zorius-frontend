@@ -6,12 +6,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { map, mergeMap, startWith } from 'rxjs/operators';
 import { SNACKBAR_TIMEOUT } from 'src/app/app.component';
-import { CustomerEdge } from 'src/models/customer';
 import { NewProject, Project } from 'src/models/project';
-import { CustomerService } from 'src/services/customer.service';
-import { ProjectService } from 'src/services/project.service';
+import { CustomerService } from 'src/services/customer/customer.service';
+import { ProjectService } from 'src/services/project/project.service';
 import { NewProjectDialog } from 'src/app/dialogs/new-project/new-project.dialog';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { Customers } from 'src/services/customer/customers.gql';
+import { Edge } from 'src/models/page-info';
+import { Customer } from 'src/models/customer';
 
 @Component({
   selector: 'app-new-wr',
@@ -19,14 +21,13 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
   styleUrls: ['./new-wr.component.scss'],
 })
 export class NewWrComponent implements OnInit {
-  //customerOptions: string[] = ['GKL Test Kunde GmbH & Co. KG', 'T45 Test Kunde', 'LSM Test Kunde'];
-  customerOptions: Observable<CustomerEdge[]>;
+  customerOptions: Observable<Edge<Customer>[]>;
   projectOptions: Observable<Project[]>;
 
   customerControl = new FormControl();
-  filteredCustomerOptions: Observable<CustomerEdge[]>;
+  filteredCustomerOptions: Observable<Edge<Customer>[]>;
 
-  selectedCustomerId: number;
+  selectedCustomerId: string;
   selectedProjectId: string;
 
   newWRForm = this.fb.group({
@@ -43,11 +44,12 @@ export class NewWrComponent implements OnInit {
     private projectService: ProjectService,
     private snackBar: MatSnackBar
   ) {
-    this.customerOptions = this.customerService.listCustomers().pipe(
+    this.customerOptions = this.customerService.customers().pipe(
       map((result) => {
-        return result.listCustomers.edges;
+        return result.customers.edges;
       })
     );
+
     this.filteredCustomerOptions = this.customerControl.valueChanges.pipe(
       startWith(''),
       mergeMap((filter: string) => {
@@ -75,11 +77,7 @@ export class NewWrComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result: NewProject) => {
       if (result) {
-        this.projectService.newProject(
-          result.description,
-          result.name,
-          result.note
-        );
+        this.projectService.newProject(result.name, result.note);
       }
     });
   }
@@ -96,7 +94,7 @@ export class NewWrComponent implements OnInit {
     this.snackBar.open('Not yet implemented!')._dismissAfter(SNACKBAR_TIMEOUT);
   }
 
-  displayCustomer(edge: CustomerEdge) {
+  displayCustomer(edge: Edge<Customer>) {
     return edge.node.name;
   }
 }

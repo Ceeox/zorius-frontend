@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ThemeSwitchService } from 'src/services/theme-switch.service';
+import { ThemeSwitchService } from 'src/services/theme-switch/theme-switch.service';
 
 export const SNACKBAR_TIMEOUT = 5000;
 

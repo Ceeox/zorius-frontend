@@ -1,51 +1,57 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { User } from 'src/models/user';
-import { UserService } from 'src/services/user.service';
+import { AuthService } from 'src/services/auth/auth.service';
+import { UserService } from 'src/services/user/user.service';
 
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.scss'],
 })
-export class UserProfileComponent implements OnInit {
-  self: Observable<User>;
+export class UserProfileComponent implements OnInit, OnDestroy {
+  user: Observable<User>;
   updateUserForm = this.fb.group({
-    firstname: [''],
-    lastname: [''],
+    name: [''],
   });
 
-  constructor(private userService: UserService, private fb: FormBuilder) {
-    this.self = this.userService.getSelf().pipe(
+  user$: Subscription | undefined;
+  updateUser$: Subscription | undefined;
+
+  constructor(
+    private authService: AuthService,
+    private userService: UserService,
+    private fb: FormBuilder
+  ) {
+    this.user = this.authService.user().pipe(
       map((res) => {
         return res;
       })
     );
   }
 
-  ngOnInit() {
-    this.self.subscribe((res) => {
-      this.updateForm(res.firstname, res.lastname);
-    });
+  ngOnInit() {}
+
+  ngOnDestroy(): void {
+    this.updateUser$?.unsubscribe();
+    this.user$?.unsubscribe();
   }
 
-  updateForm(firstname?: string, lastname?: string) {
+  updateForm(name?: string) {
     this.updateUserForm.patchValue({
-      firstname,
-      lastname,
+      name,
     });
   }
 
   onSubmit() {
-    this.userService
-      .updateUser(
-        this.updateUserForm.get('firstname').value,
-        this.updateUserForm.get('lastname').value
-      )
-      .subscribe((res) => {
-        this.updateForm(res.firstname, res.lastname);
-      });
+    this.user$ = this.user.subscribe((user) => {
+      this.updateUser$ = this.userService
+        .updateUser(user.id, { name: this.updateUserForm.get('name').value })
+        .subscribe((res) => {
+          this.updateForm(res.name);
+        });
+    });
   }
 }
