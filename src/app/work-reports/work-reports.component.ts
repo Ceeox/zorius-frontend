@@ -1,10 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { Observable, Subscription } from 'rxjs';
+import { delay, map, retryWhen, startWith, take } from 'rxjs/operators';
 import { Edge } from 'src/models/page-info';
 import { WorkReport } from 'src/models/work-reports';
-import { WorkReportService } from 'src/services/work-report/work-report.service';
+import { AuthService } from 'src/services/auth/auth.service';
+import {
+  ListWorkReportGQL,
+  WorkReportService,
+} from 'src/services/work-report/work-report.service';
+import { RETRY_DELAY, RETRY_COUNT } from '../graphql.module';
 
 export interface User {
   name: string;
@@ -15,7 +21,7 @@ export interface User {
   templateUrl: './work-reports.component.html',
   styleUrls: ['./work-reports.component.scss'],
 })
-export class WorkReportsComponent implements OnInit {
+export class WorkReportsComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = [
     'customer',
     'project',
@@ -24,14 +30,19 @@ export class WorkReportsComponent implements OnInit {
   ];
   workReports$: Observable<Edge<WorkReport>[]> = new Observable();
 
+  workReportsSub$: Subscription | undefined;
+
   range = new FormGroup({
     start: new FormControl(this.getLastWeek()),
     end: new FormControl(new Date()),
   });
 
-  constructor(private workReportService: WorkReportService) {
+  constructor(
+    private authService: AuthService,
+    private workReportService: WorkReportService,
+    private listWorkReportGQL: ListWorkReportGQL
+  ) {
     this.loadWorkReports();
-    console.log();
   }
 
   ngOnInit() {
@@ -42,17 +53,30 @@ export class WorkReportsComponent implements OnInit {
     );
   }
 
+  ngOnDestroy(): void {
+    this.workReportsSub$?.unsubscribe();
+  }
+
   loadWorkReports() {
-    this.workReports$ = this.workReportService
-      .workReports({
-        startDate: this.range.get('start').value,
-        endDate: this.range.get('end').value,
-      })
-      .pipe(
-        map((workReports) => {
-          console.log(JSON.stringify(workReports.workReports.edges, null, 2));
-          return workReports.workReports.edges;
-        })
+    this.workReports$ = this.listWorkReportGQL
+      .watch(
+        {
+          startDate: this.range.get('start').value,
+          endDate: this.range.get('end').value,
+        },
+        {
+          fetchPolicy: 'network-only',
+          nextFetchPolicy: 'cache-and-network',
+          pollInterval: 30000,
+        }
+      )
+      .valueChanges.pipe(
+        map((res) => {
+          return res.data.workReports.edges;
+        }),
+        retryWhen((errors) =>
+          errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT))
+        )
       );
   }
 

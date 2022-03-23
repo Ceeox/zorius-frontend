@@ -1,5 +1,5 @@
-<div class="content mat-app-background">
-  <mat-toolbar color="primary">
+<div class="mat-app-background">
+  <mat-toolbar class="mat-elevation-z8" color="primary">
     <mat-toolbar-row>
       <div class="navbar-home">
         <a routerLink="/home" mat-button>
@@ -27,16 +27,16 @@
         <div class="avatar">
           <div *ngIf="avatarUrl | async; else defaultPic">
             <a
-              class="profilePic"
+              class="profile-pic"
               mat-icon-button
               [matMenuTriggerFor]="userProfile">
-              <img [src]="avatarUrl | async" />
+              <img [src]="avatarFilename | async" />
             </a>
           </div>
 
           <ng-template #defaultPic>
             <a
-              class="profilePic"
+              class="profile-pic"
               mat-icon-button
               [matMenuTriggerFor]="userProfile">
               <mat-icon>person</mat-icon>
@@ -70,8 +70,4 @@
       </ng-template>
     </mat-toolbar-row>
   </mat-toolbar>
-
-  <router-outlet></router-outlet>
-
-  <app-footer></app-footer>
 </div>

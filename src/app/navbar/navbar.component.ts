@@ -10,7 +10,7 @@ import { ThemeSwitchService } from 'src/services/theme-switch/theme-switch.servi
   styleUrls: ['./navbar.component.scss'],
 })
 export class NavbarComponent implements OnInit {
-  avatarUrl: Observable<string>;
+  avatarFilename: Observable<string>;
   userName: Observable<string>;
 
   isDarkMode: boolean;
