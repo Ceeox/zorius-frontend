@@ -31,6 +31,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 // imports extern
 import { GraphQLModule } from './graphql.module';
@@ -52,8 +53,6 @@ import { LoginComponent } from './main/login/login.component';
 import { WorkdayComponent } from './main/home/workday/workday.component';
 import { RegisterComponent } from './main/register/register.component';
 import { WorkReportsComponent } from './work-reports/work-reports.component';
-import { NewWrComponent } from './work-reports/new-wr/new-wr.component';
-import { ListWrTodayComponent } from './work-reports/list-wr-today/list-wr-today.component';
 import { NewInternMerchComponent } from './main/merchandise/new-intern-merch/new-intern-merch.component';
 import { UpdateInternMerchComponent } from './main/merchandise/update-intern-merch/update-intern-merch.component';
 import { UserProfileComponent } from './main/user-profile/user-profile.component';
@@ -67,6 +66,8 @@ import { UpdateInternMerchDialog } from './dialogs/update-intern-merch/update-in
 import { AuthGuardService } from 'src/services/auth/auth-guard.service';
 import { getToken } from 'src/services/auth/auth.service';
 import { Apollo } from 'apollo-angular';
+import { DurationPipe } from '../pipes/duration.pipe';
+import { NewWorkReportComponent } from './dialogs/new-work-report/new-work-report.component';
 
 @NgModule({
   declarations: [
@@ -82,8 +83,6 @@ import { Apollo } from 'apollo-angular';
     WorkdayComponent,
     RegisterComponent,
     WorkReportsComponent,
-    NewWrComponent,
-    ListWrTodayComponent,
     NewInternMerchComponent,
     UpdateInternMerchComponent,
     UserProfileComponent,
@@ -91,6 +90,9 @@ import { Apollo } from 'apollo-angular';
     NewProjectDialog,
     NewInternMerchDialog,
     UpdateInternMerchDialog,
+
+    DurationPipe,
+    NewWorkReportComponent,
   ],
   imports: [
     FormsModule,
@@ -121,6 +123,7 @@ import { Apollo } from 'apollo-angular';
     MatDatepickerModule,
     MatNativeDateModule,
     MatSlideToggleModule,
+    MatCheckboxModule,
 
     BrowserModule,
     AppRoutingModule,

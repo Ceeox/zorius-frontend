@@ -18,7 +18,7 @@ export class CustomerService {
   constructor(
     private newCustomerGQL: NewCustomerGQL,
     private updateCustomerGQL: UpdateCustomerGQL,
-    private listCustomersGQL: CustomersGQL
+    private customersGQL: CustomersGQL
   ) {}
 
   newCustomer(_new: NewCustomer): Observable<NewCustomerResult> {
@@ -58,7 +58,7 @@ export class CustomerService {
   }
 
   customers(options?: ListCustomerOptions): Observable<Customers> {
-    return this.listCustomersGQL.fetch({ options }).pipe(
+    return this.customersGQL.fetch({ options }).pipe(
       map((res) => {
         return res.data;
       }),

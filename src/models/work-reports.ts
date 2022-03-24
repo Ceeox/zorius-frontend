@@ -6,7 +6,7 @@ import { User } from './user';
 export interface WorkReport {
   id: string;
   owner: User;
-  times: WorkReportTimes[];
+  timeRecords: TimeRecord[];
   invoiced: boolean;
   description: string;
   projects?: Project[];
@@ -14,10 +14,10 @@ export interface WorkReport {
   createdAt: Date;
 }
 
-export interface WorkReportTimes {
+export interface TimeRecord {
   id: string;
-  started: Date;
-  ended: Date;
+  start: Date;
+  end?: Date;
 }
 
 export interface NewWorkReport {

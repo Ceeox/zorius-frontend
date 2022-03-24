@@ -6,10 +6,8 @@ import { delay, map, retryWhen, startWith, take } from 'rxjs/operators';
 import { Edge } from 'src/models/page-info';
 import { WorkReport } from 'src/models/work-reports';
 import { AuthService } from 'src/services/auth/auth.service';
-import {
-  ListWorkReportGQL,
-  WorkReportService,
-} from 'src/services/work-report/work-report.service';
+import { WorkReportService } from 'src/services/work-report/work-report.service';
+import { ListWorkReportGQL } from 'src/services/work-report/work-reports.gql';
 import { RETRY_DELAY, RETRY_COUNT } from '../graphql.module';
 
 export interface User {
@@ -37,11 +35,7 @@ export class WorkReportsComponent implements OnInit, OnDestroy {
     end: new FormControl(new Date()),
   });
 
-  constructor(
-    private authService: AuthService,
-    private workReportService: WorkReportService,
-    private listWorkReportGQL: ListWorkReportGQL
-  ) {
+  constructor(private listWorkReportGQL: ListWorkReportGQL) {
     this.loadWorkReports();
   }
 

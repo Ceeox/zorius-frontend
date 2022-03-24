@@ -1,0 +1,44 @@
+<mat-toolbar>
+  <span>New Work Report</span>
+</mat-toolbar>
+
+<div class="inputs" [formGroup]="myControl">
+  <mat-form-field class="full-width" appearance="fill">
+    <mat-label>Customers</mat-label>
+    <mat-select name="customer" formControlName="customer">
+      <mat-option *ngFor="let edge of customers$ | async" [value]="edge.node">
+        {{ edge.node.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="full-width" appearance="fill">
+    <mat-label>Projects</mat-label>
+    <mat-select name="project" formControlName="project">
+      <mat-option *ngFor="let project of projects$ | async" [value]="project">
+        {{ project.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="full-width" appearance="fill">
+    <mat-label>Leave a description</mat-label>
+    <textarea matInput formControlName="description"></textarea>
+  </mat-form-field>
+
+  <mat-checkbox class="example-margin" formControlName="invoiced">
+    Invoiced
+  </mat-checkbox>
+
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button
+      [disabled]="myControl.invalid"
+      mat-raised-button
+      [mat-dialog-close]="false"
+      color="accent"
+      (click)="onSubmit()">
+      Save
+    </button>
+  </mat-dialog-actions>
+</div>
