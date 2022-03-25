@@ -22,6 +22,20 @@
 
       <span style="flex: auto"></span>
 
+      <div class="theme-mode-switcher">
+        <mat-slide-toggle
+          labelPosition="after"
+          [(ngModel)]="isDarkMode"
+          (change)="storeThemeMode()">
+        </mat-slide-toggle>
+        <mat-icon class="theme-mode-icon" *ngIf="isDarkMode; else lightMode">
+          dark_mode
+        </mat-icon>
+        <ng-template #lightMode>
+          <mat-icon class="theme-mode-icon">light_mode</mat-icon>
+        </ng-template>
+      </div>
+
       <div *ngIf="isLogedIn(); then profile; else registerLogin"></div>
       <ng-template #profile>
         <div class="avatar">
@@ -49,13 +63,8 @@
             <mat-icon>person</mat-icon>Profil
           </button>
 
-          <button mat-menu-item>
-            <mat-slide-toggle
-              labelPosition="before"
-              [(ngModel)]="isDarkMode"
-              (change)="storeThemeMode()">
-              <mat-icon>bedtime</mat-icon>Dark Mode
-            </mat-slide-toggle>
+          <button mat-menu-item [routerLink]="['admin']">
+            <mat-icon color="warn">admin_panel_settings</mat-icon>Admin
           </button>
 
           <button mat-menu-item (click)="authService.logout()">

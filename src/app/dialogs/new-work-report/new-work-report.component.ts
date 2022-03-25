@@ -1,9 +1,8 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Subscription } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
-import { map, startWith, switchMap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Customer } from 'src/models/customer';
 import { Edge } from 'src/models/page-info';
 import { Project } from 'src/models/project';

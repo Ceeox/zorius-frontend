@@ -6,5 +6,12 @@
 
   table {
     width: 100%;
+
+    th,
+    td {
+      padding-top: 1vh;
+      padding-bottom: 1vh;
+      padding-left: 1vw;
+    }
   }
 }

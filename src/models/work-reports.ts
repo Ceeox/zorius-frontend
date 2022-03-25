@@ -45,8 +45,8 @@ export interface TimeRecordUpdate {
 }
 
 export enum TimeRecordCommand {
-  Start,
-  End,
+  Start = 'START',
+  End = 'END',
 }
 
 export interface ListWorkReport {

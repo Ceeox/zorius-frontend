@@ -29,6 +29,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     'description',
     'invoiced',
     'duration',
+    'edit',
   ];
   workReports$: Observable<Edge<WorkReport>[]> = new Observable();
 

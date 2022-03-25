@@ -61,7 +61,7 @@ export class WorkReportsComponent implements OnInit, OnDestroy {
         {
           fetchPolicy: 'network-only',
           nextFetchPolicy: 'cache-and-network',
-          pollInterval: 30000,
+          pollInterval: 60000,
         }
       )
       .valueChanges.pipe(

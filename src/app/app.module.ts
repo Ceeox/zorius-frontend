@@ -68,6 +68,8 @@ import { getToken } from 'src/services/auth/auth.service';
 import { Apollo } from 'apollo-angular';
 import { DurationPipe } from '../pipes/duration.pipe';
 import { NewWorkReportComponent } from './dialogs/new-work-report/new-work-report.component';
+import { AdminComponent } from './admin/admin.component';
+import { UpdateWorkReportComponent } from './dialogs/update-work-report/update-work-report.component';
 
 @NgModule({
   declarations: [
@@ -93,6 +95,8 @@ import { NewWorkReportComponent } from './dialogs/new-work-report/new-work-repor
 
     DurationPipe,
     NewWorkReportComponent,
+    AdminComponent,
+    UpdateWorkReportComponent,
   ],
   imports: [
     FormsModule,

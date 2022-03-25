@@ -6,6 +6,18 @@
   z-index: 1000;
   top: 0;
 
+  .theme-mode-switcher {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .theme-mode-icon {
+      margin-left: 0.5vw;
+    }
+
+    margin-right: 2vw;
+  }
+
   .navbar-container {
     display: flex;
     padding: 1rem;

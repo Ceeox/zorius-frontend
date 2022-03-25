@@ -13,6 +13,8 @@ import { NewInternMerchComponent } from './main/merchandise/new-intern-merch/new
 import { UpdateInternMerchComponent } from './main/merchandise/update-intern-merch/update-intern-merch.component';
 import { UserProfileComponent } from './main/user-profile/user-profile.component';
 import { WorkReportsComponent } from './work-reports/work-reports.component';
+import { AdminComponent } from './admin/admin.component';
+import { WorkReportsComponent as AdminWorkReportsComponent } from './admin/work-reports/work-reports.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -63,6 +65,20 @@ const routes: Routes = [
     path: 'user',
     component: UserProfileComponent,
     canActivate: [AuthGuardService],
+  },
+  {
+    path: 'admin',
+    children: [
+      {
+        path: '',
+        component: AdminComponent,
+        canActivate: [AuthGuardService],
+      },
+      {
+        path: 'work-reports',
+        component: AdminWorkReportsComponent,
+      },
+    ],
   },
 
   { path: '404', component: PageNotFoundComponent },
