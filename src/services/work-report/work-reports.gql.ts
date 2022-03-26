@@ -9,8 +9,8 @@ export class ListWorkReportGQL extends Query<ListWorkReport> {
   document = gql`
     query workReports(
       $ids: [UUID!]
-      $start_date: NaiveDate
-      $end_date: NaiveDate
+      $startDate: NaiveDate
+      $endDate: NaiveDate
       $first: Int
       $last: Int
       $after: String
@@ -19,8 +19,8 @@ export class ListWorkReportGQL extends Query<ListWorkReport> {
       workReports(
         options: {
           ids: $ids
-          start_date: $start_date
-          end_date: $end_date
+          startDate: $startDate
+          endDate: $endDate
           first: $first
           last: $last
           after: $after

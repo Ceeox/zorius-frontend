@@ -39,24 +39,20 @@ export class WorkReportsComponent implements OnInit, OnDestroy {
     this.loadWorkReports();
   }
 
-  ngOnInit() {
-    this.range.valueChanges.pipe(
-      map(() => {
-        this.loadWorkReports();
-      })
-    );
-  }
+  ngOnInit() {}
 
   ngOnDestroy(): void {
     this.workReportsSub$?.unsubscribe();
   }
 
   loadWorkReports() {
+    let start: Date = this.range.get('start').value;
+    let end: Date = this.range.get('end').value;
     this.workReports$ = this.listWorkReportGQL
       .watch(
         {
-          startDate: this.range.get('start').value,
-          endDate: this.range.get('end').value,
+          startDate: this.utcDate(start).toISOString().split('T')[0],
+          endDate: this.utcDate(end).toISOString().split('T')[0],
         },
         {
           fetchPolicy: 'network-only',
@@ -67,16 +63,26 @@ export class WorkReportsComponent implements OnInit, OnDestroy {
       .valueChanges.pipe(
         map((res) => {
           return res.data.workReports.edges;
-        }),
-        retryWhen((errors) =>
-          errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT))
-        )
+        })
       );
   }
 
   getLastWeek(): Date {
     let date = new Date();
-    let lastDate = date.getDate() - (date.getDay() - 1) - 6;
+    let lastDate = date.getDate() - (date.getDate() - 7);
     return new Date(date.setDate(lastDate));
+  }
+
+  utcDate(date: Date) {
+    var now_utc = Date.UTC(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      date.getHours(),
+      date.getMinutes(),
+      date.getSeconds()
+    );
+
+    return new Date(now_utc);
   }
 }

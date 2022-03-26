@@ -1,20 +1,22 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { HomeComponent } from './main/home/home.component';
-import { PageNotFoundComponent } from './main/pagenotfound/pagenotfound.component';
-import { InternOrdersComponent } from './main/merchandise/intern-orders/intern-orders.component';
-import { ExternOrdersComponent } from './main/merchandise/extern-orders/extern-orders.component';
-import { StockComponent } from './main/merchandise/stock/stock.component';
-import { LoginComponent } from './main/login/login.component';
+import { HomeComponent } from './home/home.component';
+import { PageNotFoundComponent } from './pagenotfound/pagenotfound.component';
+import { InternOrdersComponent } from './merchandise/intern-orders/intern-orders.component';
+import { ExternOrdersComponent } from './merchandise/extern-orders/extern-orders.component';
+import { StockComponent } from './merchandise/stock/stock.component';
+import { LoginComponent } from './login/login.component';
 import { AuthGuardService } from 'src/services/auth/auth-guard.service';
-import { RegisterComponent } from './main/register/register.component';
-import { NewInternMerchComponent } from './main/merchandise/new-intern-merch/new-intern-merch.component';
-import { UpdateInternMerchComponent } from './main/merchandise/update-intern-merch/update-intern-merch.component';
-import { UserProfileComponent } from './main/user-profile/user-profile.component';
+import { RegisterComponent } from './register/register.component';
+import { NewInternMerchComponent } from './merchandise/new-intern-merch/new-intern-merch.component';
+import { UpdateInternMerchComponent } from './merchandise/update-intern-merch/update-intern-merch.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
 import { WorkReportsComponent } from './work-reports/work-reports.component';
 import { AdminComponent } from './admin/admin.component';
 import { WorkReportsComponent as AdminWorkReportsComponent } from './admin/work-reports/work-reports.component';
+import { UsersComponent } from './admin/users/users.component';
+import { CustomersComponent } from './admin/customers/customers.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -68,15 +70,23 @@ const routes: Routes = [
   },
   {
     path: 'admin',
+    component: AdminComponent,
+    canActivate: [AuthGuardService],
     children: [
-      {
-        path: '',
-        component: AdminComponent,
-        canActivate: [AuthGuardService],
-      },
       {
         path: 'work-reports',
         component: AdminWorkReportsComponent,
+        canActivate: [AuthGuardService],
+      },
+      {
+        path: 'users',
+        component: UsersComponent,
+        canActivate: [AuthGuardService],
+      },
+      {
+        path: 'customers',
+        component: CustomersComponent,
+        canActivate: [AuthGuardService],
       },
     ],
   },

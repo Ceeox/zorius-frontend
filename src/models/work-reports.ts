@@ -9,7 +9,7 @@ export interface WorkReport {
   timeRecords: TimeRecord[];
   invoiced: boolean;
   description: string;
-  projects?: Project[];
+  project?: Project;
   customer: Customer;
   createdAt: Date;
 }

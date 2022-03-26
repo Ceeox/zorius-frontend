@@ -10,24 +10,18 @@ export class UpdateWorkReportGQL extends Mutation<WorkReport> {
     mutation updateWorkReport(
       $customer: UUID
       $description: String
-      $endTimeRecord: Boolean
-      $forUserId: UUID
       $id: UUID!
       $invoiced: Boolean
       $project: UUID
-      $startTimeRecord: Boolean
       $timeRecordUpdate: TimeRecordUpdate
     ) {
       updateWorkReport(
         update: {
           customer: $customer
           description: $description
-          endTimeRecord: $endTimeRecord
-          forUserId: $forUserId
           id: $id
           invoiced: $invoiced
           project: $project
-          startTimeRecord: $startTimeRecord
           timeRecordUpdate: $timeRecordUpdate
         }
       ) {

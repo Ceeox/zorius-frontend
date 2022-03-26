@@ -1,1 +1,31 @@
-<p>admin works!</p>
+<mat-toolbar color="warn">
+  <span> Admin </span>
+</mat-toolbar>
+<mat-sidenav-container class="admin-container">
+  <mat-sidenav mode="side" opened class="admin-sidebar">
+    <mat-selection-list [multiple]="false">
+      <mat-list-option [routerLink]="['/admin/work-reports']">
+        <mat-icon mat-list-icon>assignment</mat-icon>
+        Work Reports
+      </mat-list-option>
+
+      <mat-divider></mat-divider>
+
+      <mat-list-option [routerLink]="['/admin/users']">
+        <mat-icon mat-list-icon>people</mat-icon>
+        Users
+      </mat-list-option>
+
+      <mat-divider></mat-divider>
+
+      <mat-list-option [routerLink]="['/admin/customers']">
+        <mat-icon mat-list-icon>assignment_ind</mat-icon>
+        Customers
+      </mat-list-option>
+    </mat-selection-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="admin-content">
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

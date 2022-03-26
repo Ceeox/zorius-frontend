@@ -1,15 +1,24 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
-  styleUrls: ['./admin.component.scss']
+  styleUrls: ['./admin.component.scss'],
 })
 export class AdminComponent implements OnInit {
+  options: FormGroup;
+  currentPath = '';
 
-  constructor() { }
-
-  ngOnInit(): void {
+  constructor(private router: Router, fb: FormBuilder) {
+    this.options = fb.group({
+      bottom: 0,
+      fixed: false,
+      top: 0,
+    });
+    this.currentPath = this.router.url;
   }
 
+  ngOnInit(): void {}
 }

@@ -29,7 +29,14 @@ export class CustomersGQL extends Query<Customers> {
             projects {
               id
               name
+              note
+              createdAt
+              updatedAt
+              deletedAt
             }
+            createdAt
+            updatedAt
+            deletedAt
           }
           cursor
         }

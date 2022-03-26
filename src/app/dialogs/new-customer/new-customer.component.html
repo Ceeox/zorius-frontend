@@ -1,0 +1,32 @@
+<mat-toolbar>
+  <span>New Customer</span>
+</mat-toolbar>
+
+<div class="inputs" [formGroup]="myControl">
+  <mat-form-field class="full-width" appearance="fill">
+    <mat-label>Name</mat-label>
+    <input matInput formControlName="name" placeholder="ABC Ltd." />
+  </mat-form-field>
+
+  <mat-form-field class="full-width" appearance="fill">
+    <mat-label>Idenifier</mat-label>
+    <input matInput formControlName="identifier" placeholder="K_ABC_LTD" />
+  </mat-form-field>
+
+  <mat-form-field class="full-width" appearance="fill">
+    <mat-label>Note</mat-label>
+    <textarea matInput formControlName="note"></textarea>
+  </mat-form-field>
+
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button
+      [disabled]="myControl.invalid"
+      mat-raised-button
+      [mat-dialog-close]="false"
+      color="accent"
+      (click)="onSubmit()">
+      Save
+    </button>
+  </mat-dialog-actions>
+</div>

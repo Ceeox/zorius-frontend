@@ -3,7 +3,7 @@ import { Project } from './project';
 export interface Customer {
   id: string;
   name: string;
-  idenifier: string;
+  identifier: string;
   note: string;
   projects: Project[];
   createdAt: Date;
@@ -12,16 +12,15 @@ export interface Customer {
 
 export interface UpdateCustomer {
   name?: string;
-  idenifier?: string;
+  identifier?: string;
   note?: string;
   projects?: string[];
 }
 
 export interface NewCustomer {
   name: string;
-  idenifier: string;
+  identifier: string;
   note?: string;
-  projects: Project[];
 }
 
 export interface ListCustomerOptions {

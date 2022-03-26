@@ -9,12 +9,14 @@ import { Edge } from 'src/models/page-info';
 import {
   NewWorkReport,
   TimeRecordCommand,
+  UpdateWorkReport,
   WorkReport,
 } from 'src/models/work-reports';
 import { AuthService } from 'src/services/auth/auth.service';
 import { NewWorkReportGQL } from 'src/services/work-report/new-work-report.gql';
 import { UpdateWorkReportGQL } from 'src/services/work-report/update-work-report.gql';
 import { ListWorkReportGQL } from 'src/services/work-report/work-reports.gql';
+import { UpdateWorkReportComponent } from '../dialogs/update-work-report/update-work-report.component';
 
 @Component({
   selector: 'app-home',
@@ -34,6 +36,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   workReports$: Observable<Edge<WorkReport>[]> = new Observable();
 
   newWorkReportSub$?: Subscription;
+  updateWorkReportSub$?: Subscription;
   dialogSub$?: Subscription;
 
   constructor(
@@ -48,6 +51,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     this.newWorkReportSub$?.unsubscribe();
+    this.updateWorkReportSub$?.unsubscribe();
     this.dialogSub$?.unsubscribe();
   }
 
@@ -57,8 +61,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.workReports$ = this.listWorkReportGQL
       .watch(
         {
-          startDate: new Date(),
-          endDate: new Date(),
+          startDate: new Date().toISOString().split('T')[0],
+          endDate: new Date().toISOString().split('T')[0],
         },
         {
           fetchPolicy: 'network-only',
@@ -111,10 +115,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           .pipe(
             map((res) => {
               return res.data;
-            }),
-            retryWhen((errors) =>
-              errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT))
-            )
+            })
           )
           .subscribe();
       });
@@ -140,5 +141,26 @@ export class HomeComponent implements OnInit, OnDestroy {
         },
       })
       .subscribe();
+  }
+
+  updateWorkReport(edge: Edge<WorkReport>) {
+    const dialogRef = this.dialog.open(UpdateWorkReportComponent, {
+      data: edge.node,
+    });
+
+    this.dialogSub$ = dialogRef
+      .afterClosed()
+      .subscribe((result?: UpdateWorkReport) => {
+        if (!result) return;
+
+        this.updateWorkReportSub$ = this.updateWorkReportGQL
+          .mutate(result)
+          .pipe(
+            map((res) => {
+              return res.data;
+            })
+          )
+          .subscribe();
+      });
   }
 }
