@@ -64,15 +64,13 @@ export class HomeComponent implements OnInit, OnDestroy {
           fetchPolicy: 'network-only',
           nextFetchPolicy: 'cache-and-network',
           pollInterval: 10000,
+          errorPolicy: 'all',
         }
       )
       .valueChanges.pipe(
         map((res) => {
           return res.data.workReports.edges;
-        }),
-        retryWhen((errors) =>
-          errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT))
-        )
+        })
       );
   }
 

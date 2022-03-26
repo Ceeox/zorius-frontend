@@ -91,6 +91,7 @@ export class AuthService {
 
   public logout() {
     this._resetLoginData();
+    this.apollo.client.resetStore();
     this.router.navigate(['/home']);
   }
 
