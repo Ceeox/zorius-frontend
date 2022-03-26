@@ -26,7 +26,7 @@
         <mat-slide-toggle
           labelPosition="after"
           [(ngModel)]="isDarkMode"
-          (change)="storeThemeMode()">
+          (change)="switchTheme()">
         </mat-slide-toggle>
         <mat-icon class="theme-mode-icon" *ngIf="isDarkMode; else lightMode">
           dark_mode

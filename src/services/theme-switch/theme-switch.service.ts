@@ -1,52 +1,62 @@
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, OnDestroy } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { MediaService } from '../media/media.service';
+import { Subscription } from 'rxjs';
 
-export const LS_THEME = 'theme';
+export const LS_KEY_NAME = 'theme';
+
+export enum Theme {
+  System = 'system',
+  Light = 'light',
+  Dark = 'dark',
+}
 
 @Injectable({
   providedIn: 'root',
 })
-export class ThemeSwitchService {
+export class ThemeSwitchService implements OnDestroy {
   private static readonly LIGHT_THEME_CLASS = 'light-theme';
-  private static readonly LIGHT_THEME = 'light';
-
   private static readonly DARK_THEME_CLASS = 'dark-theme';
-  private static readonly DARK_THEME = 'dark';
+  mediaService = new MediaService('(prefers-color-scheme: dark)');
 
-  constructor(@Inject(DOCUMENT) private document: Document) {}
+  mediaSub$?: Subscription;
 
-  public currentTheme(): string {
-    let theme = localStorage.getItem(LS_THEME);
-    if (!theme) {
-      if (this.prefersColorSchemeDark()) return ThemeSwitchService.DARK_THEME;
-      else return ThemeSwitchService.LIGHT_THEME;
+  constructor(@Inject(DOCUMENT) private document: Document) {
+    this.theme = this.theme;
+    this.mediaSub$ = this.mediaService.match$.subscribe((isDark) => {
+      if (isDark) {
+        this.setDark();
+      } else {
+        this.setLight();
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.mediaSub$?.unsubscribe();
+  }
+
+  public get theme(): Theme {
+    return Theme[localStorage.getItem(LS_KEY_NAME)] || Theme.System;
+  }
+
+  public set theme(v: Theme) {
+    if (v === Theme.Light) {
+      this.setLight();
+    } else if (v === Theme.Dark) {
+      this.setDark();
+    } else {
+      if (this.prefersLight()) {
+        this.setLight();
+      } else {
+        this.setDark();
+      }
     }
-    return theme;
+
+    localStorage.setItem(LS_KEY_NAME, v);
   }
 
-  public prefersColorSchemeDark(): boolean {
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
-  }
-
-  public selectDarkTheme(): void {
-    if (
-      this.document.documentElement.classList.contains(
-        ThemeSwitchService.DARK_THEME_CLASS
-      )
-    )
-      return;
-
-    this.document.documentElement.classList.remove(
-      ThemeSwitchService.LIGHT_THEME_CLASS
-    );
-    this.document.documentElement.classList.add(
-      ThemeSwitchService.DARK_THEME_CLASS
-    );
-
-    localStorage.setItem(LS_THEME, ThemeSwitchService.DARK_THEME);
-  }
-
-  public selectLightTheme(): void {
+  private setLight() {
     if (
       this.document.documentElement.classList.contains(
         ThemeSwitchService.LIGHT_THEME_CLASS
@@ -60,7 +70,29 @@ export class ThemeSwitchService {
     this.document.documentElement.classList.add(
       ThemeSwitchService.LIGHT_THEME_CLASS
     );
+  }
 
-    localStorage.setItem(LS_THEME, ThemeSwitchService.LIGHT_THEME);
+  private setDark() {
+    if (
+      this.document.documentElement.classList.contains(
+        ThemeSwitchService.DARK_THEME_CLASS
+      )
+    )
+      return;
+
+    this.document.documentElement.classList.remove(
+      ThemeSwitchService.LIGHT_THEME_CLASS
+    );
+    this.document.documentElement.classList.add(
+      ThemeSwitchService.DARK_THEME_CLASS
+    );
+  }
+
+  public prefersDark(): boolean {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+
+  public prefersLight(): boolean {
+    return window.matchMedia('(prefers-color-scheme: light)').matches;
   }
 }

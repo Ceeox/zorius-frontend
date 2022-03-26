@@ -2,7 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { AuthService } from 'src/services/auth/auth.service';
 import { Observable } from 'rxjs';
-import { ThemeSwitchService } from 'src/services/theme-switch/theme-switch.service';
+import {
+  Theme,
+  ThemeSwitchService,
+} from 'src/services/theme-switch/theme-switch.service';
 
 @Component({
   selector: 'app-navbar',
@@ -19,16 +22,16 @@ export class NavbarComponent implements OnInit {
     public authService: AuthService,
     private themeSwitch: ThemeSwitchService
   ) {
-    this.isDarkMode = this.themeSwitch.prefersColorSchemeDark();
+    this.isDarkMode = this.themeSwitch.prefersDark();
   }
 
   ngOnInit(): void {}
 
-  storeThemeMode(): void {
+  switchTheme(): void {
     if (this.isDarkMode) {
-      this.themeSwitch.selectDarkTheme();
+      this.themeSwitch.theme = Theme.Dark;
     } else {
-      this.themeSwitch.selectLightTheme();
+      this.themeSwitch.theme = Theme.Light;
     }
   }
 
