@@ -117,7 +117,7 @@ export class HomeComponent implements OnInit, OnDestroy {
               return res.data;
             })
           )
-          .subscribe();
+          .subscribe(() => this.todaysWorkReports());
       });
   }
 

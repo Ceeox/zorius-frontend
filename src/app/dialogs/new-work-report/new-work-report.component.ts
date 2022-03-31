@@ -17,10 +17,7 @@ import { CustomersGQL } from 'src/services/customer/customers.gql';
 export class NewWorkReportComponent implements OnInit, OnDestroy {
   myControl = new FormGroup({
     customer: new FormControl('', Validators.required),
-    project: new FormControl(
-      { value: '', disabled: true },
-      Validators.required
-    ),
+    project: new FormControl({ value: '', disabled: true }),
     description: new FormControl('', Validators.required),
     invoiced: new FormControl(false, Validators.required),
   });

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, Subscription } from 'rxjs';
-import { map, mergeAll } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { NewCustomerComponent } from 'src/app/dialogs/new-customer/new-customer.component';
 import { Customer, NewCustomer } from 'src/models/customer';
 import { Edge } from 'src/models/page-info';
@@ -53,8 +53,6 @@ export class CustomersComponent implements OnInit {
           .subscribe();
       });
   }
-
-  updateCustomer(edge: Edge<Customer>) {}
 
   // applyFilter(event: Event) {
   //   const filterValue = (event.target as HTMLInputElement).value;

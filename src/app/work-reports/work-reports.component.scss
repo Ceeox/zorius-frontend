@@ -2,7 +2,19 @@
 
 :host {
   width: 100%;
-  display: table;
+
+  .controls {
+    width: 100%;
+    margin-top: 2vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .controls-element {
+      margin-right: 1vw;
+      align-self: center;
+    }
+  }
 
   table {
     width: 100%;

@@ -8,20 +8,20 @@ import { WorkReport } from 'src/models/work-reports';
 export class UpdateWorkReportGQL extends Mutation<WorkReport> {
   document = gql`
     mutation updateWorkReport(
-      $customer: UUID
+      $customerId: UUID
       $description: String
       $id: UUID!
       $invoiced: Boolean
-      $project: UUID
+      $projectId: UUID
       $timeRecordUpdate: TimeRecordUpdate
     ) {
       updateWorkReport(
         update: {
-          customer: $customer
+          customerId: $customerId
           description: $description
           id: $id
           invoiced: $invoiced
-          project: $project
+          projectId: $projectId
           timeRecordUpdate: $timeRecordUpdate
         }
       ) {

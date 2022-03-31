@@ -15,6 +15,7 @@ export class ListWorkReportGQL extends Query<ListWorkReport> {
       $last: Int
       $after: String
       $before: String
+      $forCustomerId: UUID
     ) {
       workReports(
         options: {
@@ -25,6 +26,7 @@ export class ListWorkReportGQL extends Query<ListWorkReport> {
           last: $last
           after: $after
           before: $before
+          forCustomerId: $forCustomerId
         }
       ) {
         pageInfo {

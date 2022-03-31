@@ -74,6 +74,7 @@ import { UpdateWorkReportComponent } from './dialogs/update-work-report/update-w
 import { UsersComponent } from './admin/users/users.component';
 import { CustomersComponent } from './admin/customers/customers.component';
 import { NewCustomerComponent } from './dialogs/new-customer/new-customer.component';
+import { EditComponent } from './admin/customers/edit/edit.component';
 
 @NgModule({
   declarations: [
@@ -104,6 +105,7 @@ import { NewCustomerComponent } from './dialogs/new-customer/new-customer.compon
     UsersComponent,
     CustomersComponent,
     NewCustomerComponent,
+    EditComponent,
   ],
   imports: [
     FormsModule,

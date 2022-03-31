@@ -1,11 +1,19 @@
 :host {
   .work-report-controls {
-    margin-top: 1vh;
-    margin-bottom: 1vh;
+    margin-top: 2vh;
+  }
+
+  .optional {
+    display: none;
+    @media (max-width: 720px) {
+      display: none;
+    }
   }
 
   table {
     width: 100%;
+    margin-top: 2vh;
+    margin-bottom: 2vh;
 
     th,
     td {

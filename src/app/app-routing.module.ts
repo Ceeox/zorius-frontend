@@ -17,6 +17,7 @@ import { AdminComponent } from './admin/admin.component';
 import { WorkReportsComponent as AdminWorkReportsComponent } from './admin/work-reports/work-reports.component';
 import { UsersComponent } from './admin/users/users.component';
 import { CustomersComponent } from './admin/customers/customers.component';
+import { EditComponent as CustomerEditComponent } from './admin/customers/edit/edit.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -87,6 +88,13 @@ const routes: Routes = [
         path: 'customers',
         component: CustomersComponent,
         canActivate: [AuthGuardService],
+        children: [
+          {
+            path: 'edit/:id',
+            component: CustomerEditComponent,
+            canActivate: [AuthGuardService],
+          },
+        ],
       },
     ],
   },

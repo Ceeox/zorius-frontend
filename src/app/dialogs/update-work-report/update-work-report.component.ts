@@ -22,7 +22,7 @@ import { NewWorkReportComponent } from '../new-work-report/new-work-report.compo
 export class UpdateWorkReportComponent implements OnInit {
   myControl = new FormGroup({
     customer: new FormControl('', Validators.required),
-    project: new FormControl('', Validators.required),
+    project: new FormControl(''),
     description: new FormControl('', Validators.required),
     invoiced: new FormControl(false, Validators.required),
   });

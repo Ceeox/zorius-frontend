@@ -9,7 +9,7 @@ export class NewWorkReportGQL extends Mutation<WorkReport> {
   document = gql`
     mutation newWorkReport(
       $customerId: String!
-      $projectId: String!
+      $projectId: String
       $description: String!
       $invoiced: Boolean!
     ) {
