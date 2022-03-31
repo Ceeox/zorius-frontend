@@ -2,39 +2,33 @@
 
 @include mat.core();
 
-$zorius-light-primary: mat.define-palette(mat.$indigo-palette);
-$zorius-light-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
-$zorius-light-warn: mat.define-palette(mat.$red-palette);
+mat.$theme-ignore-duplication-warnings: true;
 
-$zorius-light-theme: mat.define-light-theme(
+$light-theme: mat.define-light-theme(
   (
     color: (
-      primary: $zorius-light-primary,
-      accent: $zorius-light-accent,
-      warn: $zorius-light-warn,
+      primary: mat.define-palette(mat.$indigo-palette, 600),
+      accent: mat.define-palette(mat.$pink-palette, A200, A100, A400),
+      warn: mat.define-palette(mat.$red-palette),
     ),
   )
 );
+$dark-theme: mat.define-dark-theme(
+  (
+    color: (
+      primary: mat.define-palette(mat.$light-blue-palette, 400),
+      accent: mat.define-palette(mat.$pink-palette, A200, A100, A400),
+      warn: mat.define-palette(mat.$red-palette),
+    ),
+  )
+);
+
 .light-theme {
-  @include mat.all-component-themes($zorius-light-theme);
+  @include mat.all-component-themes($light-theme);
 }
 
-$zorius-dark-primary: mat.define-palette(mat.$indigo-palette);
-$zorius-dark-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
-$zorius-dark-warn: mat.define-palette(mat.$red-palette);
-
-$zorius-dark-theme: mat.define-dark-theme(
-  (
-    color: (
-      primary: $zorius-dark-primary,
-      accent: $zorius-dark-accent,
-      warn: $zorius-dark-warn,
-    ),
-  )
-);
-
 .dark-theme {
-  @include mat.all-component-themes($zorius-dark-theme);
+  @include mat.all-component-themes($dark-theme);
 }
 
 html,
@@ -45,11 +39,11 @@ body {
 
 .centered-container {
   margin: auto;
-  @media (min-width: 1000px) {
+  @media (min-width: 1200px) {
     width: 75%;
   }
 
-  @media (max-width: 1000px) {
+  @media (max-width: 1200px) {
     width: 100%;
   }
 }
