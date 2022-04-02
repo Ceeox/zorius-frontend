@@ -10,7 +10,7 @@ export interface DeleteProjectResult {
 })
 export class DeleteProjectGQL extends Mutation<DeleteProjectResult> {
   document = gql`
-    mutation deleteProject($id: string!) {
+    mutation deleteProject($id: UUID!) {
       deleteProject(id: $id)
     }
   `;

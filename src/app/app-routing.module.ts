@@ -86,9 +86,13 @@ const routes: Routes = [
       },
       {
         path: 'customers',
-        component: CustomersComponent,
         canActivate: [AuthGuardService],
         children: [
+          {
+            path: '',
+            component: CustomersComponent,
+            canActivate: [AuthGuardService],
+          },
           {
             path: 'edit/:id',
             component: CustomerEditComponent,

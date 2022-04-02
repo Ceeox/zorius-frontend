@@ -12,10 +12,9 @@ export interface UpdateCustomerResult {
 export class UpdateCustomerGQL extends Mutation<UpdateCustomerResult> {
   document = gql`
     mutation updateCustomer(
-      $id: String!
-      $userId: String!
-      $name: String!
-      $identifier: String!
+      $id: UUID!
+      $name: String
+      $identifier: String
       $note: String
     ) {
       updateCustomer(

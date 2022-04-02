@@ -72,3 +72,11 @@ body {
 .full-width {
   width: 100%;
 }
+
+#add-button {
+  right: 1.5vw;
+  bottom: 2.5vh;
+  left: auto;
+  position: fixed;
+  z-index: 100;
+}

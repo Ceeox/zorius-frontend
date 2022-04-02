@@ -11,10 +11,9 @@ export interface UpdateProjectResult {
 })
 export class UpdateProjectGQL extends Mutation<Project> {
   document = gql`
-    mutation newProject($description: String!, $name: String!, $note: String) {
-      newProject(new: { description: $description, name: $name, note: $note }) {
+    mutation updateProject($id: UUID!, $name: String, $note: String) {
+      updateProject(id: $id, update: { name: $name, note: $note }) {
         id
-        description
         name
         note
       }

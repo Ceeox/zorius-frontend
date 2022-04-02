@@ -1,1 +1,75 @@
-<p>edit works!</p>
+<div class="centered-container" *ngIf="customer">
+  <mat-toolbar>
+    <span> Customer Edit</span>
+  </mat-toolbar>
+  <div class="customers" [formGroup]="customerForm">
+    <mat-form-field class="full-width" appearance="fill">
+      <mat-label>Name</mat-label>
+      <input
+        matInput
+        formControlName="name"
+        (change)="onChangeCustomerName(customer)" />
+    </mat-form-field>
+    <mat-form-field class="full-width" appearance="fill">
+      <mat-label>Identifier</mat-label>
+      <input
+        matInput
+        formControlName="identifier"
+        (change)="onChangeCustomerIdentifier(customer)" />
+    </mat-form-field>
+    <mat-form-field class="full-width" appearance="fill">
+      <mat-label>Note</mat-label>
+      <input
+        matInput
+        formControlName="note"
+        (change)="onChangeCustomerNote(customer)" />
+    </mat-form-field>
+  </div>
+
+  <mat-toolbar>
+    <span> Projects </span>
+  </mat-toolbar>
+
+  <div class="projects">
+    <mat-accordion [formGroup]="projectsFrom" multi>
+      <mat-expansion-panel
+        *ngFor="
+          let project of projectsFrom.get('projects').controls;
+          let i = index
+        "
+        formArrayName="projects">
+        <mat-expansion-panel-header>
+          <mat-panel-title> {{ project.get('name').value }} </mat-panel-title>
+          <mat-panel-description>
+            {{ project.get('note').value }}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <form [formGroupName]="i">
+          <mat-form-field class="full-width" appearance="fill">
+            <mat-label>Name</mat-label>
+            <input
+              matInput
+              formControlName="name"
+              (change)="onChangeProjectName($event, project.get('id').value)" />
+          </mat-form-field>
+          <mat-form-field class="full-width" appearance="fill">
+            <mat-label>Note</mat-label>
+            <input
+              matInput
+              formControlName="note"
+              (change)="onChangeProjectName($event, project.get('id').value)" />
+          </mat-form-field>
+        </form>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</div>
+
+<button
+  mat-fab
+  color="primary"
+  id="add-button"
+  matTooltip="Add Customer"
+  (click)="newProject()">
+  <mat-icon>person_add</mat-icon>
+</button>
