@@ -8,7 +8,7 @@
         </a>
       </div>
 
-      <div class="navigation" *ngIf="isLogedIn() == true">
+      <div class="navigation" *ngIf="isLogedIn()">
         <a [routerLink]="['work-reports']" mat-button>Work Reports</a>
         <button mat-button [matMenuTriggerFor]="menu">Merchandise</button>
         <mat-menu #menu="matMenu">

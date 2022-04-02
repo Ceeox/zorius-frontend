@@ -1,25 +1,11 @@
 :host {
   .work-report-controls {
-    margin-top: 2vh;
-  }
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-  .optional {
-    display: none;
-    @media (max-width: 720px) {
-      display: none;
-    }
-  }
-
-  table {
-    width: 100%;
-    margin-top: 2vh;
-    margin-bottom: 2vh;
-
-    th,
-    td {
-      padding-top: 1vh;
-      padding-bottom: 1vh;
-      padding-left: 1vw;
+    .filter-input {
+      min-width: 20vw;
     }
   }
 }

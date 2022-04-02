@@ -33,6 +33,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { CdkTableModule } from '@angular/cdk/table';
 
 // imports extern
 import { GraphQLModule } from './graphql.module';
@@ -57,6 +58,7 @@ import { WorkReportsComponent } from './work-reports/work-reports.component';
 import { NewInternMerchComponent } from './merchandise/new-intern-merch/new-intern-merch.component';
 import { UpdateInternMerchComponent } from './merchandise/update-intern-merch/update-intern-merch.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
+import { WorkReportsComponent as AdminWorkReportsComponent } from './admin/work-reports/work-reports.component';
 
 // dialogs
 import { NewProjectDialog } from './dialogs/new-project/new-project.dialog';
@@ -75,6 +77,7 @@ import { UsersComponent } from './admin/users/users.component';
 import { CustomersComponent } from './admin/customers/customers.component';
 import { NewCustomerComponent } from './dialogs/new-customer/new-customer.component';
 import { EditComponent } from './admin/customers/edit/edit.component';
+import { WorkReportTableComponent } from './components/work-report-table/work-report-table.component';
 
 @NgModule({
   declarations: [
@@ -93,6 +96,7 @@ import { EditComponent } from './admin/customers/edit/edit.component';
     NewInternMerchComponent,
     UpdateInternMerchComponent,
     UserProfileComponent,
+    AdminWorkReportsComponent,
 
     NewProjectDialog,
     NewInternMerchDialog,
@@ -106,6 +110,7 @@ import { EditComponent } from './admin/customers/edit/edit.component';
     CustomersComponent,
     NewCustomerComponent,
     EditComponent,
+    WorkReportTableComponent,
   ],
   imports: [
     FormsModule,
@@ -138,6 +143,8 @@ import { EditComponent } from './admin/customers/edit/edit.component';
     MatSlideToggleModule,
     MatCheckboxModule,
     MatSidenavModule,
+
+    CdkTableModule,
 
     BrowserModule,
     AppRoutingModule,

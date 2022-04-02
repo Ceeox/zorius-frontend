@@ -13,75 +13,21 @@
     <button mat-raised-button (click)="newWorkReport()" color="primary">
       New Work Report
     </button>
+
+    <span style="margin: auto"></span>
+
+    <mat-form-field class="filter-input" appearance="standard">
+      <mat-label>Filter</mat-label>
+      <input matInput (change)="setFilter($event)" />
+    </mat-form-field>
   </div>
 
-  <table mat-table [dataSource]="workReports$" class="mat-elevation-z8">
-    <ng-container matColumnDef="start-stop">
-      <th mat-header-cell *matHeaderCellDef>Start</th>
-      <td mat-cell *matCellDef="let element">
-        <div *ngIf="isTimeRecordActive(element); else active">
-          <button mat-icon-button (click)="stopTimeRecord(element.node.id)">
-            <mat-icon>pause</mat-icon>
-          </button>
-        </div>
-        <ng-template #active>
-          <button mat-icon-button (click)="startTimeRecord(element.node.id)">
-            <mat-icon>play_arrow</mat-icon>
-          </button>
-        </ng-template>
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="customer">
-      <th mat-header-cell *matHeaderCellDef>Customer</th>
-      <td mat-cell *matCellDef="let element">
-        {{ element.node.customer.name }}
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="project">
-      <th mat-header-cell *matHeaderCellDef>Project</th>
-      <td mat-cell *matCellDef="let element">
-        {{ element.node.project?.name || 'None' }}
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="description">
-      <th mat-header-cell *matHeaderCellDef>Description</th>
-      <td mat-cell *matCellDef="let element">
-        <div class="desc-text">
-          {{ element.node.description }}
-        </div>
-      </td>
-    </ng-container>
-
-    <ng-container class="optional" matColumnDef="invoiced">
-      <th mat-header-cell *matHeaderCellDef>Invoiced</th>
-      <td mat-cell *matCellDef="let element">
-        <mat-checkbox [checked]="element.node.invoiced" [disabled]="true">
-        </mat-checkbox>
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="duration">
-      <th mat-header-cell *matHeaderCellDef>Duration (hh:mm)</th>
-      <td mat-cell *matCellDef="let element">
-        {{ getDuration(element) | duration }}
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="edit">
-      <th mat-header-cell *matHeaderCellDef>Edit</th>
-      <td mat-cell *matCellDef="let element">
-        <button mat-icon-button (click)="updateWorkReport(element)">
-          <mat-icon>edit</mat-icon>
-        </button>
-      </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-  </table>
+  <app-work-report-table
+    [workReports]="workReports"
+    [disableStartStop]="false"
+    [filter]="filter"
+    (newTimeRecordEvent)="onTimeRecord($event)">
+  </app-work-report-table>
 </div>
 
 <ng-template #notLoggedIn>

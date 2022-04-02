@@ -1,5 +1,3 @@
-@import 'src/styles';
-
 :host {
   width: 100%;
 
@@ -10,13 +8,13 @@
     justify-content: center;
     align-items: center;
 
+    .filter-input {
+      min-width: 20vw;
+    }
+
     .controls-element {
       margin-right: 1vw;
       align-self: center;
     }
-  }
-
-  table {
-    width: 100%;
   }
 }
