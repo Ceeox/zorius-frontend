@@ -19,7 +19,7 @@ export interface User {
   templateUrl: './work-reports.component.html',
   styleUrls: ['./work-reports.component.scss'],
 })
-export class WorkReportsComponent implements OnInit, OnDestroy {
+export class WorkReportsComponent implements OnDestroy {
   workReports$: Observable<Edge<WorkReport>[]> = new Observable();
   customers$: Observable<Edge<Customer>[]> = new Observable();
 
@@ -41,8 +41,6 @@ export class WorkReportsComponent implements OnInit, OnDestroy {
   ) {
     this.loadWorkReports();
   }
-
-  ngOnInit() {}
 
   ngOnDestroy(): void {
     this.workReportsSub$?.unsubscribe();

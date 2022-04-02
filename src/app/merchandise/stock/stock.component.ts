@@ -5,8 +5,6 @@ import { Component, OnInit, ViewChild } from '@angular/core';
   templateUrl: './stock.component.html',
   styleUrls: ['./stock.component.scss'],
 })
-export class StockComponent implements OnInit {
+export class StockComponent {
   constructor() {}
-
-  ngOnInit() {}
 }

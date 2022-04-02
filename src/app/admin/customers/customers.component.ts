@@ -13,7 +13,7 @@ import { NewCustomerGQL } from 'src/services/customer/new-customer.gql';
   templateUrl: './customers.component.html',
   styleUrls: ['./customers.component.scss'],
 })
-export class CustomersComponent implements OnInit {
+export class CustomersComponent {
   displayedColumns: string[] = ['name', 'identifier', 'note', 'edit'];
 
   customers$: Observable<Edge<Customer>[]>;
@@ -32,8 +32,6 @@ export class CustomersComponent implements OnInit {
       })
     );
   }
-
-  ngOnInit(): void {}
 
   newCustomer() {
     const dialogRef = this.dialog.open(NewCustomerComponent);

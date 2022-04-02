@@ -1,14 +1,13 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, Subscription } from 'rxjs';
-import { map, retryWhen, delay, take } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { NewWorkReportComponent } from 'src/app/dialogs/new-work-report/new-work-report.component';
-import { RETRY_DELAY, RETRY_COUNT } from 'src/app/graphql.module';
+
 import { Edge } from 'src/models/page-info';
 import {
   NewWorkReport,
-  TimeRecordCommand,
   UpdateWorkReport,
   WorkReport,
 } from 'src/models/work-reports';
@@ -24,7 +23,7 @@ import { UpdateWorkReportComponent } from '../dialogs/update-work-report/update-
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnDestroy {
   workReports$: Observable<WorkReport[]> = new Observable();
 
   newWorkReportSub$?: Subscription;
@@ -49,8 +48,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.updateWorkReportSub$?.unsubscribe();
     this.dialogSub$?.unsubscribe();
   }
-
-  ngOnInit(): void {}
 
   todaysWorkReports() {
     this.workReports$ = this.listWorkReportGQL

@@ -11,7 +11,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {
-  NewProjectDialog,
+  NewProjectComponent,
   NewProjectDialogData,
 } from 'src/app/dialogs/new-project/new-project.dialog';
 import { Customer } from 'src/models/customer';
@@ -27,7 +27,7 @@ import { ProjectService } from 'src/services/project/project.service';
   templateUrl: './edit.component.html',
   styleUrls: ['./edit.component.scss'],
 })
-export class EditComponent implements OnInit, OnDestroy {
+export class EditComponent implements OnDestroy {
   customer: Edge<Customer>;
   customerId: string;
 
@@ -58,8 +58,6 @@ export class EditComponent implements OnInit, OnDestroy {
     this.customerId = this.activatedRoute.snapshot.paramMap.get('id');
     this.loadCustomers();
   }
-
-  ngOnInit(): void {}
 
   ngOnDestroy(): void {
     this.customerSub$?.unsubscribe();
@@ -151,7 +149,7 @@ export class EditComponent implements OnInit, OnDestroy {
   }
 
   newProject() {
-    const dialogRef = this.dialog.open(NewProjectDialog);
+    const dialogRef = this.dialog.open(NewProjectComponent);
 
     this.dialogSub$ = dialogRef
       .afterClosed()

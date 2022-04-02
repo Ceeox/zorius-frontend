@@ -61,9 +61,9 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
 import { WorkReportsComponent as AdminWorkReportsComponent } from './admin/work-reports/work-reports.component';
 
 // dialogs
-import { NewProjectDialog } from './dialogs/new-project/new-project.dialog';
-import { NewInternMerchDialog } from './dialogs/new-intern-merch/new-intern-merch.dialog';
-import { UpdateInternMerchDialog } from './dialogs/update-intern-merch/update-intern-merch.dialog';
+import { NewProjectComponent } from './dialogs/new-project/new-project.dialog';
+import { NewInternMerchComponent as NewInternMerchDialog } from './dialogs/new-intern-merch/new-intern-merch.dialog';
+import { UpdateInternMerchComponent as UpdateInternMerchDialog } from './dialogs/update-intern-merch/update-intern-merch.dialog';
 
 // services
 import { AuthGuardService } from 'src/services/auth/auth-guard.service';
@@ -98,7 +98,7 @@ import { WorkReportTableComponent } from './components/work-report-table/work-re
     UserProfileComponent,
     AdminWorkReportsComponent,
 
-    NewProjectDialog,
+    NewProjectComponent,
     NewInternMerchDialog,
     UpdateInternMerchDialog,
 

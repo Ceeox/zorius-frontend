@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   EventEmitter,
   Input,
@@ -24,7 +25,7 @@ export interface TimeRecordEvent {
   templateUrl: './work-report-table.component.html',
   styleUrls: ['./work-report-table.component.scss'],
 })
-export class WorkReportTableComponent implements OnInit, OnChanges {
+export class WorkReportTableComponent implements OnChanges, AfterViewInit {
   @Input() workReports: WorkReport[];
   @Input() disableStartStop: boolean = true;
   @Input() filter: string = '';
@@ -47,7 +48,6 @@ export class WorkReportTableComponent implements OnInit, OnChanges {
     this.dataSource = new MatTableDataSource(this.workReports);
     this.dataSource.paginator = this.paginator;
   }
-  ngOnInit(): void {}
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;

@@ -9,7 +9,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
   email = new FormControl('', [Validators.required, Validators.email]);
   emailInput?: string;
   passwordInput?: string;
@@ -19,8 +19,6 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
     private _snackBar: MatSnackBar
   ) {}
-
-  ngOnInit(): void {}
 
   getErrorMessage() {
     if (this.email.hasError('required')) {

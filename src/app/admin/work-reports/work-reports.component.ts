@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { Observable, Subscription } from 'rxjs';
@@ -14,7 +14,7 @@ import { ListWorkReportGQL } from 'src/services/work-report/work-reports.gql';
   templateUrl: './work-reports.component.html',
   styleUrls: ['./work-reports.component.scss'],
 })
-export class WorkReportsComponent implements OnInit {
+export class WorkReportsComponent implements OnDestroy {
   displayedColumns: string[] = [
     'customer',
     'project',
@@ -43,8 +43,6 @@ export class WorkReportsComponent implements OnInit {
     this.loadWorkReports();
     this.loadCustomers();
   }
-
-  ngOnInit() {}
 
   ngOnDestroy(): void {
     this.workReportsSub$?.unsubscribe();

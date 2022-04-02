@@ -11,10 +11,8 @@ export const SNACKBAR_TIMEOUT = 5000;
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = 'zorius';
 
-  constructor(private themeSwitch: ThemeSwitchService) {}
-
-  ngOnInit() {}
+  constructor() {}
 }

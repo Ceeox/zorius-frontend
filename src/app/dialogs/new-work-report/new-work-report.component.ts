@@ -14,7 +14,7 @@ import { CustomersGQL } from 'src/services/customer/customers.gql';
   templateUrl: './new-work-report.component.html',
   styleUrls: ['./new-work-report.component.scss'],
 })
-export class NewWorkReportComponent implements OnInit, OnDestroy {
+export class NewWorkReportComponent implements OnInit {
   myControl = new FormGroup({
     customer: new FormControl('', Validators.required),
     project: new FormControl({ value: '', disabled: true }),
@@ -48,8 +48,6 @@ export class NewWorkReportComponent implements OnInit, OnDestroy {
       })
     );
   }
-
-  ngOnDestroy(): void {}
 
   onSubmit() {
     const result: NewWorkReport = {

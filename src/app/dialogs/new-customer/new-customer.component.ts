@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NewCustomer } from 'src/models/customer';
@@ -10,7 +10,7 @@ import { NewWorkReportComponent } from '../new-work-report/new-work-report.compo
   templateUrl: './new-customer.component.html',
   styleUrls: ['./new-customer.component.scss'],
 })
-export class NewCustomerComponent implements OnInit {
+export class NewCustomerComponent {
   myControl = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.maxLength(255)]),
     identifier: new FormControl('', [
@@ -24,10 +24,6 @@ export class NewCustomerComponent implements OnInit {
     public dialogRef: MatDialogRef<NewWorkReportComponent>,
     @Inject(MAT_DIALOG_DATA) public data: NewWorkReport
   ) {}
-
-  ngOnInit(): void {}
-
-  ngOnDestroy(): void {}
 
   onSubmit() {
     const result: NewCustomer = {
