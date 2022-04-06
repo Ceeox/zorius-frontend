@@ -45,7 +45,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { NavbarComponent } from './navbar/navbar.component';
-import { FooterComponent } from './footer/footer.component';
 import { HomeComponent } from './home/home.component';
 import { PageNotFoundComponent } from './pagenotfound/pagenotfound.component';
 import { InternOrdersComponent } from './merchandise/intern-orders/intern-orders.component';
@@ -55,6 +54,7 @@ import { LoginComponent } from './login/login.component';
 import { WorkdayComponent } from './home/workday/workday.component';
 import { RegisterComponent } from './register/register.component';
 import { WorkReportsComponent } from './work-reports/work-reports.component';
+import { EditComponent as EditWorkReportsComponent } from './work-reports/edit/edit.component';
 import { NewInternMerchComponent } from './merchandise/new-intern-merch/new-intern-merch.component';
 import { UpdateInternMerchComponent } from './merchandise/update-intern-merch/update-intern-merch.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
@@ -83,7 +83,6 @@ import { WorkReportTableComponent } from './components/work-report-table/work-re
   declarations: [
     AppComponent,
     NavbarComponent,
-    FooterComponent,
     HomeComponent,
     PageNotFoundComponent,
     InternOrdersComponent,
@@ -93,6 +92,7 @@ import { WorkReportTableComponent } from './components/work-report-table/work-re
     WorkdayComponent,
     RegisterComponent,
     WorkReportsComponent,
+    EditWorkReportsComponent,
     NewInternMerchComponent,
     UpdateInternMerchComponent,
     UserProfileComponent,

@@ -1,1 +1,83 @@
-<p>edit works!</p>
+<mat-toolbar color="primary">
+  <button mat-icon-button (click)="back()">
+    <mat-icon>arrow_back_ios</mat-icon>
+  </button>
+  <span>Work Report Edit</span>
+</mat-toolbar>
+
+<div class="centered-container" [formGroup]="workReportForm" *ngIf="workReport">
+  <mat-list>
+    <div mat-subheader>Infos</div>
+    <mat-list-item>
+      <mat-icon mat-list-icon>person</mat-icon>
+      <div mat-line>Customer: {{ workReport.customer.name }}</div>
+      <div mat-line>
+        ({{ workReport.customer.identifier }}) - {{ workReport.customer.note }}
+      </div>
+    </mat-list-item>
+    <mat-list-item>
+      <mat-icon mat-list-icon>list</mat-icon>
+      <div mat-line>Project: {{ workReport.project.name }}</div>
+      <div mat-line>{{ workReport.project.note }}</div>
+    </mat-list-item>
+    <mat-list-item>
+      <mat-icon mat-list-icon>history</mat-icon>
+      <div mat-line>Created: {{ workReport.createdAt | date: 'long' }}</div>
+    </mat-list-item>
+    <mat-list-item>
+      <mat-icon mat-list-icon>update</mat-icon>
+      <div mat-line>Updated: {{ workReport.updatedAt | date: 'long' }}</div>
+    </mat-list-item>
+  </mat-list>
+
+  <div class="example-form">
+    <mat-form-field class="full-width" appearance="fill">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description"></textarea>
+    </mat-form-field>
+  </div>
+
+  <mat-toolbar>
+    <span>Time Records</span>
+  </mat-toolbar>
+
+  <div class="time-records" formArrayName="timeRecords">
+    <mat-accordion>
+      <mat-expansion-panel
+        *ngFor="let tr of workReport.timeRecords; let i = index">
+        <mat-expansion-panel-header>
+          <mat-panel-title> {{ i }} </mat-panel-title>
+          <mat-panel-description>
+            {{ tr.start | date: 'short' }} -
+            {{ tr.end | date: 'short' }}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <div class="time-record-start">
+          <mat-form-field appearance="fill">
+            <mat-label>Start Date</mat-label>
+            <input matInput [matDatepicker]="picker" />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="time-record-end">
+          <mat-form-field appearance="fill">
+            <mat-label>End Date</mat-label>
+            <input matInput [matDatepicker]="picker" />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+
+  <div class="controls">
+    <span style="margin: auto"></span>
+    <button mat-raised-button color="warn">Delete</button>
+  </div>
+</div>

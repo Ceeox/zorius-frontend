@@ -1,13 +1,5 @@
-@import 'src/styles';
-
-.register-container {
-  margin: auto;
-  margin-top: 10rem;
-  margin-bottom: 10rem;
-  max-width: 75rem;
-  border-radius: 1rem;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+:host {
+  .register {
+    margin-top: 2vh;
+  }
 }
