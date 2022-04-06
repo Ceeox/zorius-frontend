@@ -1,1 +1,45 @@
-<p>users works!</p>
+<mat-toolbar>
+  <span>Users</span>
+</mat-toolbar>
+
+<div class="centered-container">
+  <table mat-table [dataSource]="users$" class="full-width mat-elevation-z8">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Name</th>
+      <td mat-cell *matCellDef="let element">{{ element.node.name }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef>email</th>
+      <td mat-cell *matCellDef="let element">{{ element.node.email }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="isAdmin">
+      <th mat-header-cell *matHeaderCellDef>isAdmin</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.node.isAdmin || false }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="edit">
+      <th mat-header-cell *matHeaderCellDef>Edit</th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button>
+          <mat-icon>edit</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="disable">
+      <th mat-header-cell *matHeaderCellDef>Disable</th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button color="warn">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+</div>

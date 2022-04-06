@@ -30,8 +30,8 @@ export class UsersGQL extends Query<ListUsers> {
           node {
             id
             email
-            firstname
-            lastname
+            name
+            isAdmin
             updatedAt
             createdAt
           }
