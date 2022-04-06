@@ -12,7 +12,7 @@ import {
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent {
   avatarFilename: Observable<string>;
   userName: Observable<string>;
 
@@ -24,8 +24,6 @@ export class NavbarComponent implements OnInit {
   ) {
     this.isDarkMode = this.themeSwitch.prefersDark();
   }
-
-  ngOnInit(): void {}
 
   switchTheme(): void {
     if (this.isDarkMode) {

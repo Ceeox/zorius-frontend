@@ -1,0 +1,24 @@
+:host {
+  width: 100%;
+
+  .controls {
+    width: 100%;
+    margin-top: 2vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .controls-element {
+      margin-right: 1vw;
+      align-self: center;
+    }
+
+    .filter-input {
+      min-width: 20vw;
+    }
+  }
+
+  table {
+    width: 100%;
+  }
+}

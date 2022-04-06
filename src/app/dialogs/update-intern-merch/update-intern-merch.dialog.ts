@@ -13,11 +13,11 @@ import { InternMerchService } from 'src/services/intern-merch.service';
 import { UserService } from 'src/services/user/user.service';
 
 @Component({
-  selector: 'update-intern-merch.dialog',
+  selector: 'app-update-intern-merch.dialog',
   templateUrl: 'update-intern-merch.dialog.html',
   styleUrls: ['./update-intern-merch.dialog.scss'],
 })
-export class UpdateInternMerchDialog implements OnInit {
+export class UpdateInternMerchComponent implements OnInit {
   newInternMerchForm = this.fb.group({
     articleNumber: [''],
     cost: [''],
@@ -38,7 +38,7 @@ export class UpdateInternMerchDialog implements OnInit {
   statusOptions: string[] = ['ORDERED', 'USED', 'DELIVERED', 'STORED'];
 
   constructor(
-    public dialogRef: MatDialogRef<UpdateInternMerchDialog>,
+    public dialogRef: MatDialogRef<UpdateInternMerchComponent>,
     private fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA)
     public data: {

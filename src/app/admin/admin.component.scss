@@ -1,18 +1,5 @@
 :host {
-  height: 100%;
   .admin-container {
     height: 100%;
-    display: flex;
-    align-items: stretch;
-    align-content: stretch;
-    overflow: hidden;
-
-    .admin-sibebar {
-      flex-grow: 1;
-    }
-
-    .admin-content {
-      flex-grow: 2;
-    }
   }
 }

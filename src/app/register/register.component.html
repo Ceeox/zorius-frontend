@@ -1,75 +1,81 @@
-<div class="register-container">
-  <mat-horizontal-stepper linear #stepper>
-    <mat-step [stepControl]="firstFormGroup">
-      <form [formGroup]="firstFormGroup">
+<mat-toolbar color="primary">
+  <span>Register</span>
+</mat-toolbar>
+
+<div class="centered-container register">
+  <mat-stepper orientation="vertical" [linear]="false" #stepper>
+    <mat-step [stepControl]="emailForm">
+      <form [formGroup]="emailForm">
         <ng-template matStepLabel>Fill out your email</ng-template>
-        <mat-form-field>
-          <mat-label>email</mat-label>
+        <mat-form-field class="full-width" appearance="outline">
+          <mat-label>Email</mat-label>
           <input
             matInput
-            placeholder="E-Mail"
-            formControlName="firstCtrl"
+            type="text"
+            placeholder="user@example.com"
+            formControlName="email"
             required />
+          <mat-error *ngIf="emailForm.get('email').hasError('email')">
+            Please enter a valid email address
+          </mat-error>
+          <mat-error *ngIf="emailForm.get('email').hasError('required')">
+            Email is <strong>required</strong>
+          </mat-error>
         </mat-form-field>
         <div>
-          <button mat-raised-button color="primary" matStepperNext>Next</button>
+          <button mat-stroked-button matStepperNext>Next</button>
         </div>
       </form>
     </mat-step>
-    <mat-step [stepControl]="firstFormGroup">
-      <form [formGroup]="firstFormGroup">
-        <ng-template matStepLabel>Fill out your username</ng-template>
-        <mat-form-field>
-          <mat-label>username</mat-label>
-          <input matInput formControlName="firstCtrl" required />
-        </mat-form-field>
-        <div>
-          <button mat-raised matStepperPrevious>Back</button>
-          <button mat-raised-button color="primary" matStepperNext>Next</button>
-        </div>
-      </form>
-    </mat-step>
-    <mat-step [stepControl]="secondFormGroup">
-      <form [formGroup]="secondFormGroup">
+    <mat-step [stepControl]="passwordForm">
+      <form [formGroup]="passwordForm">
         <ng-template matStepLabel>Fill out your password</ng-template>
-        <mat-form-field>
+        <mat-form-field class="full-width" appearance="outline">
           <mat-label>Password</mat-label>
-          <input
-            matInput
-            type="password"
-            formControlName="secondCtrl"
-            required />
+          <input matInput type="password" formControlName="password" required />
+          <mat-error *ngIf="passwordForm.get('password').hasError('minlength')">
+            Password must be <strong>8 Characters</strong> long
+          </mat-error>
         </mat-form-field>
-        <mat-form-field>
-          <mat-label>Repeat password</mat-label>
+        <mat-form-field class="full-width" appearance="outline">
+          <mat-label>Confirm password</mat-label>
           <input
             matInput
             type="password"
-            formControlName="secondCtrl"
+            formControlName="confirmPassword"
             required />
+          <mat-error
+            *ngIf="passwordForm.get('confirmPassword').hasError('required')">
+            Password is <strong>required</strong>
+          </mat-error>
+          <mat-error
+            *ngIf="passwordForm.get('confirmPassword').hasError('minlength')">
+            Password must be <strong>8 Characters</strong> long
+          </mat-error>
+          <mat-error
+            *ngIf="passwordForm.get('confirmPassword').hasError('mustMatch')">
+            Passwords must <strong>match</strong>
+          </mat-error>
         </mat-form-field>
         <div>
-          <button mat-raised matStepperPrevious>Back</button>
-          <button mat-raised-button color="primary" matStepperNext>Next</button>
+          <button mat-stroked-button matStepperPrevious>Back</button>
+          <button mat-stroked-button matStepperNext>Next</button>
         </div>
       </form>
     </mat-step>
-    <mat-step [stepControl]="secondFormGroup" [optional]="true">
-      <form [formGroup]="secondFormGroup">
-        <ng-template matStepLabel
-          >Fill out your Firstname and Lastname</ng-template
-        >
-        <mat-form-field>
-          <mat-label>Firstname</mat-label>
-          <input matInput formControlName="secondCtrl" />
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Lastname</mat-label>
-          <input matInput formControlName="secondCtrl" />
+    <mat-step [stepControl]="nameForm">
+      <form [formGroup]="nameForm">
+        <ng-template matStepLabel>Fill out your name</ng-template>
+        <mat-form-field class="full-width" appearance="outline">
+          <mat-label>Name</mat-label>
+          <input
+            matInput
+            placeholder="Last name, First name"
+            formControlName="name" />
         </mat-form-field>
         <div>
-          <button mat-raised matStepperPrevious>Back</button>
-          <button mat-raised-button color="primary" matStepperNext>Next</button>
+          <button mat-stroked-button matStepperPrevious>Back</button>
+          <button mat-stroked-button matStepperNext>Next</button>
         </div>
       </form>
     </mat-step>
@@ -77,11 +83,15 @@
       <ng-template matStepLabel>Done</ng-template>
       <p>You are now done.</p>
       <div>
-        <button mat-raised matStepperPrevious>Back</button>
-        <button mat-raised-button color="primary" (click)="stepper.reset()">
+        <button mat-stroked-button matStepperPrevious>Back</button>
+        <button
+          mat-raised-button
+          color="primary"
+          [disabled]="emailForm.invalid && passwordForm.invalid"
+          (click)="register()">
           Register
         </button>
       </div>
     </mat-step>
-  </mat-horizontal-stepper>
+  </mat-stepper>
 </div>

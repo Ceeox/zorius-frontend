@@ -12,6 +12,7 @@ export interface WorkReport {
   project?: Project;
   customer: Customer;
   createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface TimeRecord {

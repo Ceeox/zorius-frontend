@@ -33,6 +33,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { CdkTableModule } from '@angular/cdk/table';
 
 // imports extern
 import { GraphQLModule } from './graphql.module';
@@ -44,7 +45,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { NavbarComponent } from './navbar/navbar.component';
-import { FooterComponent } from './footer/footer.component';
 import { HomeComponent } from './home/home.component';
 import { PageNotFoundComponent } from './pagenotfound/pagenotfound.component';
 import { InternOrdersComponent } from './merchandise/intern-orders/intern-orders.component';
@@ -54,14 +54,16 @@ import { LoginComponent } from './login/login.component';
 import { WorkdayComponent } from './home/workday/workday.component';
 import { RegisterComponent } from './register/register.component';
 import { WorkReportsComponent } from './work-reports/work-reports.component';
+import { EditComponent as EditWorkReportsComponent } from './work-reports/edit/edit.component';
 import { NewInternMerchComponent } from './merchandise/new-intern-merch/new-intern-merch.component';
 import { UpdateInternMerchComponent } from './merchandise/update-intern-merch/update-intern-merch.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
+import { WorkReportsComponent as AdminWorkReportsComponent } from './admin/work-reports/work-reports.component';
 
 // dialogs
-import { NewProjectDialog } from './dialogs/new-project/new-project.dialog';
-import { NewInternMerchDialog } from './dialogs/new-intern-merch/new-intern-merch.dialog';
-import { UpdateInternMerchDialog } from './dialogs/update-intern-merch/update-intern-merch.dialog';
+import { NewProjectComponent } from './dialogs/new-project/new-project.dialog';
+import { NewInternMerchComponent as NewInternMerchDialog } from './dialogs/new-intern-merch/new-intern-merch.dialog';
+import { UpdateInternMerchComponent as UpdateInternMerchDialog } from './dialogs/update-intern-merch/update-intern-merch.dialog';
 
 // services
 import { AuthGuardService } from 'src/services/auth/auth-guard.service';
@@ -75,12 +77,12 @@ import { UsersComponent } from './admin/users/users.component';
 import { CustomersComponent } from './admin/customers/customers.component';
 import { NewCustomerComponent } from './dialogs/new-customer/new-customer.component';
 import { EditComponent } from './admin/customers/edit/edit.component';
+import { WorkReportTableComponent } from './components/work-report-table/work-report-table.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavbarComponent,
-    FooterComponent,
     HomeComponent,
     PageNotFoundComponent,
     InternOrdersComponent,
@@ -90,11 +92,13 @@ import { EditComponent } from './admin/customers/edit/edit.component';
     WorkdayComponent,
     RegisterComponent,
     WorkReportsComponent,
+    EditWorkReportsComponent,
     NewInternMerchComponent,
     UpdateInternMerchComponent,
     UserProfileComponent,
+    AdminWorkReportsComponent,
 
-    NewProjectDialog,
+    NewProjectComponent,
     NewInternMerchDialog,
     UpdateInternMerchDialog,
 
@@ -106,6 +110,7 @@ import { EditComponent } from './admin/customers/edit/edit.component';
     CustomersComponent,
     NewCustomerComponent,
     EditComponent,
+    WorkReportTableComponent,
   ],
   imports: [
     FormsModule,
@@ -138,6 +143,8 @@ import { EditComponent } from './admin/customers/edit/edit.component';
     MatSlideToggleModule,
     MatCheckboxModule,
     MatSidenavModule,
+
+    CdkTableModule,
 
     BrowserModule,
     AppRoutingModule,

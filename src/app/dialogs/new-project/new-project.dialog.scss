@@ -1,16 +1,5 @@
-.form {
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-
-  * {
-    padding-top: 1rem;
-    width: 100%;
+:host {
+  .form {
+    margin-top: 2vh;
   }
-}
-
-.control-btn {
-  display: flex;
-  justify-content: space-between;
-  flex-direction: row;
 }

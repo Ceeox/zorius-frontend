@@ -1,25 +1,14 @@
-import {
-  Component,
-  EventEmitter,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { MatPaginator } from '@angular/material/paginator';
 import { MatSelectChange } from '@angular/material/select';
-import { MatTableDataSource } from '@angular/material/table';
 import { Observable, Subscription } from 'rxjs';
-import { delay, map, retryWhen, startWith, take } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Customer } from 'src/models/customer';
 import { Edge } from 'src/models/page-info';
 import { WorkReport } from 'src/models/work-reports';
-import { AuthService } from 'src/services/auth/auth.service';
-import { CustomersGQL } from 'src/services/customer/customers.gql';
-import { WorkReportService } from 'src/services/work-report/work-report.service';
+import { UpdateWorkReportGQL } from 'src/services/work-report/update-work-report.gql';
 import { ListWorkReportGQL } from 'src/services/work-report/work-reports.gql';
-import { RETRY_DELAY, RETRY_COUNT } from '../graphql.module';
+import { TimeRecordEvent } from '../components/work-report-table/work-report-table.component';
 
 export interface User {
   name: string;
@@ -30,13 +19,7 @@ export interface User {
   templateUrl: './work-reports.component.html',
   styleUrls: ['./work-reports.component.scss'],
 })
-export class WorkReportsComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = [
-    'customer',
-    'project',
-    'description',
-    'invoiced',
-  ];
+export class WorkReportsComponent implements OnDestroy {
   workReports$: Observable<Edge<WorkReport>[]> = new Observable();
   customers$: Observable<Edge<Customer>[]> = new Observable();
 
@@ -44,24 +27,24 @@ export class WorkReportsComponent implements OnInit, OnDestroy {
   customersSub$: Subscription | undefined;
 
   selectedCustomer?: Customer;
+  workReports: WorkReport[] = [];
 
   dateRange = new FormGroup({
     start: new FormControl(this.getLastWeek()),
     end: new FormControl(new Date()),
   });
+  filter: string = '';
 
   constructor(
     private listWorkReportGQL: ListWorkReportGQL,
-    private customerGQL: CustomersGQL
+    private updateWorkReportGQL: UpdateWorkReportGQL
   ) {
     this.loadWorkReports();
-    this.loadCustomers();
   }
-
-  ngOnInit() {}
 
   ngOnDestroy(): void {
     this.workReportsSub$?.unsubscribe();
+    this.customersSub$?.unsubscribe();
   }
 
   loadWorkReports(forCustomerId?: string) {
@@ -85,23 +68,9 @@ export class WorkReportsComponent implements OnInit, OnDestroy {
           return res.data.workReports.edges;
         })
       );
-  }
-
-  loadCustomers() {
-    this.customers$ = this.customerGQL
-      .watch(
-        {},
-        {
-          fetchPolicy: 'network-only',
-          nextFetchPolicy: 'cache-and-network',
-          pollInterval: 60000,
-        }
-      )
-      .valueChanges.pipe(
-        map((res) => {
-          return res.data.customers.edges;
-        })
-      );
+    this.workReportsSub$ = this.workReports$.subscribe(
+      (result) => (this.workReports = result.map((e) => e.node))
+    );
   }
 
   customerSelected(event: MatSelectChange) {
@@ -123,5 +92,20 @@ export class WorkReportsComponent implements OnInit, OnDestroy {
     );
 
     return new Date(now_utc);
+  }
+
+  onTimeRecord(event: TimeRecordEvent) {
+    this.updateWorkReportGQL
+      .mutate({
+        id: event.workReportId,
+        timeRecordUpdate: {
+          command: event.command,
+        },
+      })
+      .subscribe();
+  }
+
+  setFilter(event: Event) {
+    this.filter = (event.target as HTMLInputElement).value;
   }
 }

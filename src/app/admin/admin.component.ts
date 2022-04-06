@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss'],
 })
-export class AdminComponent implements OnInit {
+export class AdminComponent {
   options: FormGroup;
   currentPath = '';
 
@@ -19,6 +19,4 @@ export class AdminComponent implements OnInit {
     });
     this.currentPath = this.router.url;
   }
-
-  ngOnInit(): void {}
 }

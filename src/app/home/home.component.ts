@@ -1,14 +1,13 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, Subscription } from 'rxjs';
-import { map, retryWhen, delay, take } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { NewWorkReportComponent } from 'src/app/dialogs/new-work-report/new-work-report.component';
-import { RETRY_DELAY, RETRY_COUNT } from 'src/app/graphql.module';
+
 import { Edge } from 'src/models/page-info';
 import {
   NewWorkReport,
-  TimeRecordCommand,
   UpdateWorkReport,
   WorkReport,
 } from 'src/models/work-reports';
@@ -16,6 +15,7 @@ import { AuthService } from 'src/services/auth/auth.service';
 import { NewWorkReportGQL } from 'src/services/work-report/new-work-report.gql';
 import { UpdateWorkReportGQL } from 'src/services/work-report/update-work-report.gql';
 import { ListWorkReportGQL } from 'src/services/work-report/work-reports.gql';
+import { TimeRecordEvent } from '../components/work-report-table/work-report-table.component';
 import { UpdateWorkReportComponent } from '../dialogs/update-work-report/update-work-report.component';
 
 @Component({
@@ -23,21 +23,15 @@ import { UpdateWorkReportComponent } from '../dialogs/update-work-report/update-
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = [
-    'start-stop',
-    'customer',
-    'project',
-    'description',
-    'invoiced',
-    'duration',
-    'edit',
-  ];
-  workReports$: Observable<Edge<WorkReport>[]> = new Observable();
+export class HomeComponent implements OnDestroy {
+  workReports$: Observable<WorkReport[]> = new Observable();
 
   newWorkReportSub$?: Subscription;
   updateWorkReportSub$?: Subscription;
   dialogSub$?: Subscription;
+
+  workReports: WorkReport[] = [];
+  filter: string = '';
 
   constructor(
     public dialog: MatDialog,
@@ -55,8 +49,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.dialogSub$?.unsubscribe();
   }
 
-  ngOnInit(): void {}
-
   todaysWorkReports() {
     this.workReports$ = this.listWorkReportGQL
       .watch(
@@ -73,33 +65,10 @@ export class HomeComponent implements OnInit, OnDestroy {
       )
       .valueChanges.pipe(
         map((res) => {
-          return res.data.workReports.edges;
+          return res.data.workReports.edges.map((e) => e.node);
         })
       );
-  }
-
-  getDuration(edge: Edge<WorkReport>): Date {
-    let durMillisecs = 0;
-    edge.node.timeRecords.forEach((tr) => {
-      if (!tr.end) {
-        durMillisecs +=
-          new Date(Date.now()).getTime() - new Date(tr.start).getTime();
-      } else {
-        durMillisecs +=
-          new Date(tr.end).getTime() - new Date(tr.start).getTime();
-      }
-    });
-    return new Date(durMillisecs / 1000 / 60);
-  }
-
-  isTimeRecordActive(edge: Edge<WorkReport>): boolean {
-    let active = false;
-    edge.node.timeRecords.filter((tr) => {
-      if (!tr.end) {
-        active = true;
-      }
-    });
-    return active;
+    this.workReports$.subscribe((result) => (this.workReports = result));
   }
 
   newWorkReport() {
@@ -121,23 +90,12 @@ export class HomeComponent implements OnInit, OnDestroy {
       });
   }
 
-  startTimeRecord(workReportId: string) {
+  onTimeRecord(event: TimeRecordEvent) {
     this.updateWorkReportGQL
       .mutate({
-        id: workReportId,
+        id: event.workReportId,
         timeRecordUpdate: {
-          command: TimeRecordCommand.Start,
-        },
-      })
-      .subscribe();
-  }
-
-  stopTimeRecord(workReportId: string) {
-    this.updateWorkReportGQL
-      .mutate({
-        id: workReportId,
-        timeRecordUpdate: {
-          command: TimeRecordCommand.End,
+          command: event.command,
         },
       })
       .subscribe();
@@ -162,5 +120,9 @@ export class HomeComponent implements OnInit, OnDestroy {
           )
           .subscribe();
       });
+  }
+
+  setFilter(event: Event) {
+    this.filter = (event.target as HTMLInputElement).value;
   }
 }

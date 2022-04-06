@@ -1,11 +1,10 @@
 :host {
-  .work-report-controls {
+  .time-records {
+    margin-top: 2vh;
+  }
+  .controls {
     display: flex;
     justify-content: center;
     align-items: center;
-
-    .filter-input {
-      min-width: 20vw;
-    }
   }
 }

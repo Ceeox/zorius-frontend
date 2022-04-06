@@ -3,13 +3,13 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NewInternMerchandise } from 'src/models/intern-merch';
 
 @Component({
-  selector: 'new-intern-merch.dialog',
+  selector: 'app-new-intern-merch.dialog',
   templateUrl: 'new-intern-merch.dialog.html',
   styleUrls: ['./new-intern-merch.dialog.scss'],
 })
-export class NewInternMerchDialog {
+export class NewInternMerchComponent {
   constructor(
-    public dialogRef: MatDialogRef<NewInternMerchDialog>,
+    public dialogRef: MatDialogRef<NewInternMerchComponent>,
     @Inject(MAT_DIALOG_DATA) public data: NewInternMerchandise
   ) {}
 

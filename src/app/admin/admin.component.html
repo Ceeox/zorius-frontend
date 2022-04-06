@@ -2,7 +2,11 @@
   <span> Admin </span>
 </mat-toolbar>
 <mat-sidenav-container class="admin-container">
-  <mat-sidenav mode="side" opened class="admin-sidebar">
+  <mat-sidenav
+    mode="side"
+    opened
+    class="admin-sidebar"
+    [fixedInViewport]="false">
     <mat-selection-list [multiple]="false">
       <mat-list-option [routerLink]="['/admin/work-reports']">
         <mat-icon mat-list-icon>assignment</mat-icon>

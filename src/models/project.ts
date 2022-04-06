@@ -8,7 +8,12 @@ export interface Project {
 }
 
 export interface NewProject {
+  customerId: string;
   name: string;
   note?: string;
-  customerId: string;
+}
+
+export interface UpdateProject {
+  name?: string;
+  note?: string;
 }

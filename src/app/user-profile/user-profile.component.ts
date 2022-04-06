@@ -11,7 +11,7 @@ import { UserService } from 'src/services/user/user.service';
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.scss'],
 })
-export class UserProfileComponent implements OnInit, OnDestroy {
+export class UserProfileComponent implements OnDestroy {
   user: Observable<User>;
   updateUserForm = this.fb.group({
     name: [''],
@@ -31,8 +31,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       })
     );
   }
-
-  ngOnInit() {}
 
   ngOnDestroy(): void {
     this.updateUser$?.unsubscribe();

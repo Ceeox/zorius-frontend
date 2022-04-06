@@ -12,7 +12,7 @@ export interface NewProjectDialogData {
   templateUrl: './new-project.dialog.html',
   styleUrls: ['./new-project.dialog.scss'],
 })
-export class NewProjectDialog implements OnInit {
+export class NewProjectComponent {
   newProjectForm = this.fb.group({
     name: [''],
     note: [''],
@@ -20,11 +20,9 @@ export class NewProjectDialog implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    public dialogRef: MatDialogRef<NewProjectDialog>,
+    public dialogRef: MatDialogRef<NewProjectComponent>,
     @Inject(MAT_DIALOG_DATA) public data: NewProjectDialogData
   ) {}
-
-  ngOnInit() {}
 
   onSubmit() {
     this.data = {

@@ -9,7 +9,7 @@ import {
 } from 'src/models/customer';
 import { CustomersGQL, Customers } from './customers.gql';
 import { NewCustomerGQL, NewCustomerResult } from './new-customer.gql';
-import { UpdateCustomerGQL, UpdateCustomerResult } from './update-customer-gql';
+import { UpdateCustomerGQL, UpdateCustomerResult } from './update-customer.gql';
 
 @Injectable({
   providedIn: 'root',
@@ -44,13 +44,14 @@ export class CustomerService {
     return this.updateCustomerGQL
       .mutate({
         id,
-        update,
+        name: update.name,
+        identifier: update.identifier,
+        note: update.note,
       })
       .pipe(
         map((res) => {
           return res.data;
         }),
-        first(),
         retryWhen((errors) =>
           errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT))
         )

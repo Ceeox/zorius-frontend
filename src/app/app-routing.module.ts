@@ -18,6 +18,7 @@ import { WorkReportsComponent as AdminWorkReportsComponent } from './admin/work-
 import { UsersComponent } from './admin/users/users.component';
 import { CustomersComponent } from './admin/customers/customers.component';
 import { EditComponent as CustomerEditComponent } from './admin/customers/edit/edit.component';
+import { EditComponent as WorkReportEdit } from './work-reports/edit/edit.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -26,8 +27,19 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   {
     path: 'work-reports',
-    component: WorkReportsComponent,
     canActivate: [AuthGuardService],
+    children: [
+      {
+        path: '',
+        component: WorkReportsComponent,
+        canActivate: [AuthGuardService],
+      },
+      {
+        path: 'edit/:id',
+        component: WorkReportEdit,
+        canActivate: [AuthGuardService],
+      },
+    ],
   },
   {
     path: 'merch',
@@ -86,9 +98,13 @@ const routes: Routes = [
       },
       {
         path: 'customers',
-        component: CustomersComponent,
         canActivate: [AuthGuardService],
         children: [
+          {
+            path: '',
+            component: CustomersComponent,
+            canActivate: [AuthGuardService],
+          },
           {
             path: 'edit/:id',
             component: CustomerEditComponent,

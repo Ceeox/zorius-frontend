@@ -1,1 +1,66 @@
-<p>work-reports works!</p>
+<mat-toolbar>
+  <span>Work Reports</span>
+</mat-toolbar>
+
+<div class="centered-container">
+  <div class="controls">
+    <mat-form-field class="controls-element" appearance="fill">
+      <mat-label>Enter a date range</mat-label>
+      <mat-date-range-input [formGroup]="dateRange" [rangePicker]="picker">
+        <input matStartDate formControlName="start" placeholder="Start date" />
+        <input matEndDate formControlName="end" placeholder="End date" />
+      </mat-date-range-input>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker
+        #picker
+        (closed)="loadWorkReports()"></mat-date-range-picker>
+
+      <mat-error
+        *ngIf="dateRange.controls.start.hasError('matStartDateInvalid')"
+        >Invalid start date</mat-error
+      >
+      <mat-error *ngIf="dateRange.controls.end.hasError('matEndDateInvalid')"
+        >Invalid end date</mat-error
+      >
+    </mat-form-field>
+
+    <mat-form-field class="controls-element" appearance="fill">
+      <mat-label>Filter by Customer</mat-label>
+      <mat-select
+        [(value)]="selectedCustomer"
+        (selectionChange)="customerSelected($event)">
+        <mat-option>None</mat-option>
+        <mat-option
+          *ngFor="let customer of customers$ | async"
+          [value]="customer.node">
+          {{ customer.node.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <span style="margin: auto"></span>
+
+    <mat-form-field class="filter-input" appearance="standard">
+      <mat-label>Filter</mat-label>
+      <input matInput (change)="setFilter($event)" />
+    </mat-form-field>
+    <div>
+      <button
+        class="controls-element"
+        mat-icon-button
+        [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item>Export as pdf</button>
+        <button mat-menu-item>Export as xml</button>
+      </mat-menu>
+    </div>
+  </div>
+
+  <app-work-report-table
+    [workReports]="workReports"
+    [disableStartStop]="true"
+    [filter]="filter">
+  </app-work-report-table>
+</div>

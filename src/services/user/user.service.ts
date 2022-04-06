@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { delay, first, map, retryWhen, take } from 'rxjs/operators';
 import { RETRY_COUNT, RETRY_DELAY } from 'src/app/graphql.module';
 import { ListUserOptions, ListUsers, User, UserUpdate } from 'src/models/user';
+import { RegisterGQL } from './register.gql';
 
 @Injectable({
   providedIn: 'root',
@@ -70,9 +71,19 @@ export class UpdateUserGQL extends Mutation<User> {
 })
 export class UserService {
   constructor(
+    private registerGQL: RegisterGQL,
     private usersGQL: UsersGQL,
     private updateUsersGQL: UpdateUserGQL
   ) {}
+
+  register(email: string, password: string, name?: string) {
+    return this.registerGQL.mutate({ email, password, name }).pipe(
+      map((result) => {
+        return result.data;
+      }),
+      retryWhen((errors) => errors.pipe(delay(RETRY_DELAY), take(RETRY_COUNT)))
+    );
+  }
 
   users(options?: ListUserOptions): Observable<ListUsers> {
     return this.usersGQL
