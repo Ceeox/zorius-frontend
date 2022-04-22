@@ -40,22 +40,18 @@
 
     <span style="margin: auto"></span>
 
-    <mat-form-field class="filter-input" appearance="standard">
+    <mat-form-field class="controls-element filter-input" appearance="standard">
       <mat-label>Filter</mat-label>
       <input matInput (change)="setFilter($event)" />
     </mat-form-field>
-    <div>
-      <button
-        class="controls-element"
-        mat-icon-button
-        [matMenuTriggerFor]="menu">
-        <mat-icon>more_vert</mat-icon>
-      </button>
-      <mat-menu #menu="matMenu">
-        <button mat-menu-item>Export as pdf</button>
-        <button mat-menu-item>Export as xml</button>
-      </mat-menu>
-    </div>
+
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item>Export as pdf</button>
+      <button mat-menu-item>Export as xml</button>
+    </mat-menu>
   </div>
 
   <app-work-report-table

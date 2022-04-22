@@ -29,15 +29,14 @@
       <mat-label>Filter</mat-label>
       <input matInput (change)="setFilter($event)" />
     </mat-form-field>
-    <div>
-      <button mat-icon-button [matMenuTriggerFor]="menu">
-        <mat-icon>more_vert</mat-icon>
-      </button>
-      <mat-menu #menu="matMenu">
-        <button mat-menu-item>Export as PDF</button>
-        <button mat-menu-item>Export as XML</button>
-      </mat-menu>
-    </div>
+
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item>Export as PDF</button>
+      <button mat-menu-item>Export as XML</button>
+    </mat-menu>
   </div>
 
   <app-work-report-table
